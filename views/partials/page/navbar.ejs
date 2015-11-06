@@ -1,0 +1,70 @@
+<div class="navbar-wrapper">
+    <header class="navbar navbar-default navbar-fixed-top" id="MainMenu">
+        <div class="navbar-extra-top clearfix">
+            <div class="navbar container-fluid">
+                <ul class="nav navbar-nav navbar-left">
+                    <li class="menu-item"><a href="contact"><i
+                                    class="fa fa-envelope"></i> Contact Us</a>
+                    </li>
+                    <li class="menu-item"><a href="page"><i
+                                    class="fa fa-info"></i>About Us</a></li>
+                </ul>
+                <div class="navbar-top-right">
+                    <ul class="nav navbar-nav navbar-right">
+                        <li><a href="http://www.facebook.com/navlitbeta"><i
+                                        class="fa fa-facebook fa-fw"></i></a>
+                        </li>
+                        <li>
+                            <a href="https://plus.google.com/111599172159083175529/posts"><i
+                                        class="fa fa-google-plus fa-fw"></i></a>
+                        </li>
+                        <li><a href="https://twitter.com/navlitatl"><i
+                                        class="fa fa-twitter fa-fw"></i></a>
+                        </li>
+                    </ul>
+                    <form class="navbar-form navbar-right navbar-search"
+                          role="search" action="/bingsearch" method="post">
+                        <div class="form-group">
+                            <input type="text" name="searchentry"
+                                   placeholder="Bing Search">
+                        </div>
+                        <button type="submit" class="btn btn-default"><span
+                                    class="fa fa-search"></span></button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="container-fluid collapse-md" id="navbar-main-container">
+            <div class="navbar-header">
+                <a href="/" class="navbar-brand"><img alt="NavLit!"
+                                                      src="assets/images/logo1Navlit.png"><span
+                            class="sr-only">&nbsp; NavLit!</span></a>
+                <button class="navbar-toggle" type="button"
+                        data-toggle="collapse" data-target="#navbar-main">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+            </div>
+
+            <nav class="navbar-collapse collapse" id="navbar-main">
+                <ul class="nav navbar-nav navbar-right">
+                    <li class="menu-item"><a href="registration"><i
+                                    class="fa fa-suitcase"></i> Sign Up</a></li>
+                    <% if (typeof user != 'undefined' & user != "") { %>
+                    <li class="menu-item"><a href="logout"><i
+                                    class="fa fa-sign-out"></i> Sign Out
+                            (<%= accountType %> : <%= name %>)</a>
+                    </li>
+                    <% } else { %>
+                    <li class="menu-item"><a href="login"><i
+                                    class="fa fa-sign-in"></i> Sign In</a>
+                    </li>
+                    <% } %>
+                </ul>
+            </nav>
+        </div>
+        <!-- /.container-fluid -->
+    </header>
+</div><!-- /.navbar-wrapper -->

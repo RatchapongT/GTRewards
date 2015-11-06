@@ -1,0 +1,257 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en">
+<% include ../partials/page/jsdefaults.ejs %>
+<head>
+    <% include ../partials/page/head.ejs %>
+    <title>Load map with navigation bar module</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <script type="text/javascript" src="http://ecn.dev.virtualearth.net/mapcontrol/mapcontrol.ashx?v=7.0"></script>
+    <script type="text/javascript">
+        var map = null;
+        var searchManager = null;
+        var directionsManager;
+        var directionsErrorEventObj;
+        var directionsUpdatedEventObj;
+
+        function getMap() {
+            map = new Microsoft.Maps.Map(document.getElementById('myMap'), {credentials: 'v9QnRkA6PBUdbIfB8HkI~M0fEa6j2HiwUGE71crvs9g~AvN8WuMFFDjC9dbwCigmRxe0YAStNdvTV6wWyaAHweVMCWg4V4KjYbLUcEaCdBvo'});
+        }
+        function createSearchManager() {
+            map.addComponent('searchManager', new Microsoft.Maps.Search.SearchManager(map));
+            searchManager = map.getComponent('searchManager');
+        }
+        function LoadSearchModule() {
+            Microsoft.Maps.loadModule('Microsoft.Maps.Search', {callback: geocodeRequest})
+        }
+        function getCurrentLocation() {
+            var geoLocationProvider = new Microsoft.Maps.GeoLocationProvider(map);
+            geoLocationProvider.getCurrentPosition();
+//            alert('Current location set, based on your browser support for geo location API');
+        }
+        function geocodeRequest() {
+            createSearchManager();
+            var where = 'Atlanta, GA';
+            var userData = {name: 'Maps Test User', id: 'XYZ'};
+            var request =
+            {
+                where: where,
+                count: 5,
+                bounds: map.getBounds(),
+                callback: onGeocodeSuccess,
+                errorCallback: onGeocodeFailed,
+                userData: userData
+            };
+            searchManager.geocode(request);
+        }
+        function onGeocodeSuccess(result, userData) {
+            if (result) {
+                map.entities.clear();
+                var topResult = result.results && result.results[0];
+                if (topResult) {
+                    var pushpin = new Microsoft.Maps.Pushpin(topResult.location, null);
+                    map.setView({center: topResult.location, zoom: 10});
+                    map.entities.push(pushpin);
+                }
+            }
+        }
+        function onGeocodeFailed(result, userData) {
+            alert('Geocode failed');
+        }
+        function createDirectionsManager() {
+            var displayMessage;
+            if (!directionsManager) {
+                directionsManager = new Microsoft.Maps.Directions.DirectionsManager(map);
+                displayMessage = 'Directions Module loaded\n';
+                displayMessage += 'Directions Manager loaded';
+            }
+            directionsManager.resetDirections();
+            directionsErrorEventObj = Microsoft.Maps.Events.addHandler(directionsManager, 'directionsError', function (arg) {
+            });
+            directionsUpdatedEventObj = Microsoft.Maps.Events.addHandler(directionsManager, 'directionsUpdated', function () {
+            });
+        }
+
+        function createDrivingRoute() {
+            if (!directionsManager) {
+                createDirectionsManager();
+            }
+            directionsManager.resetDirections();
+            // Set Route Mode to driving
+            directionsManager.setRequestOptions({routeMode: Microsoft.Maps.Directions.RouteMode.driving});
+            var seattleWaypoint = new Microsoft.Maps.Directions.Waypoint({address: 'Atlanta, GA'});
+            directionsManager.addWaypoint(seattleWaypoint);
+            var tacomaWaypoint = new Microsoft.Maps.Directions.Waypoint({address: '1300 Clifton Rd, Atlanta, GA 30322'});
+            directionsManager.addWaypoint(tacomaWaypoint);
+            // Set the element in which the itinerary will be rendered
+            directionsManager.setRenderOptions({itineraryContainer: document.getElementById('directionsItinerary')});
+            directionsManager.calculateDirections();
+        }
+
+        function createDirections() {
+            if (!directionsManager) {
+                Microsoft.Maps.loadModule('Microsoft.Maps.Directions', {callback: createDrivingRoute});
+            }
+            else {
+                createDrivingRoute();
+            }
+        }
+
+    </script>
+</head>
+
+<body class="destination destination-home">
+
+<div id="top"></div>
+
+<!-- Navigation (main menu)
+================================================== -->
+<% include ../partials/page/navbar.ejs %>
+
+<!-- Hero Section
+================================================== -->
+<section class="hero small-hero destination-header"
+         style="background-image: url('assets/images/atlanta.jpeg');">
+    <div class="bg-overlay">
+        <div class="container">
+            <div class="intro-wrap">
+                <h1 class="intro-title">Jane</h1>
+                <ul class="breadcrumbs">
+                    <li class="no-arrow"><i
+                                class="icon fa fa-map-marker"></i></li>
+                    <li>North America
+                    </li>
+                    <li>Atlanta, GA</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<!-- Main Section
+================================================== -->
+<section class="main">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-12 col-fixed-content">
+                <h1 class="page-title">About Me!</h1>
+                <ul class="breadcrumbs local-path">
+                    <li>Atlanta, GA</li>
+                    <li class="no-arrow"> Tours
+                    </li>
+
+                    <li class="no-arrow">
+                        <div class="ratebox raterater-wrapper">
+									<span class="rating rating-star">
+										<i class="fa fa-star icon highlighted"></i>
+										<i class="fa fa-star icon highlighted"></i>
+										<i class="fa fa-star icon highlighted"></i>
+										<i class="fa fa-star icon highlighted"></i>
+										<i class="fa fa-star icon"></i>
+									</span>
+                        </div>
+                    </li>
+
+                </ul>
+
+                <p class="lead">I enjoy eating exotic food, exploring new areas, exploring the outdoors, and
+                    shopping.</p>
+
+                <div class="row">
+                    <div class="col-sm-12 col-lg-8">
+                        <figure class="entry-thumbnail">
+                            <p><img width="1200" height="800"
+                                    src="assets/images/explore.jpg"
+                                    class="attachment-post-thumbnail wp-post-image"
+                                    alt=""></p>
+                        </figure>
+                        <div class="entry-content">
+                            <h3>Experience</h3>
+                            <h4>Food</h4>
+
+                            <p>Barque chase guns piracy hang the jib fluke no
+                                prey, no pay lee keel skysail snow. Jolly boat
+                                keelhaul grog Sea Legs matey lee fathom barque
+                                Pirate Round driver. Keel ye cackle fruit
+                                galleon doubloon measured fer yer chains.</p>
+                            <h4>Exploring</h4>
+
+                            <p>Sink me careen jolly boat league spyglass Sea
+                                Legs keelhaul handsomely hail-shot capstan. Jib
+                                draft knave cutlass topsail me lanyard barque
+                                crimp rutters. Tackle measured fer yer chains
+                                bilge water clipper rope’s end lass
+                                boatswain.</p>
+                            <h4>Outdoors</h4>
+
+                            <p>Lookout tender bilge water clap of thunder list
+                                splice the main brace Buccaneer jolly boat
+                                mizzen hearties. Bilged on her anchor Shiver me
+                                timbers Corsair belaying pin black jack case
+                                shot Sail ho gun crow’s nest weigh anchor. Brig
+                                chantey hearties
+                                parrel brigantine pressgang quarterdeck
+                                Brethren.</p>
+                            <h4>Shopping</h4>
+
+                            <p>Lookout tender bilge water clap of thunder list
+                                splice the main brace Buccaneer jolly boat
+                                mizzen hearties. Bilged on her anchor Shiver me
+                                timbers Corsair belaying pin black jack case
+                                shot Sail ho gun crow’s nest weigh anchor. Brig
+                                chantey hearties
+                                parrel brigantine pressgang quarterdeck
+                                Brethren.</p>
+                        </div>
+                        <body onload="getMap(); LoadSearchModule()">
+                        <div id='myMap' style="position:relative; width:550px; height:300px;"></div>
+                        <div>
+                            <p class="submit">
+                                <input type="submit" name="submit" id="submit"
+                                       class="button button-primary button-large" value="Find Address"
+                                       onclick="LoadSearchModule();"/>
+                                <input type="submit" name="submit" id="submit"
+                                       class="button button-primary button-large" value="GetCurrentLocation"
+                                       onclick="getCurrentLocation();"/>
+                                <input type="submit" name="submit" id="submit"
+                                       class="button button-primary button-large" value="CreateDrivingRoute"
+                                       onclick="createDirections();"/>
+                            </p>
+                        </div>
+
+                        </body>
+
+                    </div>
+                    <div class="visible-lg-block col-lg-4">
+                        <aside class="snapshot">
+
+                            <h5>Email</h5>
+
+                            <p>jane@example.com</p>
+                            <h5>Website</h5>
+
+                            <p>http://jane.com</p>
+
+
+                            <div class="btn-group btn-group-justified">
+                                <a href="#" class="btn btn-success">Yes</a>
+                                <a href="#" class="btn btn-danger">No</a>
+                            </div>
+
+                        </aside>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<!-- Footer
+================================================== -->
+<footer id="footer">
+    <% include ../partials/page/footer.ejs %>
+</footer>
+</body>
+</html>
