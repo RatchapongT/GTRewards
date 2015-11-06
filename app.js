@@ -4,7 +4,21 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
+var multer = require('multer');
+var crypto = require('crypto');
 
+var storage = multer.diskStorage({
+    destination: './uploads/',
+    filename: function (req, file, cb) {
+        crypto.pseudoRandomBytes(16, function (err, raw) {
+            if (err) return cb(err)
+
+            cb(null, raw.toString('hex') + path.extname(file.originalname))
+        })
+    }
+})
+
+var upload = multer({ storage: storage })
 // Database
 var mongoose = require('mongoose');
 var passport = require('passport');
@@ -34,8 +48,10 @@ app.set('view engine', 'ejs');
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
+app.use(upload.single('tryy'));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+
 
 
 app.use(expressSession(
@@ -88,6 +104,8 @@ app.use(function (err, req, res, next) {
         error: {}
     });
 });
+
+
 
 
 module.exports = app;

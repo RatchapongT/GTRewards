@@ -19,6 +19,7 @@
     "mongoose": "^4.0.8",
     "mongoose-deep-populate": "^1.1.0",
     "morgan": "~1.6.1",
+    "multer": "^1.1.0",
     "node-bing-api": "^2.2.0",
     "passport": "^0.2.2",
     "passport-local": "^1.0.0",
