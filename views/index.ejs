@@ -4,166 +4,24 @@
 <head>
     <% include partials/page/head.ejs %>
 </head>
-<script>
-    window.onload = function() {
-        $('a[href^="#"]').on('click', function(event) {
-            var target = $( $(this).attr('href') );
-            if( target.length ) {
-                $('html, body').animate({
-                    scrollTop: target.offset().top
-                }, 1000);
-                event.preventDefault();
-            }
-
-        });
-    };
-</script>
 <body class="home">
 <!-- Navigation (main menu)
 ================================================== -->
 <% include partials/page/navbar.ejs %>
-
-<!-- Hero Section
-================================================== -->
-<section class="hero hero-overlap"
-         style="background-image: url('assets/images/mainimage.jpeg');">
-    <div class="bg-overlay">
-        <div class="container">
-            <div class="intro-wrap">
-                <h1 class="intro-title">Your Global <a>Friends</a> of Travel</h1>
-
-                <div class="intro-text"> Discover your next great adventure!
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
-
-
-<section id="header" style="margin-bottom:0;">
-    <!-- Cover element
-    ================================================== -->
-    <div class="cover-wrapper"
-         style="background-color: #FFFFFF">
-        <div class="cover-container overlay" style="background-color: rgba(255,255,255,0);
-            padding-top: 100px; padding-bottom: 100px">
-            <!--<div class="cover-inner">-->
-            <div class="container">
-                <div class="menuitem">
-                    <a href="#bottomHuman">
-                        <img src="assets/images/chat59.png">
-                        <h3 style="color: #f3746e">Human To Human Interaction</h3>
-                    </a>
-                    <a href="#bottomEarth">
-                        <img src="assets/images/earth.png">
-                        <h3  style="color: #f3746e">Personalized<p>Itinerary</p></h3>
-                    </a>
-                    <a href="#bottomCommunication">
-                        <img src="assets/images/phone6.png">
-                        <h3 style="color: #f3746e">Ease of <p>Communication</p></h3>
-                    </a>
-                    <a href="#bottomSecure">
-                        <img src="assets/images/locked43.png">
-                        <h3 style="color: #f3746e">Secure and <p>Safe</p></h3>
-                    </a>
-                </div>
-            </div>
-        </div>
-        <!-- /.cover-container -->
-    </div>
-    <!-- /.cover-wrapper -->
-
-</section>
-
-    <section id="bottomHuman" style="margin-bottom:0;">
+ <section id="bottomHuman" style="margin-bottom:0;">
         <!-- Cover element
         ================================================== -->
         <div class="cover-wrapper"
-             style="background-image: url(assets/images/human.jpeg);">
-            <div class="cover-container overlay" style="padding-top: 20%; padding-bottom: 20%;">
+             style="background-image: url(assets/images/gtbasketballstadium.jpg);">
+            <div class="cover-container overlay" style="padding-top: 25%; padding-bottom: 25%; background-color: rgba(197,147,83,0.3);">
                 <div class="cover-inner">
                     <div class="container">
-                        <h1 style="color:#fff;">Human To Human Interaction</h1>
-
-                        <p class="lead" style="color: white;">True adventure isn’t created with search bars. It’s created with a great company.
-                        </p>
+                        <h2 style="color: #fff">Check Your Point Total</h2>
                     </div>
-                    <!-- /.container -->
                 </div>
-                <!-- /.cover-inner -->
             </div>
-            <!-- /.cover-container -->
         </div>
-        <!-- /.cover-wrapper -->
-    </section>
-
-    <section id="bottomEarth" style="margin-bottom:0;">
-        <!-- Cover element
-        ================================================== -->
-        <div class="cover-wrapper"
-             style="background-image: url(assets/images/newyork.jpeg)">
-            <div class="cover-container overlay" style="padding-top: 20%; padding-bottom: 20%;>
-            <div class=" cover-inner
-            ">
-            <div class="container">
-                <h1 style="color:#fff;">Personalized Itinerary</h1>
-
-                <p class="lead" style="color: white;"></p>
-            </div>
-            <!-- /.container -->
-        </div>
-        <!-- /.cover-inner -->
-        </div>
-        <!-- /.cover-container -->
-        </div>
-        <!-- /.cover-wrapper -->
-    </section>
-
-    <section id="bottomCommunication" style="margin-bottom:0;">
-        <!-- Cover element
-        ================================================== -->
-        <div class="cover-wrapper"
-             style="background-image: url(assets/images/phone.jpeg)">
-            <div class="cover-container overlay" style="padding-top: 20%; padding-bottom: 20%;>
-            <div class=" cover-inner
-            ">
-            <div class="container">
-                <h1 style="color:#fff;">Ease of Communication</h1>
-
-                <p class="lead" style="color: white;"></p>
-            </div>
-            <!-- /.container -->
-        </div>
-        <!-- /.cover-inner -->
-        </div>
-        <!-- /.cover-container -->
-        </div>
-        <!-- /.cover-wrapper -->
-
-    </section>
-    <section id="bottomSecure" style="margin-bottom:0;">
-        <!-- Cover element
-        ================================================== -->
-        <div class="cover-wrapper"
-             style="background-image: url(assets/images/security.jpeg)">
-            <div class="cover-container overlay" style="padding-top: 20%; padding-bottom: 20%;>
-            <div class=" cover-inner
-            ">
-            <div class="container">
-                <h1 style="color:#fff;">Secure and Safe</h1>
-
-                <p class="lead" style="color: white;"></p>
-            </div>
-            <!-- /.container -->
-        </div>
-        <!-- /.cover-inner -->
-        </div>
-        <!-- /.cover-container -->
-        </div>
-        <!-- /.cover-wrapper -->
-
-    </section>
-
+ </section>
 <footer id="footer">
     <% include partials/page/footer.ejs %>
 </footer>
