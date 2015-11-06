@@ -8856,7 +8856,6 @@ body .owl-theme:hover .owl-controls .owl-nav {
 }
 
 body.login {
-    background: #eeeeee url('../images/bar.jpeg') no-repeat 50%;
     background-size: cover;
 }
 
@@ -8895,7 +8894,6 @@ body.login {
     width: 100%;
     max-width: 480px;
     margin: 0 auto 25px;
-    background-image: url('../images/login-logo.png');
     -webkit-background-size: contain;
     background-size: contain;
     background-position: 50%;
