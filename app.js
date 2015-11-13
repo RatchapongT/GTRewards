@@ -15,7 +15,9 @@ var storage = multer.diskStorage({
 
             cb(null, raw.toString('hex') + path.extname(file.originalname))
         })
-    }
+    },
+
+
 })
 
 var upload = multer({ storage: storage })
@@ -48,7 +50,7 @@ app.set('view engine', 'ejs');
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
-app.use(upload.single('tryy'));
+app.use(upload.single('ExcelFile'));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
@@ -66,12 +68,19 @@ app.use(expressSession(
 ));
 
 
+
 app.use(flash());
 app.use(passport.initialize());
 app.use(passport.session());
 
 app.use('/', routes);
 app.use('/match', match);
+
+
+app.post('/upload', upload.single('ExcelFile'), function (req, res, next) {
+    res.redirect('/processing/' + req.file.name);
+})
+
 app.use(restrict);
 
 // catch 404 and forward to error handler

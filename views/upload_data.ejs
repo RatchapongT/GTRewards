@@ -27,12 +27,11 @@
 
                         <form action="/upload" method="post" enctype="multipart/form-data" >
                             <div class="form-group">
-                            <!--<input name ="Test" id="file-0" class="file" type="file" data-show-preview="false">-->
-                            <input type="file" name ="tryy">
-                            <input class="btn btn-primary btn-lg btn-block"
-                                   type="submit" value="Log in"/>
+                            <!--<input name ="ExcelFile" id="file-0" class="file" type="file" data-show-preview="false">-->
+                            <input type="file" name ="ExcelFile">
+                            <input class="btn btn-primary btn-lg btn-block" type="submit" value="Log in"/>
 
-                            </div>
+                           </div>
                         </form>
 
 
@@ -57,7 +56,7 @@
 <!--<script src="../../file-input/js/xlsx.core.min.js"></script>-->
 <script>
     $("#file-0").fileinput({
-
+        uploadUrl: '/upload',
         'allowedFileExtensions': ['xls', 'csv', 'xlsx']
     });
 </script>
