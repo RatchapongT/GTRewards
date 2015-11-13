@@ -7,6 +7,7 @@ var bodyParser = require('body-parser');
 var multer = require('multer');
 var crypto = require('crypto');
 
+
 var storage = multer.diskStorage({
     destination: './uploads/',
     filename: function (req, file, cb) {
@@ -20,7 +21,12 @@ var storage = multer.diskStorage({
 
 })
 
-var upload = multer({ storage: storage })
+var upload = multer({
+    onFileUploadStart: function (file) {
+        console.log("YIII");
+    },
+    storage: storage
+})
 // Database
 var mongoose = require('mongoose');
 var passport = require('passport');
@@ -51,9 +57,9 @@ app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(upload.single('ExcelFile'));
+
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
-
 
 
 app.use(expressSession(
@@ -66,7 +72,6 @@ app.use(expressSession(
         })
     }
 ));
-
 
 
 app.use(flash());
@@ -113,8 +118,6 @@ app.use(function (err, req, res, next) {
         error: {}
     });
 });
-
-
 
 
 module.exports = app;

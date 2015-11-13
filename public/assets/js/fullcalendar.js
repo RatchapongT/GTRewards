@@ -3,9 +3,6 @@
  * Docs & License: http://fullcalendar.io/
  * (c) 2015 Adam Shaw
  */
-var moment = require('moment');
-moment().format();
-
 (function(factory) {
 	if (typeof define === 'function' && define.amd) {
 		define([ 'jquery', 'moment' ], factory);
