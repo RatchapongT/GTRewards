@@ -4,6 +4,17 @@
 <head>
     <% include partials/page/head.ejs %>
 </head>
+<script>
+    $(document).ready(function() {
+
+        // page is now ready, initialize the calendar...
+
+        $('#calendar').fullCalendar({
+            // put your options and callbacks here
+        })
+
+    });
+</script>
 <body class="home">
 <!-- Navigation (main menu)
 ================================================== -->
@@ -24,6 +35,11 @@
     </div>
 </section>
 
+<section>
+    <h1>hello</h1>
+</section>
+
+<div id='calendar'></div>
 
 <section>
     <center>
