@@ -2,6 +2,22 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 var deepPopulate = require('mongoose-deep-populate');
 
+var studentSchema = new Schema({
+    gtID: String,
+    name: String,
+    email: String,
+    sum: Number,
+    created: {type: Date, default: Date.now}
+});
+
+var historySchema = new Schema({
+    gtID: String,
+    description: String,
+    email: String,
+    sum: Number,
+    created: {type: Date, default: Date.now}
+});
+
 var userSchema = new Schema({
     username: String,
     password: String,

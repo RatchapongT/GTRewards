@@ -1,39 +1,42 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang = "en">
 
 <head>
     <% include partials/page/head.ejs %>
 </head>
-<link href="../../file-input/css/fileinput.min.css" media="all" rel="stylesheet" type="text/css"/>
+<link href = "../../file-input/css/fileinput.min.css" media = "all"
+      rel = "stylesheet" type = "text/css"/>
 
 <% include partials/page/jsdefaults.ejs %>
-<body class="home">
+<body class = "home">
 <!-- Navigation (main menu)
 ================================================== -->
 <% include partials/page/navbar.ejs %>
 
-<section id="bottomCommunication" style="margin-bottom:0;">
+<section id = "bottomCommunication" style = "margin-bottom:0;">
     <!-- Cover element
     ================================================== -->
-    <div class="cover-wrapper"
-         style="background-image: url(assets/images/phone.jpeg)">
-        <div class="cover-container overlay" style="padding-top: 20%; padding-bottom: 20%;">
-            <div class=" cover-inner">
-                <div class="container">
-                    <h1 style="color:#fff;">Ease of Communication</h1>
+    <div class = "cover-wrapper"
+         style = "background-image: url(assets/images/phone.jpeg)">
+        <div class = "cover-container overlay"
+             style = "padding-top: 20%; padding-bottom: 20%;">
+            <div class = " cover-inner">
+                <div class = "container">
+                    <h1 style = "color:#fff;">Ease of Communication</h1>
 
-                    <p class="lead" style="color: white;"></p>
+                    <p class = "lead" style = "color: white;"></p>
 
 
-                        <form action="/upload" method="post" enctype="multipart/form-data" >
-                            <div class="form-group">
+                    <form action = "/upload" method = "post"
+                          enctype = "multipart/form-data">
+                        <div class = "form-group">
                             <!--<input name ="ExcelFile" id="file-0" class="file" type="file" data-show-preview="false">-->
-                            <input type="file" name ="ExcelFile">
-                            <input class="btn btn-primary btn-lg btn-block" type="submit" value="Log in"/>
+                            <input type = "file" name = "ExcelFile">
+                            <input class = "btn btn-primary btn-lg btn-block"
+                                   type = "submit" value = "Log in"/>
 
-                           </div>
-                        </form>
-
+                        </div>
+                    </form>
 
 
                 </div>
@@ -48,11 +51,11 @@
 </section>
 </body>
 
-<footer id="footer">
+<footer id = "footer">
     <% include partials/page/footer.ejs %>
 </footer>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
-<script src="../../file-input/js/fileinput.min.js"></script>
+<script src = "https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+<script src = "../../file-input/js/fileinput.min.js"></script>
 <!--<script src="../../file-input/js/xlsx.core.min.js"></script>-->
 <script>
     $("#file-0").fileinput({
