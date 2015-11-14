@@ -4,29 +4,11 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
-var multer = require('multer');
+var busboy = require('connect-busboy');
 var crypto = require('crypto');
 
 
-var storage = multer.diskStorage({
-    destination: './uploads/',
-    filename: function (req, file, cb) {
-        crypto.pseudoRandomBytes(16, function (err, raw) {
-            if (err) return cb(err)
 
-            cb(null, raw.toString('hex') + path.extname(file.originalname))
-        })
-    },
-
-
-})
-
-var upload = multer({
-    onFileUploadStart: function (file) {
-        console.log("YIII");
-    },
-    storage: storage
-})
 // Database
 var mongoose = require('mongoose');
 var passport = require('passport');
@@ -53,10 +35,10 @@ app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 
 // uncomment after placing your favicon in /public
+app.use(busboy());
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
-app.use(upload.single('ExcelFile'));
 
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
@@ -82,9 +64,6 @@ app.use('/', routes);
 app.use('/match', match);
 
 
-app.post('/upload', upload.single('ExcelFile'), function (req, res, next) {
-    res.redirect('/processing/' + req.file.name);
-})
 
 app.use(restrict);
 

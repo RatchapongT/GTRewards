@@ -1,72 +1,113 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang = "en">
 
 <head>
     <% include partials/page/head.ejs %>
 </head>
-<script>
-    function clickEntry(input) {
-        var disMouse = document.getElementById(input.id);
-        disMouse.addEventListener("mousewheel", function (evt) {
-            evt.preventDefault();
-        });
-    }
-
-    function isNumberKey(evt) {
-        var charCode = (evt.which) ? evt.which : event.keyCode
-        if (charCode > 31 && (charCode < 48 || charCode > 57))
-            return false;
-        return true;
-</script>
-<link href="../../file-input/css/fileinput.min.css" media="all" rel="stylesheet" type="text/css"/>
+<link href = "../../file-input/css/fileinput.min.css" media = "all"
+      rel = "stylesheet" type = "text/css"/>
 
 <% include partials/page/jsdefaults.ejs %>
-<body class="home">
+<body class = "home">
 <!-- Navigation (main menu)
 ================================================== -->
 <% include partials/page/navbar.ejs %>
 
-<section id="bottomCommunication" style="margin-bottom:0;">
-    <!-- Cover element
-    ================================================== -->
-    <div class="cover-wrapper"
-         style="background-image: url(assets/images/phone.jpeg)">
-        <div class="cover-container overlay" style="padding-top: 20%; padding-bottom: 20%;">
-            <div class=" cover-inner">
-                <div class="container">
-                        <form action="/upload" method="post" enctype="multipart/form-data" >
-                            <div class="form-group">
-                            <!--<input name ="ExcelFile" id="file-0" class="file" type="file" data-show-preview="false">-->
-                            <input type="file" name ="ExcelFile">
-                                <input class="form-control" onkeypress="return isNumberKey(event)" type="text"
-                                       placeholder="Game Point Value" maxlength="3" onclick="clickEntry(this);">
-                                <input class="btn btn-primary btn-lg btn-block" type="submit" value="Add Points"/>
+<!-- Cover element
+================================================== -->
+<div ng-app = "uploadModule" ng-controller = "uploadCtrl">
 
-                           </div>
-                        </form>
-                </div>
-                <!-- /.container -->
+    <div class = "cover-container overlay"
+         style = "padding-top: 20%; padding-bottom: 20%;">
+        <div class = " cover-inner">
+            <div class = "container">
+                <h1 style = "color:#fff;">Upload</h1>
+
+                <form>
+
+                    <div class = "form-group">
+                        <input type = "file" id = "excelFile"
+                               file-model = "excel.file">
+                    </div>
+
+                    <button button type = "submit"
+                            class = "btn btn-default btn-lg"
+                            ng-click = "Submit()" style="width: 250px">
+                        <i class = "fa fa-cloud-upload"></i>
+                        &nbsp;
+                        <span>{{status}}
+                            <div ng-show="loading" ><img width="20 px" src="assets/images/loading-animation.gif">
+                            </div>
+                             <div ng-show="finished"><img width="20 px" src="assets/images/finished.png">
+                             </div>
+                        </span>
+                    </button>
+                </form>
+
             </div>
-            <!-- /.cover-inner -->
+            <!-- /.container -->
         </div>
-        <!-- /.cover-container -->
+        <!-- /.cover-inner -->
     </div>
-    <!-- /.cover-wrapper -->
+    <!-- /.cover-container -->
+</div>
+<!-- /.cover-wrapper -->
 
-</section>
+
 </body>
 
-<footer id="footer">
+<footer id = "footer">
     <% include partials/page/footer.ejs %>
 </footer>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
-<script src="../../file-input/js/fileinput.min.js"></script>
-<!--<script src="../../file-input/js/xlsx.core.min.js"></script>-->
-<script>
-    $("#file-0").fileinput({
-        uploadUrl: '/upload',
-        'allowedFileExtensions': ['xls', 'csv', 'xlsx']
-    });
-</script>
+<script src = "https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+<script src = "../../file-input/js/fileinput.min.js"></script>
 
+<script>
+    var myApp = angular.module('uploadModule', []);
+    myApp.controller('uploadCtrl', ['$scope', 'multipartForm', function ($scope, multipartForm) {
+        $scope.status = "Upload File";
+        $scope.finished = false;
+        $scope.loading = false;
+        $scope.Submit = function () {
+            $scope.finished = false;
+            $scope.loading = true;
+            var uploadUrl = '/upload';
+            $scope.status = "Processing";
+            multipartForm.post(uploadUrl, $scope.excel, $scope);
+        }
+    }]);
+
+    myApp.service('multipartForm', ['$http', function ($http) {
+        this.post = function (uploadUrl, data, scope) {
+            var fd = new FormData();
+            for (var key in data)
+                fd.append(key, data[key]);
+            $http.post(uploadUrl, fd, {
+                transformRequest: angular.identity,
+                headers: {'Content-Type': undefined}
+            }).success(function (response) {
+                scope.status = response.message;
+                scope.loading = false;
+                scope.finished = true;
+            });
+        }
+    }]);
+
+    myApp.directive('fileModel', ['$parse', function ($parse) {
+        return {
+            restrict: 'A',
+            link: function (scope, element, attrs) {
+                var model = $parse(attrs.fileModel);
+                var modelSetter = model.assign;
+
+                element.bind('change', function () {
+                    scope.$apply(function () {
+                        modelSetter(scope, element[0].files[0]);
+                    });
+                });
+            }
+        };
+    }]);
+
+</script>
 </html>
