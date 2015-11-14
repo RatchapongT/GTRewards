@@ -31,13 +31,18 @@ router.get('/login', function (req, res, next) {
     };
     res.render('login', vm);
 });
+router.get('/api/upload', function(req, res, next) {
+   return res.json({activity: "Processing"});
+});
 router.post('/upload', function (req, res, next) {
     var fstream;
     req.pipe(req.busboy);
+
     req.busboy.on('file', function (fieldname, file, filename) {
         var extension = filename.substring(filename.length - 4, filename.length);
-        if (extension != 'xlsx' && filename != 'onetime.xlsx') {
-            console.log("Not supported: " + extension);
+        if (extension != 'xlsx' || filename != 'onetime.xlsx') {
+            console.log("HI");
+            return res.json({message : "Finished Processing"});
         } else {
             console.log("Uploading: " + filename);
             var now = Date.now();
@@ -58,7 +63,7 @@ router.post('/upload', function (req, res, next) {
                             var sum = row.values[4];
                             console.log(gtid + '/' + name + '/' + email + '/' + sum);
                         });
-                        console.log("Finished Processing");
+                        res.json({message : "Finished Processing"});
                     });
 
             });
@@ -75,6 +80,13 @@ router.get('/upload', function (req, res, next) {
     res.render('upload_data', vm);
 });
 
+router.get('/testangular', function (req, res, next) {
+
+
+    return res.json({
+        angularObject : "HIIII"
+    });
+});
 
 function validateEmail(email) {
     var re = /^([\w-]+(?:\.[\w-]+)*)@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$/i;

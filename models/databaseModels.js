@@ -49,6 +49,8 @@ var User = mongoose.model('User', userSchema);
 var UserDetail = mongoose.model('UserDetail', userDetailSchema);
 
 module.exports = {
+    Student: Student,
+    History: History,
     User: User,
     UserDetail: UserDetail
 };
