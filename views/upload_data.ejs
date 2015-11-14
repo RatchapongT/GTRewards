@@ -4,6 +4,20 @@
 <head>
     <% include partials/page/head.ejs %>
 </head>
+<script>
+    function clickEntry(input) {
+        var disMouse = document.getElementById(input.id);
+        disMouse.addEventListener("mousewheel", function (evt) {
+            evt.preventDefault();
+        });
+    }
+
+    function isNumberKey(evt) {
+        var charCode = (evt.which) ? evt.which : event.keyCode
+        if (charCode > 31 && (charCode < 48 || charCode > 57))
+            return false;
+        return true;
+</script>
 <link href="../../file-input/css/fileinput.min.css" media="all" rel="stylesheet" type="text/css"/>
 
 <% include partials/page/jsdefaults.ejs %>
@@ -20,22 +34,16 @@
         <div class="cover-container overlay" style="padding-top: 20%; padding-bottom: 20%;">
             <div class=" cover-inner">
                 <div class="container">
-                    <h1 style="color:#fff;">Ease of Communication</h1>
-
-                    <p class="lead" style="color: white;"></p>
-
-
                         <form action="/upload" method="post" enctype="multipart/form-data" >
                             <div class="form-group">
                             <!--<input name ="ExcelFile" id="file-0" class="file" type="file" data-show-preview="false">-->
                             <input type="file" name ="ExcelFile">
-                            <input class="btn btn-primary btn-lg btn-block" type="submit" value="Log in"/>
+                                <input class="form-control" onkeypress="return isNumberKey(event)" type="text"
+                                       placeholder="Game Point Value" maxlength="3" onclick="clickEntry(this);">
+                                <input class="btn btn-primary btn-lg btn-block" type="submit" value="Add Points"/>
 
                            </div>
                         </form>
-
-
-
                 </div>
                 <!-- /.container -->
             </div>
