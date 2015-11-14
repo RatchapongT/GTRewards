@@ -1,6 +1,6 @@
 var express = require('express');
 var router = express.Router();
-var databaseFunction = require('../services/users');
+var databaseFunction = require('../services/students');
 var Excel = require("exceljs");
 var passport = require('passport');
 var config = require('../config');
@@ -31,8 +31,8 @@ router.get('/login', function (req, res, next) {
     };
     res.render('login', vm);
 });
-router.get('/api/upload', function(req, res, next) {
-   return res.json({activity: "Processing"});
+router.get('/api/upload', function (req, res, next) {
+    return res.json({activity: "Processing"});
 });
 router.post('/upload', function (req, res, next) {
     var fstream;
@@ -40,30 +40,43 @@ router.post('/upload', function (req, res, next) {
 
     req.busboy.on('file', function (fieldname, file, filename) {
         var extension = filename.substring(filename.length - 4, filename.length);
-        if (extension != 'xlsx' || filename != 'onetime.xlsx') {
+        if (extension != 'xlsx') {
             console.log("HI");
-            return res.json({message : "Finished Processing"});
+            res.json({message: "Invalid format"});
         } else {
             console.log("Uploading: " + filename);
             var now = Date.now();
-            fstream = fs.createWriteStream(__dirname + '/output/' + now + filename.substring(filename.length - 4, filename.length));
+            fstream = fs.createWriteStream(__dirname + '/output/' + now + '.' + filename.substring(filename.length - 4, filename.length));
             file.pipe(fstream);
             fstream.on('close', function () {
-                console.log("Upload Finished of " + now + filename.substring(filename.length - 4, filename.length));
-                console.log("Processing File... " + now + filename.substring(filename.length - 4, filename.length));
+                console.log("Upload Finished of " + now + '.' + filename.substring(filename.length - 4, filename.length));
+                console.log("Processing File... " + now + '.' + filename.substring(filename.length - 4, filename.length));
                 var workbook = new Excel.Workbook();
-                workbook.xlsx.readFile(__dirname + '/output/' + now + filename.substring(filename.length - 4, filename.length))
+                workbook.xlsx.readFile(__dirname + '/output/' + now + '.' + filename.substring(filename.length - 4, filename.length))
                     .then(function () {
 
                         var sheet1 = workbook.getWorksheet(1);
                         sheet1.eachRow({includeEmpty: false}, function (row, rowNumber) {
-                            var gtid = row.values[1];
-                            var name = row.values[2];
-                            var email = row.values[3];
-                            var sum = row.values[4];
-                            console.log(gtid + '/' + name + '/' + email + '/' + sum);
+                            if (rowNumber > 1) {
+                                var input = {
+                                    gtID: row.values[1],
+                                    name: row.values[2],
+                                    email: row.values[3],
+                                    sum: row.values[4]
+                                }
+
+
+                                databaseFunction.addStudent(input, function (err) {
+                                    if (err) {
+                                        console.log(err);
+                                    }
+
+
+                                });
+                            }
+
                         });
-                        res.json({message : "Finished Processing"});
+                        res.json({message: "Complete"});
                     });
 
             });
@@ -84,7 +97,7 @@ router.get('/testangular', function (req, res, next) {
 
 
     return res.json({
-        angularObject : "HIIII"
+        angularObject: "HIIII"
     });
 });
 

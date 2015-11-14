@@ -1,6 +1,5 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
-var deepPopulate = require('mongoose-deep-populate');
 
 var studentSchema = new Schema({
     gtID: String,
@@ -46,6 +45,8 @@ var userDetailSchema = new Schema({
 });
 
 var User = mongoose.model('User', userSchema);
+var History = mongoose.model('History', historySchema);
+var Student = mongoose.model('Student', studentSchema);
 var UserDetail = mongoose.model('UserDetail', userDetailSchema);
 
 module.exports = {
