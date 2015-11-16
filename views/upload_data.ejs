@@ -16,43 +16,43 @@
 <!-- Cover element
 ================================================== -->
 <div ng-app="uploadModule" ng-controller="uploadCtrl">
+    <div class="cover-wrapper">
+        <div class="cover-container overlay"
+             style="padding-top: 20%; padding-bottom: 20%;">
+            <div class=" cover-inner">
+                <div class="container">
+                    <h1 style="color:#fff;">Upload</h1>
 
-    <div class="cover-container overlay"
-         style="padding-top: 20%; padding-bottom: 20%;">
-        <div class=" cover-inner">
-            <div class="container">
-                <h1 style="color:#fff;">Upload</h1>
+                    <form>
+                        <div class="gtid">
+                            <input type="file" id="excelFile"
+                                   file-model="excel.file" style="margin-bottom: 10px">
+                            <input class="form-control" style="margin-bottom: 10px"
+                                   onkeypress="return isNumberKey(event)" type="text"
+                                   placeholder="Game Point Value" maxlength="3" onclick="clickEntry(this);">
+                            <button button type="submit" class="btn btn-default btn-lg" ng-click="Submit()"
+                                    style="width: 100%;">
+                                <i class="fa fa-cloud-upload"></i>
+                                &nbsp;
+                                <span>{{status}}
+                                    <div ng-show="loading"><img width="20 px" src="assets/images/loading-animation.gif">
+                                    </div>
+                                    <div ng-show="finished"><img width="20 px" src="assets/images/finished.png">
+                                    </div>
+                                </span>
+                            </button>
+                        </div>
 
-                <form>
+                    </form>
 
-                    <div class="form-group">
-                        <input type="file" id="excelFile"
-                               file-model="excel.file">
-                    </div>
-                    <div>
-                        <input class="form-control" onkeypress="return isNumberKey(event)" type="text"
-                               placeholder="Game Point Value" maxlength="3" onclick="clickEntry(this);">
-                    </div>
-                    <button button type="submit"
-                            class="btn btn-default btn-lg"
-                            ng-click="Submit()" style="width: 250px">
-                        <i class="fa fa-cloud-upload"></i>
-                        &nbsp;
-                        <span>{{status}}
-                            <div ng-show="loading"><img width="20 px" src="assets/images/loading-animation.gif">
-                            </div>
-                             <div ng-show="finished"><img width="20 px" src="assets/images/finished.png">
-                             </div>
-                        </span>
-                    </button>
-                </form>
-
+                </div>
+                <!-- /.container -->
             </div>
-            <!-- /.container -->
+            <!-- /.cover-inner -->
         </div>
-        <!-- /.cover-inner -->
+        <!-- /.cover-container -->
     </div>
-    <!-- /.cover-container -->
+
 </div>
 <!-- /.cover-wrapper -->
 
