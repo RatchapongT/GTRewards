@@ -86,6 +86,7 @@
                 transformRequest: angular.identity,
                 headers: {'Content-Type': undefined}
             }).success(function (response) {
+                console.log(response);
                 scope.status = response.message;
                 scope.loading = false;
                 scope.finished = true;

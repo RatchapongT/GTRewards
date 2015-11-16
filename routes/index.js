@@ -31,28 +31,25 @@ router.get('/login', function (req, res, next) {
     };
     res.render('login', vm);
 });
-router.get('/api/upload', function (req, res, next) {
-    return res.json({activity: "Processing"});
-});
+
 router.post('/upload', function (req, res, next) {
     var fstream;
     req.pipe(req.busboy);
 
     req.busboy.on('file', function (fieldname, file, filename) {
         var extension = filename.substring(filename.length - 4, filename.length);
-        if (extension != 'xlsx') {
-            console.log("HI");
-            res.json({message: "Invalid format"});
+        if (filename != 'register.xlsx') {
+            return res.json({message: "Invalid format"});
         } else {
             console.log("Uploading: " + filename);
             var now = Date.now();
-            fstream = fs.createWriteStream(__dirname + '/output/' + now + '.' + filename.substring(filename.length - 4, filename.length));
+            fstream = fs.createWriteStream(__dirname + '/output/' + now + '.' + extension);
             file.pipe(fstream);
             fstream.on('close', function () {
-                console.log("Upload Finished of " + now + '.' + filename.substring(filename.length - 4, filename.length));
-                console.log("Processing File... " + now + '.' + filename.substring(filename.length - 4, filename.length));
+                console.log("Upload Finished of " + now + '.' + extension);
+                console.log("Processing File... " + now + '.' + extension);
                 var workbook = new Excel.Workbook();
-                workbook.xlsx.readFile(__dirname + '/output/' + now + '.' + filename.substring(filename.length - 4, filename.length))
+                workbook.xlsx.readFile(__dirname + '/output/' + now + '.' + extension)
                     .then(function () {
 
                         var sheet1 = workbook.getWorksheet(1);
@@ -65,14 +62,14 @@ router.post('/upload', function (req, res, next) {
                                     sum: row.values[4]
                                 }
 
+                                if (row.values[1] != undefined) {
+                                    databaseFunction.addStudent(input, function (err, object) {
+                                        if (err) {
+                                            console.log(err);
+                                        }
+                                    });
+                                }
 
-                                databaseFunction.addStudent(input, function (err) {
-                                    if (err) {
-                                        console.log(err);
-                                    }
-
-
-                                });
                             }
 
                         });
@@ -91,14 +88,6 @@ router.get('/upload', function (req, res, next) {
     };
 
     res.render('upload_data', vm);
-});
-
-router.get('/testangular', function (req, res, next) {
-
-
-    return res.json({
-        angularObject: "HIIII"
-    });
 });
 
 function validateEmail(email) {
