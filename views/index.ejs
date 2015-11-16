@@ -59,18 +59,61 @@
                     <h2 style="color: #fff">Check Your Point Total</h2>
                     <input class="form-control" id="focusedInput" onkeypress="return isNumberKey(event)" type="text"
                            placeholder="GTID Number" maxlength="9" onclick="clickEntry(this);">
-                    <input style="margin-top: 10px; width: 100%;" type="submit"
+                    <input style="margin-top: 10px; width: 100%; margin-bottom: 10px" type="submit"
                            class="button button-primary button-large"
                            value="Check Points">
+                    <table class="table table-striped table-hover" style="width: 100%; color:black; text-shadow: none">
+                        <thead>
+                        <tr class="success">
+                            <th style="text-align: center">Transaction Date</th>
+                            <th style="text-align: center">Points Earned</th>
+                            <th style="text-align: center">Game Attended</th>
+                            <th style="text-align: center">Points Redeemed</th>
+                            <th style="text-align: center">Item Redeemed</th>
+                            <th style="text-align: center">Ending Balance</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr class="warning">
+                            <td>11/13/15</td>
+                            <td>25</td>
+                            <td>FSU</td>
+                            <td>0</td>
+                            <td>-</td>
+                            <td>25</td>
+                        </tr>
+                        <tr class="warning">
+                            <td>11/14/15</td>
+                            <td>25</td>
+                            <td>NC State</td>
+                            <td>0</td>
+                            <td>-</td>
+                            <td>50</td>
+                        </tr>
+                        <tr class="warning">
+                            <td>11/15/15</td>
+                            <td>50</td>
+                            <td>Duke</td>
+                            <td>0</td>
+                            <td>-</td>
+                            <td>100</td>
+                        </tr>
+                        <tr class="warning">
+                            <td>11/16/15</td>
+                            <td>0</td>
+                            <td>-</td>
+                            <td>75</td>
+                            <td>Hat</td>
+                            <td>25</td>
+                        </tr>
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
     </div>
-    <div id='calendar'></div>
-
+    <!--<div id='calendar'></div>-->
 </section>
-<p id="demo"></p>
-
 <section>
     <table class="table table-striped table-hover" style="width: auto;">
         <thead>
