@@ -1,42 +1,45 @@
 <!DOCTYPE html>
-<html lang = "en">
+<html lang="en">
 
 <head>
     <% include partials/page/head.ejs %>
 </head>
-<link href = "../../file-input/css/fileinput.min.css" media = "all"
-      rel = "stylesheet" type = "text/css"/>
+<link href="../../file-input/css/fileinput.min.css" media="all"
+      rel="stylesheet" type="text/css"/>
 
 <% include partials/page/jsdefaults.ejs %>
-<body class = "home">
+<body class="home">
 <!-- Navigation (main menu)
 ================================================== -->
 <% include partials/page/navbar.ejs %>
 
 <!-- Cover element
 ================================================== -->
-<div ng-app = "uploadModule" ng-controller = "uploadCtrl">
+<div ng-app="uploadModule" ng-controller="uploadCtrl">
 
-    <div class = "cover-container overlay"
-         style = "padding-top: 20%; padding-bottom: 20%;">
-        <div class = " cover-inner">
-            <div class = "container">
-                <h1 style = "color:#fff;">Upload</h1>
+    <div class="cover-container overlay"
+         style="padding-top: 20%; padding-bottom: 20%;">
+        <div class=" cover-inner">
+            <div class="container">
+                <h1 style="color:#fff;">Upload</h1>
 
                 <form>
 
-                    <div class = "form-group">
-                        <input type = "file" id = "excelFile"
-                               file-model = "excel.file">
+                    <div class="form-group">
+                        <input type="file" id="excelFile"
+                               file-model="excel.file">
                     </div>
-
-                    <button button type = "submit"
-                            class = "btn btn-default btn-lg"
-                            ng-click = "Submit()" style="width: 250px">
-                        <i class = "fa fa-cloud-upload"></i>
+                    <div>
+                        <input class="form-control" onkeypress="return isNumberKey(event)" type="text"
+                               placeholder="Game Point Value" maxlength="3" onclick="clickEntry(this);">
+                    </div>
+                    <button button type="submit"
+                            class="btn btn-default btn-lg"
+                            ng-click="Submit()" style="width: 250px">
+                        <i class="fa fa-cloud-upload"></i>
                         &nbsp;
                         <span>{{status}}
-                            <div ng-show="loading" ><img width="20 px" src="assets/images/loading-animation.gif">
+                            <div ng-show="loading"><img width="20 px" src="assets/images/loading-animation.gif">
                             </div>
                              <div ng-show="finished"><img width="20 px" src="assets/images/finished.png">
                              </div>
@@ -56,11 +59,11 @@
 
 </body>
 
-<footer id = "footer">
+<footer id="footer">
     <% include partials/page/footer.ejs %>
 </footer>
-<script src = "https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
-<script src = "../../file-input/js/fileinput.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+<script src="../../file-input/js/fileinput.min.js"></script>
 
 <script>
     var myApp = angular.module('uploadModule', []);
@@ -110,5 +113,18 @@
         };
     }]);
 
+    function clickEntry(input) {
+        var disMouse = document.getElementById(input.id);
+        disMouse.addEventListener("mousewheel", function (evt) {
+            evt.preventDefault();
+        });
+    }
+
+    function isNumberKey(evt) {
+        var charCode = (evt.which) ? evt.which : event.keyCode
+        if (charCode > 31 && (charCode < 48 || charCode > 57))
+            return false;
+        return true;
+    }
 </script>
 </html>

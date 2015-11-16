@@ -1774,9 +1774,26 @@ pre code {
     padding-right: 20px;
 }
 
+.gtid {
+    margin-right: auto;
+    margin-left: auto;
+    padding-left: 20px;
+    padding-right: 20px;
+}
+
+@media (min-width: 500px) {
+    .gtid {
+        width: 500px;
+    }
+}
+
 @media (min-width: 768px) {
     .container {
         width: 751px;
+    }
+
+    .gtid {
+        width: 500px;
     }
 }
 
@@ -1790,7 +1807,6 @@ pre code {
     .container {
         width: 1280px;
     }
-
 }
 
 @media (min-width: 700px) {
@@ -3613,8 +3629,8 @@ fieldset[disabled] .btn-default.active {
 .btn-primary,
 input[type='submit'] {
     color: #ffffff;
-    background-color: #f3746e;
-    border-color: #f3746e;
+    background-color: #00254c;
+    border-color: #00254c;
 }
 
 .btn-primary:hover,
@@ -3628,8 +3644,8 @@ input[type='submit']:active,
 input[type='submit'].active,
 .open > .dropdown-toggleinput[type='submit'] {
     color: #ffffff;
-    background-color: #f3746e;
-    border-color: #f3746e;
+    background-color: #20242b;
+    border-color: #20242b;
 }
 
 .btn-primary:active,
@@ -11111,6 +11127,12 @@ textarea,
 select {
     -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.035);
     box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.035);
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
 }
 
 input[type='text']:hover,
