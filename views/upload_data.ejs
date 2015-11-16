@@ -16,12 +16,12 @@
 <!-- Cover element
 ================================================== -->
 <div ng-app="uploadModule" ng-controller="uploadCtrl">
-    <div class="cover-wrapper">
+    <div class="cover-wrapper" style="background-color:#c59353">
         <div class="cover-container overlay"
              style="padding-top: 20%; padding-bottom: 20%;">
             <div class=" cover-inner">
                 <div class="container">
-                    <h1 style="color:#fff;">Upload</h1>
+                    <h2 style="color:#fff;">Upload Game Data</h2>
 
                     <form>
                         <div class="gtid">
@@ -30,8 +30,8 @@
                             <input class="form-control" style="margin-bottom: 10px"
                                    onkeypress="return isNumberKey(event)" type="text"
                                    placeholder="Game Point Value" maxlength="3" onclick="clickEntry(this);">
-                            <button button type="submit" class="btn btn-default btn-lg" ng-click="Submit()"
-                                    style="width: 100%;">
+                            <button type="submit" class="btn btn-default btn-lg" ng-click="Submit()"
+                                    style="width: 100%; background-color:#00254c">
                                 <i class="fa fa-cloud-upload"></i>
                                 &nbsp;
                                 <span>{{status}}
