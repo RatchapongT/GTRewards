@@ -32,7 +32,7 @@ router.get('/login', function (req, res, next) {
     res.render('login', vm);
 });
 
-router.post('/upload', function (req, res, next) {
+router.post('/upload-registration', function (req, res, next) {
     var fstream;
     req.pipe(req.busboy);
 
@@ -54,6 +54,15 @@ router.post('/upload', function (req, res, next) {
 
                         var sheet1 = workbook.getWorksheet(1);
                         sheet1.eachRow({includeEmpty: false}, function (row, rowNumber) {
+                            if (rowNumber == 1 &&
+                                row.values[1] != "GTID" &&
+                                row.values[2] != "Name" &&
+                                row.values[3] != "Email" &&
+                                row.values[4] != "Total Sum") {
+                                res.json({message: "Error Parsing",
+                                            });
+                            }
+                            console.log("HII")
                             if (rowNumber > 1) {
                                 var input = {
                                     gtID: row.values[1],
@@ -73,6 +82,7 @@ router.post('/upload', function (req, res, next) {
                             }
 
                         });
+                        console.log("done")
                         res.json({message: "Complete"});
                     });
 
@@ -81,13 +91,21 @@ router.post('/upload', function (req, res, next) {
     });
 });
 
-router.get('/upload', function (req, res, next) {
+router.get('/upload-registration', function (req, res, next) {
     var vm = {
-        title: 'Upload'
+        title: 'Upload Registration'
 
     };
 
-    res.render('upload_data', vm);
+    res.render('upload-registration', vm);
+});
+router.get('/upload-points', function (req, res, next) {
+    var vm = {
+        title: 'Upload Points'
+
+    };
+
+    res.render('upload-points', vm);
 });
 
 function validateEmail(email) {
