@@ -6,7 +6,6 @@ var passport = require('passport');
 var config = require('../config');
 var _ = require('underscore');
 var async = require('async');
-var Bing = require('node-bing-api')({accKey: "jgk2Sf3SABeYuCaIENSy+r6mIOnCVRP6qM7etOxMbns"});
 
 var path = require('path')
 var busboy = require('connect-busboy'); //middleware for form/file upload
@@ -107,7 +106,14 @@ router.get('/upload-points', function (req, res, next) {
 
     res.render('upload-points', vm);
 });
+router.get('/schedule', function (req, res, next) {
+    var vm = {
+        title: 'Schedule'
 
+    };
+
+    res.render('schedule', vm);
+});
 function validateEmail(email) {
     var re = /^([\w-]+(?:\.[\w-]+)*)@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$/i;
     return re.test(email);
