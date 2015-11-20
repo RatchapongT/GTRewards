@@ -1,6 +1,7 @@
 var Student = require('../models/databaseModels').Student;
 var History = require('../models/databaseModels').History;
 var Game = require('../models/databaseModels').Game;
+var Item = require('../models/databaseModels').Item;
 var async = require('async');
 var _ = require('underscore');
 
@@ -149,6 +150,23 @@ exports.getPointsHistory = function (input, next) {
 
     });
 };
+exports.saveItem = function (input, next) {
+    var option = {
+        image: input.image,
+        name: input.name,
+        description: description,
+        price: price,
+        quantity: quantity
+    };
+
+    Item.findOneAndUpdate({name: input.name}, option, {upsert: true}, function (err, item) {
+        if (err) {
+            callback(err, null);
+        } else {
+            callback(null, item);
+        }
+    });
+}
 
 exports.getGames = function (input, next) {
     Game.find({}, function (err, game) {
