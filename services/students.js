@@ -2,6 +2,7 @@ var Student = require('../models/databaseModels').Student;
 var History = require('../models/databaseModels').History;
 var Game = require('../models/databaseModels').Game;
 var async = require('async');
+var _ = require('underscore');
 
 exports.addStudent = function (input, next) {
     var option = {
@@ -134,13 +135,35 @@ exports.getPointsHistory = function (input, next) {
             if (student != null) {
                 History.find({_studentDetail: student.id}, function (err, history) {
                     if (err) {
-                        next(err, null)
+                        next(err, null, true)
                     } else {
-                        console.log(history);
-                        next(err, history)
+                        next(err, history, true)
                     }
 
                 });
+            } else {
+                next(err, null, false);
+            }
+
+        }
+
+    });
+};
+
+exports.getPosition = function (input, next) {
+    Student.find({}, function (err, students) {
+        if (err) {
+            next(err, null)
+        } else {
+            if (students != null) {
+
+                var array = _.sortBy(students, 'sum')
+                var idx = _.findLastIndex(array.reverse(), {
+                    gtID: input.gtID
+                });
+
+                next(err, idx + 1);
+
             } else {
                 next(err, null);
             }

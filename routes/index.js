@@ -196,11 +196,25 @@ router.get('/schedule', function (req, res, next) {
     res.render('schedule', vm);
 });
 router.post('/api/history', function (req, res, next) {
-    databaseFunction.getPointsHistory(req.body, function (err, history) {
+    databaseFunction.getPointsHistory(req.body, function (err, history, registered) {
         if (err) {
             console.log(err);
         } else {
-            res.json(history);
+            databaseFunction.getPosition(req.body, function (err, position) {
+                if (err) {
+                    console.log(err);
+                } else {
+                    console.log(registered);
+                    console.log(history);
+                    console.log(position);
+                    res.json({
+                        history: history,
+                        position: position,
+                        registered: registered
+
+                    });
+                }
+            });
         }
     });
 });
