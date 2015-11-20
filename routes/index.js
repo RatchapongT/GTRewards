@@ -219,11 +219,18 @@ router.get('/game-summary', function (req, res, next) {
 
 });
 router.get('/test-upload', function (req, res, next) {
-    var vm = {
-        title: 'test'
 
-    };
-    res.render('test-upload', vm);
+    databaseFunction.getItem({}, function (err, itemObject) {
+        if (err) {
+            console.log(err);
+        }
+        var vm = {
+            title: 'test',
+            itemObject: itemObject
+        };
+        res.render('test-upload', vm);
+    });
+
 });
 router.post('/test-upload', function (req, res, next) {
 

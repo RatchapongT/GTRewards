@@ -158,8 +158,18 @@ exports.saveItem = function (input, next) {
         price: input.price,
         quantity: input.quantity
     };
-    console.log(option)
     Item.findOneAndUpdate({name: input.name}, option, {upsert: true}, function (err, item) {
+        if (err) {
+            next(err, null);
+        } else {
+            next(null, item);
+        }
+    });
+}
+
+exports.getItem = function (input, next) {
+
+    Item.find({}, function (err, item) {
         if (err) {
             next(err, null);
         } else {
