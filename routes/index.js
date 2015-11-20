@@ -187,6 +187,22 @@ router.get('/upload-points', function (req, res, next) {
 
     res.render('upload-points', vm);
 });
+router.get('/leaderboard', function (req, res, next) {
+
+    databaseFunction.getLeaderboard({}, function (err, leaderArray) {
+        if (err) {
+            console.log(err);
+        } else {
+            var vm = {
+                title: 'Leaderboard',
+                leaderArray: leaderArray,
+            };
+            res.render('leaderboard', vm);
+        }
+    });
+
+});
+
 router.get('/schedule', function (req, res, next) {
     var vm = {
         title: 'Schedule'
@@ -204,9 +220,7 @@ router.post('/api/history', function (req, res, next) {
                 if (err) {
                     console.log(err);
                 } else {
-                    console.log(registered);
-                    console.log(history);
-                    console.log(position);
+
                     res.json({
                         history: history,
                         position: position,

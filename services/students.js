@@ -164,7 +164,7 @@ exports.getPosition = function (input, next) {
                 var position = 1;
                 for (var i = 0; i < array.length; i++) {
 
-                    if(pre != array[i].sum) {
+                    if (pre != array[i].sum) {
                         pre = array[i].sum;
                         position = i + 1;
                     }
@@ -173,8 +173,46 @@ exports.getPosition = function (input, next) {
                     }
                 }
 
-
                 next(err, position);
+
+            } else {
+                next(err, null);
+            }
+
+        }
+
+    });
+};
+
+exports.getLeaderboard = function (input, next) {
+    Student.find({}, function (err, students) {
+        if (err) {
+            next(err, null)
+        } else {
+            if (students != null) {
+
+                var array = _.sortBy(students, 'sum')
+                array = array.reverse();
+                var leaderArray = []
+                var pre = array[0].sum;
+                var position = 1;
+                for (var i = 0; i < array.length; i++) {
+
+                    if (pre != array[i].sum) {
+                        pre = array[i].sum;
+                        position = i + 1;
+                    }
+                    leaderArray.push({
+                        position: position,
+                        name: array[i].name,
+                        points: array[i].sum
+                    })
+                    if (position == 25) {
+                        break;
+                    }
+                }
+
+                next(err, leaderArray);
 
             } else {
                 next(err, null);

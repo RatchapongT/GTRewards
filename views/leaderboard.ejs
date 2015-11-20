@@ -11,57 +11,39 @@
 <% include partials/page/navbar.ejs %>
 
 <section id="bottomHuman" style="margin-bottom:0;">
-    <div ng-app="getPointsModule" ng-controller="mainController">
-        <div class="cover-wrapper"
-             style="background-image: url(assets/images/gtbasketballstadium.jpg);">
-            <div class="cover-container overlay"
-                 style="padding-top: 10%; padding-bottom: 10%; background-color: rgba(197,147,83,0.3);">
-                <div class="cover-inner">
-                    <div class="gtid">
-                        <h2 style="color: #fff">Check Total Points</h2>
 
-                        <form>
-                            <input class="form-control" ng-model="formData.gtID" id="focusedInput" onkeypress="return isNumberKey(event)" type="text"
-                                   placeholder="GTID Number" maxlength="9" onclick="clickEntry(this);">
-                            <input style="margin-top: 10px; width: 100%; margin-bottom: 10px" type="submit"
-                                   class="button button-primary button-large"
-                                   value="Check Points" ng-click="getHistory()">
-                        </form>
-                        <p class="text-center" ng-show="loading">
-                            <span class="fa fa-spinner fa-spin fa-3x"></span>
-                        </p>
+    <div class="cover-wrapper"
+         style="background-image: url(assets/images/gtbasketballstadium.jpg);">
+        <div class="cover-container overlay"
+             style="padding-top: 10%; padding-bottom: 10%; background-color: rgba(197,147,83,0.3);">
+            <div class="cover-inner">
+                <div class="gtid">
 
-                        <div ng-if="registered == false"> Go register ma nigger</div>
-                        <table class="table table-striped table-hover"
-                               style="width: 100%; color:black; text-shadow: none" ng-if="registered == true ">
-                            <thead>
-                            <div ng-if="position != undefined && registered == true"> Position : {{position}}</div>
-                            <tr class="warning">
-                                <th style="text-align: center">Transaction Date</th>
-                                <th style="text-align: center">Points</th>
-                                <th style="text-align: center">Description</th>
-                                <th style="text-align: center">Balance</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            <tr class="success">
-                                <td>-</td>
-                                <td>-</td>
-                                <td>-</td>
-                                <td>0</td>
-                            </tr>
-                            <tr class="success" ng-repeat="point in points" ng-class="{success: (point.points > 0), danger: (point.points < 0)}">
-                                <td>{{ point.date }}</td>
-                                <td>{{ point.points }}</td>
-                                <td>{{ point.description }}</td>
-                                <td>{{getRunningTotal($index + 1)}}</td>
-                            </tr>
-                            </tbody>
-                        </table>
-                    </div>
+
+                    <table class="table table-striped table-hover"
+                           style="width: 100%; color:black; text-shadow: none">
+                        <thead>
+                        <tr class="warning">
+                            <th style="text-align: center">Position</th>
+                            <th style="text-align: center">Name</th>
+                            <th style="text-align: center">Points</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+
+                        <% for (var i = 0 ; i < leaderArray.length; i++) { %>
+                        <tr class="success">
+                            <td><%= leaderArray[i].position %></td>
+                            <td><%= leaderArray[i].name %></td>
+                            <td><%= leaderArray[i].points %></td>
+                        </tr>
+                        <% } %>
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
+
     </div>
 </section>
 
@@ -69,65 +51,5 @@
 <footer id="footer">
     <% include partials/page/footer.ejs %>
 </footer>
-<script>
-    angular.module('pointsController', []).controller('mainController', ['$scope', '$http', 'Points', function ($scope, $http, Points) {
-        $scope.formData = {};
-        $scope.loading = false;
-        $scope.getRunningTotal = function (index) {
 
-            var runningTotal = 0;
-            var selectedPoints = $scope.points.slice(0, index);
-            angular.forEach(selectedPoints, function (point, index) {
-                runningTotal = runningTotal + point.points;
-            });
-            return runningTotal;
-        };
-
-        $scope.getHistory = function () {
-
-            // validate the formData to make sure that something is there
-            // if form is empty, nothing will happen
-            if ($scope.formData.gtID != undefined) {
-                $scope.loading = true;
-
-                // call the create function from our service (returns a promise object)
-                Points.get($scope.formData)
-
-                    // if successful creation, call our get function to get all the new todos
-                        .success(function (data) {
-                            $scope.loading = false;
-
-                            $scope.points = data.history; // assign our new list of todos
-                            $scope.position = data.position;
-                            $scope.registered = data.registered;
-                        });
-            }
-        }
-    }]);
-    angular.module('pointsService', []).factory('Points', ['$http', function ($http) {
-        return {
-            get: function (giID) {
-                return $http.post('/api/history', giID);
-            },
-
-        }
-    }]);
-
-    angular.module('getPointsModule', ['pointsController', 'pointsService']);
-
-
-    function clickEntry(input) {
-        var disMouse = document.getElementById(input.id);
-        disMouse.addEventListener("mousewheel", function (evt) {
-            evt.preventDefault();
-        });
-    }
-
-    function isNumberKey(evt) {
-        var charCode = (evt.which) ? evt.which : event.keyCode
-        if (charCode > 31 && (charCode < 48 || charCode > 57))
-            return false;
-        return true;
-    }
-</script>
 </html>
