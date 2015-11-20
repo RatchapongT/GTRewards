@@ -9,6 +9,15 @@ var studentSchema = new Schema({
     created: {type: Date, default: Date.now}
 });
 
+var itemSchema = new Schema({
+    image: {data: Buffer, contentType: String},
+    name: String,
+    description: String,
+    price: Number,
+    quantity: Number,
+    created: {type: Date, default: Date.now}
+});
+
 var historySchema = new Schema({
     _studentDetail: {type: Schema.Types.ObjectId, ref: 'Student'},
     description: String,
@@ -25,14 +34,13 @@ var gameSchema = new Schema({
 });
 
 
-
-
 var History = mongoose.model('History', historySchema);
 var Game = mongoose.model('Game', gameSchema);
 var Student = mongoose.model('Student', studentSchema);
-
+var Item = mongoose.model('Item', itemSchema);
 module.exports = {
     Student: Student,
     History: History,
-    Game: Game
+    Game: Game,
+    Item: Item
 };
