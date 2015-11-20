@@ -2,6 +2,7 @@ var Student = require('../models/databaseModels').Student;
 var History = require('../models/databaseModels').History;
 var Game = require('../models/databaseModels').Game;
 var async = require('async');
+
 exports.addStudent = function (input, next) {
     var option = {
         gtID: input.gtID,
@@ -58,19 +59,19 @@ exports.updateStudent = function (input, next) {
                 }
                 History.findOneAndUpdate(option, option, {upsert: true}, function (err, history) {
                     if (err) {
-                        callback(err, null);
+                        callback(err, null, null);
                     } else {
-                        callback(null, student);
+                        callback(null, student, history);
                     }
 
                 });
             } else {
-                callback(null, student);
+                callback(null, student, null);
             }
 
 
         },
-        function (student, callback) {
+        function (student, history, callback) {
             if (student != null) {
                 var option = {
                     name: input.opponent,
@@ -79,19 +80,19 @@ exports.updateStudent = function (input, next) {
                 }
                 Game.findOneAndUpdate(option, option, {upsert: true}, function (err, game) {
                     if (err) {
-                        callback(err, null);
+                        callback(err, null, null);
                     } else {
-                        callback(null, student);
+                        callback(null, student, history);
                     }
 
                 });
             } else {
-                callback(null, student);
+                callback(null, student, null);
             }
         }
         ,
-        function (student, callback) {
-            if (student != null) {
+        function (student, history, callback) {
+            if (student != null && history == null) {
                 var query = {gtID: input.gtID};
 
                 var update = {sum: input.points + student.sum};
@@ -105,7 +106,7 @@ exports.updateStudent = function (input, next) {
 
                 });
             } else {
-                callback(null, results);
+                callback(null, 'No Updates');
             }
 
         }
@@ -116,13 +117,36 @@ exports.updateStudent = function (input, next) {
 
 };
 
-
 exports.deleteUser = function (input, res, next) {
     User.findById(input, function (err, object) {
         if (err) return next(err);
         object.remove(function (err) {
             res(err);
         });
+    });
+};
+
+exports.getPointsHistory = function (input, next) {
+    Student.findOne({gtID: input.gtID}, function (err, student) {
+        if (err) {
+            next(err, null)
+        } else {
+            if (student != null) {
+                History.find({_studentDetail: student.id}, function (err, history) {
+                    if (err) {
+                        next(err, null)
+                    } else {
+                        console.log(history);
+                        next(err, history)
+                    }
+
+                });
+            } else {
+                next(err, null);
+            }
+
+        }
+
     });
 };
 
