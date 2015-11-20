@@ -7,21 +7,22 @@
 <head>
     <% include partials/page/head.ejs %>
 </head>
-<body class="home">
+<body class="home"
+      style="background-image: url(assets/images/gtbasketballstadium.jpg); background-position: center center;
+             background-repeat: no-repeat; background-attachment: fixed; background-size: cover;">
 <% include partials/page/navbar.ejs %>
 
-<section id="bottomHuman" style="margin-bottom:0;">
+<section style="margin-bottom:0;">
     <div ng-app="getPointsModule" ng-controller="mainController">
-        <div class="cover-wrapper"
-             style="background-image: url(assets/images/gtbasketballstadium.jpg);">
+        <div class="cover-wrapper">
             <div class="cover-container overlay"
-                 style="padding-top: 10%; padding-bottom: 10%; background-color: rgba(197,147,83,0.3);">
+                 style="padding-top: 20%; padding-bottom: 20%; background-color: rgba(197,147,83,0.3); height: 100vh">
                 <div class="cover-inner">
                     <div class="gtid">
                         <h2 style="color: #fff">Check Total Points</h2>
-
                         <form>
-                            <input class="form-control" ng-model="formData.gtID" id="focusedInput" onkeypress="return isNumberKey(event)" type="text"
+                            <input class="form-control" ng-model="formData.gtID" id="focusedInput"
+                                   onkeypress="return isNumberKey(event)" type="text"
                                    placeholder="GTID Number" maxlength="9" onclick="clickEntry(this);">
                             <input style="margin-top: 10px; width: 100%; margin-bottom: 10px" type="submit"
                                    class="button button-primary button-large"
@@ -30,7 +31,6 @@
                         <p class="text-center" ng-show="loading">
                             <span class="fa fa-spinner fa-spin fa-3x"></span>
                         </p>
-
                         <div ng-if="registered == false"> Go register ma nigger</div>
                         <table class="table table-striped table-hover"
                                style="width: 100%; color:black; text-shadow: none" ng-if="registered == true ">
@@ -50,7 +50,8 @@
                                 <td>-</td>
                                 <td>0</td>
                             </tr>
-                            <tr class="success" ng-repeat="point in points" ng-class="{success: (point.points > 0), danger: (point.points < 0)}">
+                            <tr class="success" ng-repeat="point in points"
+                                ng-class="{success: (point.points > 0), danger: (point.points < 0)}">
                                 <td>{{ point.date }}</td>
                                 <td>{{ point.points }}</td>
                                 <td>{{ point.description }}</td>
@@ -64,11 +65,7 @@
         </div>
     </div>
 </section>
-
 </body>
-<footer id="footer">
-    <% include partials/page/footer.ejs %>
-</footer>
 <script>
     angular.module('pointsController', []).controller('mainController', ['$scope', '$http', 'Points', function ($scope, $http, Points) {
         $scope.formData = {};
