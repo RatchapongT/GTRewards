@@ -158,11 +158,23 @@ exports.getPosition = function (input, next) {
             if (students != null) {
 
                 var array = _.sortBy(students, 'sum')
-                var idx = _.findLastIndex(array.reverse(), {
-                    gtID: input.gtID
-                });
+                array = array.reverse();
 
-                next(err, idx + 1);
+                var pre = array[0].sum;
+                var position = 1;
+                for (var i = 0; i < array.length; i++) {
+
+                    if(pre != array[i].sum) {
+                        pre = array[i].sum;
+                        position = i + 1;
+                    }
+                    if (array[i].gtID == input.gtID) {
+                        break;
+                    }
+                }
+
+
+                next(err, position);
 
             } else {
                 next(err, null);
