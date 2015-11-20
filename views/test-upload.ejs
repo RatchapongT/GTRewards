@@ -21,24 +21,25 @@
              style="padding-top: 20%; padding-bottom: 20%;">
             <div class=" cover-inner">
                 <div class="container">
-                    <h2 style="color:#fff;">Upload Item</h2>
+                    <h2 style="color:#fff;">Add New Prize Item</h2>
 
                     <form>
                         <div class="gtid">
+                            <label>Upload Prize Image</label>
                             <input type="file" id="itemFile" name="itemFile"
                                    file-model="itemData.file" style="margin-bottom: 10px">
                             <input ng-model="itemData.name" id="name" name="name" class="form-control" style="margin-bottom: 10px"
                                    type="text"
-                                   placeholder="Name" maxlength="3" onclick="clickEntry(this);">
+                                   placeholder="Prize Name" maxlength="3" onclick="clickEntry(this);">
                             <input ng-model="itemData.description" id="description" name="description" class="form-control" style="margin-bottom: 10px"
                                    type="text"
-                                   placeholder="Description" maxlength="3" onclick="clickEntry(this);">
+                                   placeholder="Prize Description" maxlength="3" onclick="clickEntry(this);">
                             <input ng-model="itemData.price" id="price" name="price" class="form-control" style="margin-bottom: 10px"
                                    onkeypress="return isNumberKey(event)" type="text"
-                                   placeholder="Price" maxlength="3" onclick="clickEntry(this);">
+                                   placeholder="Prize Cost" maxlength="4" onclick="clickEntry(this);">
                             <input ng-model="itemData.quantity" id="quantity" name="quantity" class="form-control" style="margin-bottom: 10px"
                                    onkeypress="return isNumberKey(event)" type="text"
-                                   placeholder="Quantity" maxlength="3" onclick="clickEntry(this);">
+                                   placeholder="Prize Quantity" maxlength="4" onclick="clickEntry(this);">
                             <button type="submit" class="btn btn-default btn-lg" ng-click="Submit()"
                                     style="width: 100%; background-color:#00254c">
                                 <i class="fa fa-cloud-upload"></i>
