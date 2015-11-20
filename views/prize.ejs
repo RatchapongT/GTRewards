@@ -21,6 +21,49 @@
     </div>
 </section>
 
+<section id="bottomHuman" style="margin-bottom:0;">
+    <div ng-app="getPointsModule" ng-controller="mainController">
+        <div class="cover-wrapper">
+            <div class="cover-inner">
+                <div class="gtid">
+                    <h2 style="color: #00254C; text-align: center; text-shadow: none;">Check Total Points</h2>
+
+                    <form>
+                        <input class="form-control" ng-model="formData.gtID" id="focusedInput"
+                               onkeypress="return isNumberKey(event)" type="text"
+                               placeholder="GTID Number" maxlength="9" onclick="clickEntry(this);">
+                        <input style="margin-top: 10px; width: 100%; margin-bottom: 10px" type="submit"
+                               class="button button-primary button-large"
+                               value="Check Points" ng-click="getHistory()">
+                    </form>
+                    <p class="text-center" ng-show="loading">
+                        <span class="fa fa-spinner fa-spin fa-3x"></span>
+                    </p>
+                    <table class="table table-striped table-hover"
+                           style="width: 100%; color:black; text-shadow: none" ng-if="points != undefined ">
+                        <thead>
+                        <tr class="warning">
+                            <th style="text-align: center">Transaction Date</th>
+                            <th style="text-align: center">Points</th>
+                            <th style="text-align: center">Description</th>
+                            <th style="text-align: center">Balance</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr class="success" ng-repeat="point in points"
+                            ng-class="{success: (point.points > 0), danger: (point.points < 0)}">
+                            <td>{{ point.date }}</td>
+                            <td>{{ point.points }}</td>
+                            <td>{{ point.description }}</td>
+                            <td>{{getRunningTotal($index + 1)}}</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+</section>
+
 <section class="main container">
     <ul class='item-list'>
         <li class='item'>
@@ -45,25 +88,10 @@
         </span>
                     at 75 points
                 </p>
-                <!--<a class='item__remove js-item-remove' title='Remove this item'>&times;</a>-->
             </div>
         </li>
     </ul>
     <div class='summary js-summary'>
-        <!--<ul class='steps'>-->
-            <!--<li>-->
-        <!--<b>Subtotal:</b>-->
-        <!--<span class='sum js-subtotal'>0</span>-->
-        <!--</li>-->
-        <!--<li>-->
-            <!--<b>Taxes (5%):</b>-->
-            <!--<span class='sum js-taxes'>$1.64</span>-->
-            <!--</li>-->
-            <!--<li>-->
-            <!--<b>Shipping:</b>-->
-            <!--<span class='sum js-shipping'>$5.00</span>-->
-            <!--</li>-->
-        <!--</ul>-->
         <ul class='checkout' style="float: right">
             <li>
                 <b>Total:</b>
@@ -77,8 +105,68 @@
     <script src='http://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js'></script>
     <script src="assets/js/checkout.js"></script>
 </section>
+
 </body>
 <footer id="footer">
     <% include partials/page/footer.ejs %>
 </footer>
+<script>
+    angular.module('pointsController', []).controller('mainController', ['$scope', '$http', 'Points', function ($scope, $http, Points) {
+        $scope.formData = {};
+        $scope.loading = false;
+        $scope.getRunningTotal = function (index) {
+
+            var runningTotal = 0;
+            var selectedPoints = $scope.points.slice(0, index);
+            angular.forEach(selectedPoints, function (point, index) {
+                runningTotal = runningTotal + point.points;
+            });
+            return runningTotal;
+        };
+
+        $scope.getHistory = function () {
+
+            // validate the formData to make sure that something is there
+            // if form is empty, nothing will happen
+            if ($scope.formData.gtID != undefined) {
+                $scope.loading = true;
+
+                // call the create function from our service (returns a promise object)
+                Points.get($scope.formData)
+
+                    // if successful creation, call our get function to get all the new todos
+                        .success(function (data) {
+                            $scope.loading = false;
+                            $scope.points = data; // assign our new list of todos
+                            console.log(data);
+                        });
+            }
+        }
+    }]);
+    angular.module('pointsService', []).factory('Points', ['$http', function ($http) {
+        return {
+            get: function (giID) {
+                return $http.post('/api/history', giID);
+            },
+
+        }
+    }]);
+
+    angular.module('getPointsModule', ['pointsController', 'pointsService']);
+
+
+    function clickEntry(input) {
+        var disMouse = document.getElementById(input.id);
+        disMouse.addEventListener("mousewheel", function (evt) {
+            evt.preventDefault();
+        });
+    }
+
+    function isNumberKey(evt) {
+        var charCode = (evt.which) ? evt.which : event.keyCode
+        if (charCode > 31 && (charCode < 48 || charCode > 57))
+            return false;
+        return true;
+    }
+</script>
 </html>

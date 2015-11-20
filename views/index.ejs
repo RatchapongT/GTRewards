@@ -7,21 +7,6 @@
 <head>
     <% include partials/page/head.ejs %>
 </head>
-<script>
-    function clickEntry(input) {
-        var disMouse = document.getElementById(input.id);
-        disMouse.addEventListener("mousewheel", function (evt) {
-            evt.preventDefault();
-        });
-    }
-
-    function isNumberKey(evt) {
-        var charCode = (evt.which) ? evt.which : event.keyCode
-        if (charCode > 31 && (charCode < 48 || charCode > 57))
-            return false;
-        return true;
-    }
-</script>
 <body class="home">
 <% include partials/page/navbar.ejs %>
 
@@ -33,7 +18,7 @@
                  style="padding-top: 10%; padding-bottom: 10%; background-color: rgba(197,147,83,0.3);">
                 <div class="cover-inner">
                     <div class="gtid">
-                        <h2 style="color: #fff">Check Your Point Total</h2>
+                        <h2 style="color: #fff">Check Total Points</h2>
                         <form>
                         <input class="form-control" ng-model="formData.gtID" id="focusedInput" onkeypress="return isNumberKey(event)" type="text"
                                placeholder="GTID Number" maxlength="9" onclick="clickEntry(this);">
@@ -55,17 +40,12 @@
                             </tr>
                             </thead>
                             <tbody>
-
-
                                 <tr class="success" ng-repeat="point in points" ng-class="{success: (point.points > 0), danger: (point.points < 0)}">
-
                                     <td>{{ point.date }}</td>
                                     <td>{{ point.points }}</td>
                                     <td>{{ point.description }}</td>
                                     <td>{{getRunningTotal($index + 1)}}</td>
                                 </tr>
-
-
                             </tbody>
                         </table>
                     </div>
