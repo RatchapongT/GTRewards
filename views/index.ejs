@@ -32,6 +32,10 @@
                             <span class="fa fa-spinner fa-spin fa-3x"></span>
                         </p>
 
+                        <p class="text-center" ng-show="invalidLength">
+
+                        <h3 style="color:red; margin: 0 0 0 0;">Invalid Length</h3>
+                        </p>
                         <div ng-if="registered == false">
                             <h3 style="color:red; margin: 0 0 0 0;">GTID Number Not Found</h3>
                         </div>
@@ -75,6 +79,7 @@
     angular.module('pointsController', []).controller('mainController', ['$scope', '$http', 'Points', function ($scope, $http, Points) {
         $scope.formData = {};
         $scope.loading = false;
+        $scope.invalidLength = false;
         $scope.getRunningTotal = function (index) {
 
             var runningTotal = 0;
@@ -91,7 +96,12 @@
             // if form is empty, nothing will happen
             if ($scope.formData.gtID != undefined) {
                 $scope.loading = true;
-
+                console.log($scope.formData.gtID.length);
+                if ($scope.formData.gtID.length != 9) {
+                    $scope.invalidLength = true;
+                } else {
+                    $scope.invalidLength = false;
+                }
                 // call the create function from our service (returns a promise object)
                 Points.get($scope.formData)
 
