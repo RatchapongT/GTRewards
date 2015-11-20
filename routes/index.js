@@ -189,7 +189,7 @@ router.get('/upload-points', function (req, res, next) {
 });
 router.get('/leaderboard', function (req, res, next) {
 
-    databaseFunction.getLeaderboard({}, function (err, leaderArray) {
+    databaseFunction.getLeaderboard(10, function (err, leaderArray) {
         if (err) {
             console.log(err);
         } else {

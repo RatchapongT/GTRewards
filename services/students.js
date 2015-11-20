@@ -202,14 +202,15 @@ exports.getLeaderboard = function (input, next) {
                         pre = array[i].sum;
                         position = i + 1;
                     }
+                    if (position > input) {
+                        break;
+                    }
                     leaderArray.push({
                         position: position,
                         name: array[i].name,
                         points: array[i].sum
                     })
-                    if (position == 25) {
-                        break;
-                    }
+
                 }
 
                 next(err, leaderArray);

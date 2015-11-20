@@ -32,11 +32,12 @@
                             <span class="fa fa-spinner fa-spin fa-3x"></span>
                         </p>
 
-                        <p class="text-center" ng-show="invalidLength">
+                        <div ng-if="invalidLength == true">
+                            <h3 style="color:red; margin: 0 0 0 0;">Invalid Length</h3>
+                        </div>
 
-                        <h3 style="color:red; margin: 0 0 0 0;">Invalid Length</h3>
-                        </p>
-                        <div ng-if="registered == false">
+
+                        <div ng-if="invalidLength == false && registered == false">
                             <h3 style="color:red; margin: 0 0 0 0;">GTID Number Not Found</h3>
                         </div>
                         <table class="table table-striped table-hover"
