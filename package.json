@@ -6,7 +6,7 @@
     "start": "node ./bin/www"
   },
   "dependencies": {
-    "async": "^1.4.0",
+    "async": "^1.5.0",
     "bcrypt-nodejs": "0.0.3",
     "body-parser": "~1.13.2",
     "busboy": "^0.2.11",
