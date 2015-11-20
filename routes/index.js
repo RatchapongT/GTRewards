@@ -114,6 +114,14 @@ router.get('/schedule', function (req, res, next) {
 
     res.render('schedule', vm);
 });
+router.get('/prize', function (req, res, next) {
+    var vm = {
+        title: 'Prize Store'
+
+    };
+
+    res.render('prize', vm);
+});
 function validateEmail(email) {
     var re = /^([\w-]+(?:\.[\w-]+)*)@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$/i;
     return re.test(email);
