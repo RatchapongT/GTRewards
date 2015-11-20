@@ -302,7 +302,7 @@ ul {
 
 .item__price {
     padding: 0 1.5em 1.5em;
-    color: #eb894c;
+    color: #00254c;
     font-weight: bold;
     border-radius: 0 3px 3px 0;
     vertical-align: middle;
@@ -443,16 +443,16 @@ ul {
     color: #fff;
     font-weight: bold;
     text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.35);
-    background-color: #e66b1e;
+    background-color: #00254c;
     box-shadow: 0 1px 0 rgba(0, 0, 0, 0.25);
 }
 
 .button:hover, .button:focus {
-    background-color: #e97a35;
+    background-color: #00254c;
 }
 
 .button:active {
-    background-color: #d36017;
+    background-color: #00254c;
 }
 
 /* ---------- Info ---------- */

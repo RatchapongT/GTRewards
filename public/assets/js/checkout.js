@@ -1,4 +1,4 @@
-var subtotal = document.querySelector('.js-subtotal'),
+var subtotal = document.querySelector('.js-total'),
     itemList = document.querySelector('.item-list'),
     priceFields = document.querySelectorAll('.item .js-item-price'),
 //taxes = document.querySelector('.js-taxes'),
@@ -63,47 +63,47 @@ function changeQuantity(emitter, action) {
     handleCalculations()
 }
 
-function removeItem(emitter) {
-    var item = emitter.parentElement.parentElement,
-        len = priceFields.length,
-        marginBottom = len > 1 ? parseInt(getComputedStyle(item).marginBottom, 10) : 0;
+//function removeItem(emitter) {
+//    var item = emitter.parentElement.parentElement,
+//        len = priceFields.length,
+//        marginBottom = len > 1 ? parseInt(getComputedStyle(item).marginBottom, 10) : 0;
+//
+//    item.classList.add('item--disappearing');
+//    item.style.marginTop = -(item.offsetHeight + marginBottom) + 'px';
+//
+//    setTimeout(function () {
+//        itemList.removeChild(item);
+//
+//        priceFields = document.querySelectorAll('.item .js-item-price');
+//
+//        if (!priceFields.length) {
+//            itemList.innerHTML = '<li class="item empty-hint"><p>Bummer, you removed all items! Wanna <a class="js-restore-list">start over again</a>?</li>';
+//            itemList.firstElementChild.classList.add('is-visible');
+//        }
+//
+//        handleCalculations()
+//    }, 500)
+//}
 
-    item.classList.add('item--disappearing');
-    item.style.marginTop = -(item.offsetHeight + marginBottom) + 'px';
-
-    setTimeout(function () {
-        itemList.removeChild(item);
-
-        priceFields = document.querySelectorAll('.item .js-item-price');
-
-        if (!priceFields.length) {
-            itemList.innerHTML = '<li class="item empty-hint"><p>Bummer, you removed all items! Wanna <a class="js-restore-list">start over again</a>?</li>';
-            itemList.firstElementChild.classList.add('is-visible');
-        }
-
-        handleCalculations()
-    }, 500)
-}
-
-function restoreList() {
-    itemList.firstElementChild.classList.remove('is-visible');
-
-    setTimeout(function () {
-        itemList.style.minHeight = itemList.offsetHeight + 'px';
-        itemList.classList.add('appearing', 'delayed');
-        itemList.innerHTML = initialList;
-        itemList.style.maxHeight = itemList.offsetHeight + 'px';
-        itemList.classList.remove('appearing');
-        priceFields = document.querySelectorAll('.item .js-item-price');
-        handleCalculations()
-    }, 500);
-
-    setTimeout(function () {
-        itemList.style.minHeight = 0;
-        itemList.style.maxHeight = 'none';
-        itemList.classList.remove('delayed')
-    }, 1500)
-}
+//function restoreList() {
+//    itemList.firstElementChild.classList.remove('is-visible');
+//
+//    setTimeout(function () {
+//        itemList.style.minHeight = itemList.offsetHeight + 'px';
+//        itemList.classList.add('appearing', 'delayed');
+//        itemList.innerHTML = initialList;
+//        itemList.style.maxHeight = itemList.offsetHeight + 'px';
+//        itemList.classList.remove('appearing');
+//        priceFields = document.querySelectorAll('.item .js-item-price');
+//        handleCalculations()
+//    }, 500);
+//
+//    setTimeout(function () {
+//        itemList.style.minHeight = 0;
+//        itemList.style.maxHeight = 'none';
+//        itemList.classList.remove('delayed')
+//    }, 1500)
+//}
 
 itemList.addEventListener('click', function (e) {
     var target = e.target,
@@ -111,11 +111,12 @@ itemList.addEventListener('click', function (e) {
 
     if (classList.contains('js-item-increase') || classList.contains('js-item-decrease')) {
         changeQuantity(target)
-    } else if (classList.contains('js-item-remove')) {
-        removeItem(target)
-    } else if (classList.contains('js-restore-list')) {
-        restoreList()
     }
+    //else if (classList.contains('js-item-remove')) {
+    //    removeItem(target)
+    //} else if (classList.contains('js-restore-list')) {
+    //    restoreList()
+    //}
 });
 
 checkoutButton.addEventListener('click', function () {
