@@ -154,16 +154,16 @@ exports.saveItem = function (input, next) {
     var option = {
         image: input.image,
         name: input.name,
-        description: description,
-        price: price,
-        quantity: quantity
+        description: input.description,
+        price: input.price,
+        quantity: input.quantity
     };
-
+    console.log(option)
     Item.findOneAndUpdate({name: input.name}, option, {upsert: true}, function (err, item) {
         if (err) {
-            callback(err, null);
+            next(err, null);
         } else {
-            callback(null, item);
+            next(null, item);
         }
     });
 }

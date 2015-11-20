@@ -232,16 +232,30 @@ router.post('/test-upload', function (req, res, next) {
     req.busboy.on('error', function (err) {
         console.log(err);
     });
-    var points = 0;
+    var name;
+    var description;
+    var price;
+    var quantity;
     req.busboy.on('field', function (fieldname, val, fieldnameTruncated, valTruncated) {
-        points = val;
+        if (fieldname == 'name') {
+            name = val;
+        }
+        if (fieldname == 'description') {
+            description = val;
+        }
+        if (fieldname == 'price') {
+            price = val;
+        }
+        if (fieldname == 'quantity') {
+            quantity = val;
+        }
     });
 
-    req.busboy.on('file', function (fieldname, file, filename) {
+    req.busboy.on('file', function (fieldname, file, filename, encoding, mimetype) {
         var date = new Date();
         date = (date.getMonth() + 1) + '-' + date.getDate() + '-' + date.getFullYear();
-        var extension = filename.substring(filename.length - 4, filename.length);
-        if (filename != 'points.xlsx') {
+        var extension = filename.substring(filename.length - 3, filename.length);
+        if (mimetype != 'image/png') {
             res.json({
                 message: "Invalid format",
                 messageCode: 2
@@ -249,50 +263,33 @@ router.post('/test-upload', function (req, res, next) {
         } else {
             console.log("Uploading: " + filename);
             var now = Date.now();
-            fstream = fs.createWriteStream(__dirname + '/output-points/' + now + '.' + extension);
+            fstream = fs.createWriteStream(__dirname + '/output-items/' + now + '.' + extension);
+            var imgPath = __dirname + '/output-items/' + now + '.' + extension;
             file.pipe(fstream);
             fstream.on('close', function () {
                 console.log("Upload Finished of " + now + '.' + extension);
                 console.log("Processing File... " + now + '.' + extension);
-                var workbook = new Excel.Workbook();
-                workbook.xlsx.readFile(__dirname + '/output-points/' + now + '.' + extension).then(function () {
-                    workbook.eachSheet(function (worksheet, sheetId) {
-                        worksheet.eachRow({includeEmpty: false}, function (row, rowNumber) {
-                            if (rowNumber == 1 &&
-                                row.values[1] != "Cust Num" &&
-                                row.values[2] != "Customer Name" &&
-                                row.values[3] != "Opponent") {
-                                res.json({
-                                    message: "Parsing Error",
-                                    messageCode: 3
-                                });
-                            }
-                            if (rowNumber > 1) {
-                                var input = {
-                                    gtID: row.values[1],
-                                    name: row.values[2],
-                                    opponent: row.values[3],
-                                    points: parseInt(points),
-                                    date: date
-                                }
+                var image = {};
+                image.data = fs.readFileSync(imgPath);
+                image.contentType = mimetype;
+                var inputImage = {
+                    image: image,
+                    name: name,
+                    description: description,
+                    price: price,
+                    quantity: quantity
+                };
 
-                                if (row.values[1] != undefined) {
-                                    databaseFunction.updateStudent(input, function (err, object) {
-                                        if (err) {
-                                            console.log(err);
-                                        }
-                                    });
-                                }
-
-                            }
-
-                        });
-                    });
+                databaseFunction.saveItem(inputImage, function (err, itemObject) {
+                    if (err) {
+                        console.log(err);
+                    }
                     res.json({
                         message: "Complete",
                         messageCode: 1
                     });
                 });
+
 
             });
         }
