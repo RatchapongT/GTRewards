@@ -1,292 +1,82 @@
 <!DOCTYPE html>
 <html lang="en">
 <% include partials/page/jsdefaults.ejs %>
+<script src="http://s.codepen.io/assets/libs/modernizr.js" type="text/javascript"></script>
+<script src="assets/js/prefixfree.min.js"></script>
+
 <head>
+    <link rel="stylesheet" href="assets/css/checkout.css" rel="stylesheet">
     <% include partials/page/head.ejs %>
 </head>
-<script>
-    $(document).ready(function () {
-        $('td.date').each(function (index) {
-            var today = new Date();
-            var m = today.getMonth();
-            var d = today.getDate();
-            var y = today.getFullYear();
-            var date = new Date(y, m, d);
-            if (new Date($(this).text()) < date) {
-                $(this).parent().attr("style", "display: none")
-            }
-        });
-    });
-</script>
-<body class="home">
+<body>
 <% include partials/page/navbar.ejs %>
-<section id="bottomHuman" style="margin-bottom:0;">
-    <div class="cover-wrapper"
-         style="background-image: url(assets/images/gtbasketballstadium.jpg);">
-        <div class="cover-container overlay"
-             style="padding-top: 10%; padding-bottom: 10%; background-color: rgba(197,147,83,0.3);">
-            <div class="cover-inner" style="padding: 0px 100px 0px 100px;">
-                <h1 style="color: #ffffff">Basketball Schedule</h1>
 
-                <div style="width: 100%">
-                    <table class="table table-striped table-hover"
-                           style="color: black; text-shadow: none">
-                        <thead>
-                        <tr class="success">
-                            <th style="text-align: center">Date</th>
-                            <th style="text-align: center">Time</th>
-                            <th style="text-align: center">Opponent</th>
-                            <th style="text-align: center">Pts/Game</th>
-                            <th style="text-align: center">Team</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <tr class="warning">
-                            <td class="date">11/13/15</td>
-                            <td>8:00 p.m. ET</td>
-                            <td>vs. Cornell</td>
-                            <td>25</td>
-                            <td>MBB</td>
-                        </tr>
-                        <tr class="info">
-                            <td class="date">11/13/15</td>
-                            <td>5:30 p.m. ET</td>
-                            <td>vs. Loyola Chicago</td>
-                            <td>50</td>
-                            <td>WBB</td>
-                        </tr>
-                        <tr class="info">
-                            <td class="date">11/15/15</td>
-                            <td>2:00 p.m. ET</td>
-                            <td>vs. St. Francis Brooklyn</td>
-                            <td>50</td>
-                            <td>WBB</td>
-                        </tr>
-                        <tr class="warning">
-                            <td class="date">11/16/15</td>
-                            <td>7:00 p.m. ET</td>
-                            <td>vs. Tennessee</td>
-                            <td>25</td>
-                            <td>MBB</td>
-                        </tr>
-                        <tr class="info">
-                            <td class="date">11/18/15</td>
-                            <td>7:00 p.m. ET</td>
-                            <td>vs. Southeastern Louisiana</td>
-                            <td>50</td>
-                            <td>WBB</td>
-                        </tr>
-                        <tr class="warning">
-                            <td class="date">11/19/15</td>
-                            <td>7:00 p.m. ET</td>
-                            <td>vs. Green Bay</td>
-                            <td>25</td>
-                            <td>MBB</td>
-                        </tr>
-                        <tr class="warning">
-                            <td class="date">11/22/15</td>
-                            <td>2:00 p.m. ET</td>
-                            <td>vs. East Tennessee State</td>
-                            <td>25</td>
-                            <td>MBB</td>
-                        </tr>
-                        <tr class="info">
-                            <td class="date">11/24/15</td>
-                            <td>5:00 p.m. ET</td>
-                            <td>vs. Alabama State</td>
-                            <td>50</td>
-                            <td>WBB</td>
-                        </tr>
-                        <tr class="warning">
-                            <td class="date">12/1/15</td>
-                            <td>7:00 p.m. ET</td>
-                            <td>vs. Wofford</td>
-                            <td>25</td>
-                            <td>MBB</td>
-                        </tr>
-                        <tr class="info">
-                            <td class="date">12/5/15</td>
-                            <td>2:00 p.m. ET</td>
-                            <td>vs. USC Upstate</td>
-                            <td>50</td>
-                            <td>WBB</td>
-                        </tr>
-                        <tr class="info">
-                            <td class="date">12/13/15</td>
-                            <td>2:00 p.m. ET</td>
-                            <td>vs. Samford</td>
-                            <td>50</td>
-                            <td>WBB</td>
-                        </tr>
-                        <tr class="warning">
-                            <td class="date">12/15/15</td>
-                            <td>9:00 p.m. ET</td>
-                            <td>vs. VCU</td>
-                            <td>25</td>
-                            <td>MBB</td>
-                        </tr>
-                        <tr class="info">
-                            <td class="date">12/15/15</td>
-                            <td>6:00 p.m. ET</td>
-                            <td>vs. Prairie View A&M</td>
-                            <td>50</td>
-                            <td>WBB</td>
-                        </tr>
-                        <tr class="info">
-                            <td class="date">12/18/15</td>
-                            <td>7:00 p.m. ET</td>
-                            <td>vs. Alabama</td>
-                            <td>50</td>
-                            <td>WBB</td>
-                        </tr>
-                        <tr class="warning">
-                            <td class="date">12/21/15</td>
-                            <td>7:00 p.m. ET</td>
-                            <td>vs. Southeastern Louisiana</td>
-                            <td>25</td>
-                            <td>MBB</td>
-                        </tr>
-                        <tr class="warning">
-                            <td class="date">12/23/15</td>
-                            <td>7:00 p.m. ET</td>
-                            <td>vs. Colgate</td>
-                            <td>25</td>
-                            <td>MBB</td>
-                        </tr>
-                        <tr class="warning">
-                            <td class="date">12/29/15</td>
-                            <td>7:00 p.m. ET</td>
-                            <td>vs. Duquesne</td>
-                            <td>25</td>
-                            <td>MBB</td>
-                        </tr>
-                        <tr class="info">
-                            <td class="date">1/3/16</td>
-                            <td>2:00 p.m. ET</td>
-                            <td>vs. Louisville</td>
-                            <td>50</td>
-                            <td>WBB</td>
-                        </tr>
-                        <tr class="warning">
-                            <td class="date">1/9/16</td>
-                            <td>2:00 p.m. ET</td>
-                            <td>vs. Virginia</td>
-                            <td>25</td>
-                            <td>MBB</td>
-                        </tr>
-                        <tr class="info">
-                            <td class="date">1/14/16</td>
-                            <td>7:00 p.m. ET</td>
-                            <td>vs. North Carolina</td>
-                            <td>50</td>
-                            <td>WBB</td>
-                        </tr>
-                        <tr class="warning">
-                            <td class="date">1/16/16</td>
-                            <td>12:00 p.m. ET</td>
-                            <td>vs. Virginia Tech</td>
-                            <td>25</td>
-                            <td>MBB</td>
-                        </tr>
-                        <tr class="info">
-                            <td class="date">1/17/16</td>
-                            <td>2:00 p.m. ET</td>
-                            <td>vs. Virginia</td>
-                            <td>50</td>
-                            <td>WBB</td>
-                        </tr>
-                        <tr class="warning">
-                            <td class="date">1/23/16</td>
-                            <td>4:00 p.m. ET</td>
-                            <td>vs. Louisville</td>
-                            <td>25</td>
-                            <td>MBB</td>
-                        </tr>
-                        <tr class="info">
-                            <td class="date">1/28/16</td>
-                            <td>7:00 p.m. ET</td>
-                            <td>vs. Notre Dame</td>
-                            <td>50</td>
-                            <td>WBB</td>
-                        </tr>
-                        <tr class="info">
-                            <td class="date">1/31/16</td>
-                            <td>3:00 p.m. ET</td>
-                            <td>vs. Boston College</td>
-                            <td>50</td>
-                            <td>WBB</td>
-                        </tr>
-                        <tr class="warning">
-                            <td class="date">2/2/16</td>
-                            <td>9:00 p.m. ET</td>
-                            <td>vs. Duke</td>
-                            <td>25</td>
-                            <td>MBB</td>
-                        </tr>
-                        <tr class="warning">
-                            <td class="date">2/7/16</td>
-                            <td>1:00 p.m. ET</td>
-                            <td>vs. Miami</td>
-                            <td>25</td>
-                            <td>MBB</td>
-                        </tr>
-                        <tr class="warning">
-                            <td class="date">2/10/16</td>
-                            <td>7:00 p.m. ET</td>
-                            <td>vs. Wake Forest</td>
-                            <td>25</td>
-                            <td>MBB</td>
-                        </tr>
-                        <tr class="info">
-                            <td class="date">2/11/16</td>
-                            <td>7:00 p.m. ET</td>
-                            <td>vs. Miami</td>
-                            <td>50</td>
-                            <td>WBB</td>
-                        </tr>
-                        <tr class="info">
-                            <td class="date">2/14/16</td>
-                            <td>2:00 p.m. ET</td>
-                            <td>vs. Clemson</td>
-                            <td>50</td>
-                            <td>WBB</td>
-                        </tr>
-                        <tr class="warning">
-                            <td class="date">2/20/16</td>
-                            <td>8:00 p.m. ET</td>
-                            <td>vs. Notre Dame</td>
-                            <td>25</td>
-                            <td>MBB</td>
-                        </tr>
-                        <tr class="warning">
-                            <td class="date">2/23/16</td>
-                            <td>7:00 p.m. ET</td>
-                            <td>vs. Clemson</td>
-                            <td>25</td>
-                            <td>MBB</td>
-                        </tr>
-                        <tr class="info">
-                            <td class="date">2/28/16</td>
-                            <td>2:00 p.m. ET</td>
-                            <td>vs. Wake Forest</td>
-                            <td>50</td>
-                            <td>WBB</td>
-                        </tr>
-                        <tr class="warning">
-                            <td class="date">3/5/16</td>
-                            <td>2:00 p.m. ET</td>
-                            <td>vs. Pittsburgh</td>
-                            <td>25</td>
-                            <td>MBB</td>
-                        </tr>
-                        </tbody>
-                    </table>
-                </div>
+<section class="hero small-hero" style="background-image:url(assets/images/prizecoverphoto.png);">
+    <div class="bg-overlay">
+        <div class="container" style="">
+            <div class="intro-wrap">
+                <h1 class="intro-title">Prize Store</h1>
             </div>
         </div>
     </div>
 </section>
 
+<section class="main container">
+    <ul class='item-list'>
+        <li class='item'>
+            <div class='item__information'>
+                <div class='item__image'>
+                    <img src='assets/images/waterbottle.jpg'>
+                </div>
+                <div class='item__body'>
+                    <h2 class='item__title'>GT Water Bottle</h2>
+
+                    <p class='item__description'>A Georgia Tech plastic water bottle</p>
+                </div>
+                <div class='item__price js-item-price' data-price='11.99'>$11.99</div>
+            </div>
+            <div class='item__interactions'>
+                <p class='item__quantity'>
+                    <a class='js-item-increase' title='Add another copy'>+</a>
+                    <a class='js-item-decrease decrease--disabled' title='Remove a copy'>-</a>
+        <span data-quantity='1'>
+          <b>1</b>
+          item
+        </span>
+                    at 75 points
+                </p>
+                <a class='item__remove js-item-remove' title='Remove this item'>&times;</a>
+            </div>
+        </li>
+    </ul>
+    <div class='summary js-summary'>
+        <ul class='steps'>
+            <li>
+                <b>Subtotal:</b>
+                <span class='sum js-subtotal'>0</span>
+            </li>
+            <!--<li>-->
+            <!--<b>Taxes (5%):</b>-->
+            <!--<span class='sum js-taxes'>$1.64</span>-->
+            <!--</li>-->
+            <!--<li>-->
+            <!--<b>Shipping:</b>-->
+            <!--<span class='sum js-shipping'>$5.00</span>-->
+            <!--</li>-->
+        </ul>
+        <ul class='checkout'>
+            <li>
+                <b>Total:</b>
+                <span class='sum js-total'>0</span>
+            </li>
+            <li>
+                <a class='button js-checkout-button'>Checkout</a>
+            </li>
+        </ul>
+    </div>
+    <script src='http://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js'></script>
+    <script src="assets/js/checkout.js"></script>
+</section>
 </body>
 <footer id="footer">
     <% include partials/page/footer.ejs %>
