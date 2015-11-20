@@ -150,6 +150,16 @@ exports.getPointsHistory = function (input, next) {
     });
 };
 
+exports.getGames = function (input, next) {
+    Game.find({}, function (err, game) {
+        if (err) {
+            next(err, null);
+        } else {
+            next(err, game);
+        }
+    });
+};
+
 exports.getPosition = function (input, next) {
     Student.find({}, function (err, students) {
         if (err) {

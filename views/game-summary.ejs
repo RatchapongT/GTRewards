@@ -24,18 +24,18 @@
                            style="width: 100%; color:black; text-shadow: none">
                         <thead>
                         <tr class="warning">
-                            <th style="text-align: center">Rank</th>
-                            <th style="text-align: center">Name</th>
+                            <th style="text-align: center">Date</th>
+                            <th style="text-align: center">Game</th>
                             <th style="text-align: center">Points</th>
                         </tr>
                         </thead>
                         <tbody>
 
-                        <% for (var i = 0 ; i < leaderArray.length; i++) { %>
+                        <% for (var i = 0 ; i < game.length; i++) { %>
                         <tr class="success">
-                            <td><%= leaderArray[i].position %></td>
-                            <td><%= leaderArray[i].name %></td>
-                            <td><%= leaderArray[i].points %></td>
+                            <td><%= game[i].date %></td>
+                            <td><%= game[i].name %></td>
+                            <td><%= game[i].points %></td>
                         </tr>
                         <% } %>
                         </tbody>

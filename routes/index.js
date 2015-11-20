@@ -203,6 +203,22 @@ router.get('/leaderboard', function (req, res, next) {
 
 });
 
+router.get('/game-summary', function (req, res, next) {
+    databaseFunction.getGames(10, function (err, game) {
+        if (err) {
+            console.log(err);
+        } else {
+            var vm = {
+                title: 'Game Summary',
+                game: game,
+            };
+            console.log(game);
+            res.render('game-summary', vm);
+        }
+    });
+
+});
+
 router.get('/schedule', function (req, res, next) {
     var vm = {
         title: 'Schedule'
