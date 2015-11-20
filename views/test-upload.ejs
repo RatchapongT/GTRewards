@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <% include partials/page/head.ejs %>
 </head>
@@ -8,7 +7,8 @@
       rel="stylesheet" type="text/css"/>
 
 <% include partials/page/jsdefaults.ejs %>
-<body class="home">
+<body class="home" style="background-color:#c59353; background-position: center center;
+             background-repeat: no-repeat; background-attachment: fixed; background-size: cover;">
 <!-- Navigation (main menu)
 ================================================== -->
 <% include partials/page/navbar.ejs %>
@@ -16,62 +16,52 @@
 <!-- Cover element
 ================================================== -->
 <div ng-app="uploadModule" ng-controller="uploadCtrl">
-    <div class="cover-wrapper" style="background-color:#c59353">
-        <div class="cover-container overlay"
-             style="padding-top: 20%; padding-bottom: 20%;">
+    <div class="cover-wrapper">
+        <div class="cover-container overlay" style="background-color: rgba(197,147,83,0.3); height: 100vh">
             <div class=" cover-inner">
                 <div class="container">
-                    <h2 style="color:#fff;">Upload Item</h2>
+                    <h2 style="color:#fff;">Add New Prize</h2>
 
-                    <form>
-                        <div class="gtid">
-                            <input type="file" id="itemFile" name="itemFile"
-                                   file-model="itemData.file" style="margin-bottom: 10px">
-                            <input ng-model="itemData.name" id="name" name="name" class="form-control" style="margin-bottom: 10px"
-                                   type="text"
-                                   placeholder="Name" maxlength="3" onclick="clickEntry(this);">
-                            <input ng-model="itemData.description" id="description" name="description" class="form-control" style="margin-bottom: 10px"
-                                   type="text"
-                                   placeholder="Description" maxlength="3" onclick="clickEntry(this);">
-                            <input ng-model="itemData.price" id="price" name="price" class="form-control" style="margin-bottom: 10px"
-                                   onkeypress="return isNumberKey(event)" type="text"
-                                   placeholder="Price" maxlength="3" onclick="clickEntry(this);">
-                            <input ng-model="itemData.quantity" id="quantity" name="quantity" class="form-control" style="margin-bottom: 10px"
-                                   onkeypress="return isNumberKey(event)" type="text"
-                                   placeholder="Quantity" maxlength="3" onclick="clickEntry(this);">
-                            <button type="submit" class="btn btn-default btn-lg" ng-click="Submit()"
-                                    style="width: 100%; background-color:#00254c">
-                                <i class="fa fa-cloud-upload"></i>
-                                &nbsp;
-                                <span>{{status}}
-                                    <div ng-show="loading"><img width="20 px" src="assets/images/loading-animation.gif">
-                                    </div>
-                                    <div ng-show="finished"><img width="20 px" src="assets/images/finished.png">
-                                    </div>
-                                </span>
-                            </button>
-                        </div>
+                    <form id="loginform" method="post">
+                        <p>
+                            <label for="user_login">Item Name<br>
+                                <input type="text" name="Item Name" id="user_login"
+                                       class="input" value="" size="20"></label>
+                        </p>
 
+                        <p>
+                            <label for="user_pass">Item Description<br>
+                                <textarea type="text" name="Item Description" id="user_pass"
+                                          class="input" value="" size="20" style="resize: vertical"></textarea></label>
+                        </p>
 
+                        <p>
+                            <label for="user_pass">Item Cost<br>
+                                <input class="form-control" id="cost"
+                                       onkeypress="return isNumberKey(event)" type="text"
+                                       maxlength="4" onclick="clickEntry(this);"></label>
+                        </p>
+
+                        <p>
+                            <label for="user_pass">Item Quantity<br>
+                                <input class="form-control" id="quantity"
+                                       onkeypress="return isNumberKey(event)" type="text"
+                                       maxlength="4" onclick="clickEntry(this);"></label>
+                        </p>
+
+                        <p class="submit">
+                            <input style="background-color: #00254C" type="submit" name="submit" id="submit"
+                                   class="button button-primary button-large"
+                                   value="Add Item">
+                        </p>
                     </form>
-
                 </div>
-                <!-- /.container -->
             </div>
-            <!-- /.cover-inner -->
         </div>
-        <!-- /.cover-container -->
     </div>
-
 </div>
-<!-- /.cover-wrapper -->
-
-
 </body>
 
-<footer id="footer">
-    <% include partials/page/footer.ejs %>
-</footer>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
 <script src="../../file-input/js/fileinput.min.js"></script>
 
