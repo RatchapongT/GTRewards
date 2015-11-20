@@ -1,8 +1,8 @@
 var subtotal = document.querySelector('.js-subtotal'),
     itemList = document.querySelector('.item-list'),
     priceFields = document.querySelectorAll('.item .js-item-price'),
-    taxes = document.querySelector('.js-taxes'),
-    shipping = document.querySelector('.js-shipping'),
+//taxes = document.querySelector('.js-taxes'),
+//shipping = document.querySelector('.js-shipping'),
     total = document.querySelector('.js-total'),
     checkoutButton = document.querySelector('.js-checkout-button'),
     modalWrapper = document.querySelector('.js-modal-wrapper'),
@@ -17,14 +17,14 @@ function loop(which, callback) {
 }
 
 function handleCalculations() {
-    var subTotalPrice = 0,
-        taxesPrice = 0;
+    var subTotalPrice = 0;
+    //taxesPrice = 0;
 
     loop(priceFields, function (price) {
         subTotalPrice += +price.textContent.substr(1);
     })
 
-    subTotalPrice = subTotalPrice.toFixed(2);
+    subTotalPrice = subTotalPrice.toFixed();
 
     //taxesPrice = (subTotalPrice * 0.05).toFixed(2);
 
@@ -33,7 +33,7 @@ function handleCalculations() {
     //shipping.textContent = subTotalPrice !== '0.00' ? '$5.00' : 'Free';
 
     //total.textContent = '$' + ((+subTotalPrice) + (+taxesPrice) + (+subTotalPrice > 0 ? 5 : 0)).toFixed(2);
-    total.textContent = (+subTotalPrice).toFixed(2);
+    total.textContent = ' ' + (+subTotalPrice).toFixed();
 
 }
 
@@ -58,7 +58,7 @@ function changeQuantity(emitter, action) {
 
     price = emitter.parentElement.parentElement.parentElement.querySelector('.js-item-price');
 
-    price.textContent = '$' + (quantity * price.getAttribute('data-price')).toFixed(2);
+    price.textContent = ' ' + (quantity * price.getAttribute('data-price')).toFixed();
 
     handleCalculations()
 }
