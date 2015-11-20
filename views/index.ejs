@@ -62,7 +62,7 @@
                                     <td>{{ point.date }}</td>
                                     <td>{{ point.points }}</td>
                                     <td>{{ point.description }}</td>
-                                    <td>{{ point.points }}</td>
+                                    <td>{{getRunningTotal($index + 1)}}</td>
                                 </tr>
 
 
@@ -83,6 +83,16 @@
     angular.module('pointsController', []).controller('mainController', ['$scope', '$http', 'Points', function ($scope, $http, Points) {
         $scope.formData = {};
         $scope.loading = false;
+        $scope.getRunningTotal = function(index) {
+
+            var runningTotal = 0;
+            var selectedPoints = $scope.points.slice(0, index);
+            angular.forEach(selectedPoints, function(point, index){
+                runningTotal = runningTotal + point.points;
+            });
+            return runningTotal;
+        };
+
         $scope.getHistory = function() {
 
             // validate the formData to make sure that something is there
@@ -96,7 +106,6 @@
                     // if successful creation, call our get function to get all the new todos
                         .success(function (data) {
                             $scope.loading = false;
-                            $scope.formData = {}; // clear the form so our user is ready to enter another
                             $scope.points = data; // assign our new list of todos
                             console.log(data);
                         });
