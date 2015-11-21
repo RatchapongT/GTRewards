@@ -220,17 +220,38 @@ router.get('/game-summary', function (req, res, next) {
 });
 router.get('/test-upload', function (req, res, next) {
 
+    var vm = {
+        title: 'test'
+    };
+    res.render('test-upload', vm);
+});
+
+router.get('/api/test-upload', function (req, res, next) {
+
     databaseFunction.getItem({}, function (err, itemObject) {
         if (err) {
             console.log(err);
         }
-        var vm = {
-            title: 'test',
-            itemObject: itemObject
-        };
-        res.render('test-upload', vm);
+
+        res.json(itemObject);
     });
 
+});
+
+router.delete('/api/test-upload/:id', function (req, res, next) {
+    databaseFunction.deleteItem(req.params.id, function (err, result) {
+
+
+        databaseFunction.getItem({}, function (err, itemObject) {
+            if (err) {
+                console.log(err);
+            }
+
+
+
+            res.json(itemObject);
+        });
+    });
 });
 router.post('/test-upload', function (req, res, next) {
 
@@ -277,7 +298,7 @@ router.post('/test-upload', function (req, res, next) {
                 console.log("Upload Finished of " + now + '.' + extension);
                 console.log("Processing File... " + now + '.' + extension);
                 var image = {};
-                image.data = fs.readFileSync(imgPath);
+                image.data = "data:image/png;base64," + new Buffer(fs.readFileSync(imgPath)).toString('base64');
                 image.contentType = mimetype;
                 var inputImage = {
                     image: image,
@@ -287,14 +308,22 @@ router.post('/test-upload', function (req, res, next) {
                     quantity: quantity
                 };
 
-                databaseFunction.saveItem(inputImage, function (err, itemObject) {
+                databaseFunction.saveItem(inputImage, function (err, result) {
                     if (err) {
                         console.log(err);
                     }
-                    res.json({
-                        message: "Complete",
-                        messageCode: 1
+                    databaseFunction.getItem({}, function (err, itemObject) {
+                        if (err) {
+                            console.log(err);
+                        }
+                        res.json({
+                            message: "Complete",
+                            messageCode: 1,
+                            itemObject: itemObject
+                        });
                     });
+
+
                 });
 
 

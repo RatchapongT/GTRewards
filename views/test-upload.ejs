@@ -43,22 +43,24 @@
                             <button type="submit" class="btn btn-default btn-lg" ng-click="Submit()"
                                     style="width: 100%; background-color:#00254c">
                                 <i class="fa fa-cloud-upload"></i>
-                                &nbsp;
-                                <span>{{status}}
-                                    <div ng-show="loading"><img width="20 px" src="assets/images/loading-animation.gif">
-                                    </div>
-                                    <div ng-show="finished"><img width="20 px" src="assets/images/finished.png">
-                                    </div>
-                                </span>
+
                             </button>
                         </div>
 
 
                     </form>
-                    <% for (var i = 0 ; i < itemObject.length; i++) { %>
-                    <img src="data:image/png;base64,<%= new Buffer(itemObject[i].image.data ).toString('base64')%>" />
+                    <p class="text-center" ng-show="loading">
+                        <span class="fa fa-spinner fa-spin fa-3x"></span>
+                    </p>
+                    <div ng-repeat="item in itemObject" style="margin-top: 50px">
+                        <img src="{{item.image.data}}" style="width: 250px; height: 250px"/>
+                        Name: {{item.name}}
+                        Description: {{item.description}}
+                        Price: {{item.price}}
+                        Quantity: {{item.quantity}}
+                        <input type="checkbox" ng-click="deleteItem(item._id)">
+                    </div>
 
-                    <% } %>
 
                 </div>
                 <!-- /.container -->
@@ -82,18 +84,32 @@
 
 <script>
     var myApp = angular.module('uploadModule', []);
-    myApp.controller('uploadCtrl', ['$scope', 'multipartForm', function ($scope, multipartForm) {
+    myApp.controller('uploadCtrl', ['$scope','$http', 'multipartForm', function ($scope, $http, multipartForm) {
         $scope.status = "Upload File";
         $scope.finished = false;
-        $scope.loading = false;
+        $scope.loading = true;
+        $http.get('api/test-upload', {}).success(function (items) {
+
+            $scope.itemObject = items;
+            $scope.loading = false;
+        });
+
+
         $scope.Submit = function () {
             $scope.finished = false;
             $scope.loading = true;
             var uploadUrl = '/test-upload';
             $scope.status = "Processing";
-            console.log($scope.itemData)
             multipartForm.post(uploadUrl, $scope.itemData, $scope);
         }
+        $scope.deleteItem = function(id) {
+            $scope.loading = true;
+            $http.delete('api/test-upload/' + id).success(function (items) {
+
+                $scope.itemObject = items;
+                $scope.loading = false;
+            });
+        };
     }]);
 
     myApp.service('multipartForm', ['$http', function ($http) {
@@ -107,7 +123,7 @@
                 transformRequest: angular.identity,
                 headers: {'Content-Type': undefined}
             }).success(function (response) {
-
+                scope.itemObject = response.itemObject;
                 scope.status = response.message;
                 scope.loading = false;
                 scope.finished = true;
@@ -130,6 +146,7 @@
             }
         };
     }]);
+
 
     function clickEntry(input) {
         var disMouse = document.getElementById(input.id);

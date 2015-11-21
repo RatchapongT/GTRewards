@@ -178,6 +178,18 @@ exports.getItem = function (input, next) {
     });
 }
 
+exports.deleteItem = function (input, next) {
+    Item.remove({
+        _id: input
+    }, function (err, item) {
+        if (err) {
+            next(err, null);
+        } else {
+            next(null, item);
+        }
+    });
+}
+
 exports.getGames = function (input, next) {
     Game.find({}, function (err, game) {
         if (err) {

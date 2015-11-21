@@ -10,7 +10,7 @@ var studentSchema = new Schema({
 });
 
 var itemSchema = new Schema({
-    image: {data: Buffer, contentType: String},
+    image: {data: String, contentType: String},
     name: String,
     description: String,
     price: Number,
