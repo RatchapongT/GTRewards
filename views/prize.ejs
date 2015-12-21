@@ -11,7 +11,7 @@
 <body>
 <% include partials/page/navbar.ejs %>
 
-<section class="hero small-hero" style="background-image:url(assets/images/prizecoverphoto.png);">
+<section class="hero small-hero" style="background-image:url(assets/images/cheerleader.png);">
     <div class="bg-overlay">
         <div class="container" style="">
             <div class="intro-wrap">
@@ -67,9 +67,7 @@
 </section>
 
 </body>
-<footer id="footer">
-    <% include partials/page/footer.ejs %>
-</footer>
+
 <script>
     angular.module('pointsController', []).controller('mainController', ['$scope', '$http', 'Points', function ($scope, $http, Points) {
         $scope.formData = {};

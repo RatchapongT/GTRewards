@@ -20,8 +20,13 @@ function handleCalculations() {
     var subTotalPrice = 0;
     //taxesPrice = 0;
 
-    loop(priceFields, function (price) {
-        subTotalPrice += +price.textContent.substr(1);
+    loop(priceFields, function (total) {
+        console.log(priceFields);
+        console.log(total);
+        console.log(total.textContent);
+        subTotalPrice += +price.textContent.substr();
+        console.log(subTotalPrice);
+
     })
 
     subTotalPrice = subTotalPrice.toFixed();
@@ -58,8 +63,10 @@ function changeQuantity(emitter, action) {
 
     price = emitter.parentElement.parentElement.parentElement.querySelector('.js-item-price');
 
-    price.textContent = ' ' + (quantity * price.getAttribute('data-price')).toFixed();
+    price.textContent = (quantity * price.getAttribute('data-price'));
 
+    total = price.textContent;
+    console.log(total);
     handleCalculations()
 }
 

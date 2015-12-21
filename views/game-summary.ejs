@@ -7,18 +7,18 @@
 <head>
     <% include partials/page/head.ejs %>
 </head>
-<body class="home">
+<body class="home"
+      style="background-image: url(assets/images/buzz.png); background-position: center center;
+             background-repeat: no-repeat; background-attachment: fixed; background-size: cover;">
 <% include partials/page/navbar.ejs %>
 
 <section id="bottomHuman" style="margin-bottom:0;">
 
-    <div class="cover-wrapper"
-         style="background-image: url(assets/images/gtbasketballstadium.jpg);">
+    <div class="cover-wrapper">
         <div class="cover-container overlay"
-             style="padding-top: 10%; padding-bottom: 10%; background-color: rgba(197,147,83,0.3);">
+             style="height: 100vh; background-color: rgba(197,147,83,0.3);">
             <div class="cover-inner">
-                <div class="gtid">
-
+                <div class="gtid" style="padding-top: 100px">
 
                     <table class="table table-striped table-hover"
                            style="width: 100%; color:black; text-shadow: none">
@@ -48,8 +48,5 @@
 </section>
 
 </body>
-<footer id="footer">
-    <% include partials/page/footer.ejs %>
-</footer>
 
 </html>

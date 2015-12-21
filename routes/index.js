@@ -187,6 +187,17 @@ router.get('/upload-points', function (req, res, next) {
 
     res.render('upload-points', vm);
 });
+
+router.get('/rules', function (req, res, next) {
+    var vm = {
+        title: 'Rules'
+
+    };
+
+    res.render('rules', vm);
+});
+
+
 router.get('/leaderboard', function (req, res, next) {
 
     databaseFunction.getLeaderboard(10, function (err, leaderArray) {

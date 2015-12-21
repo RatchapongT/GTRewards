@@ -18,17 +18,18 @@
         });
     });
 </script>
-<body class="home">
+<body class="home"
+      style="background-image: url(assets/images/basketball.png); background-position: center center;
+             background-repeat: no-repeat; background-attachment: fixed; background-size: cover;">
 <% include partials/page/navbar.ejs %>
 <section id="bottomHuman" style="margin-bottom:0;">
-    <div class="cover-wrapper"
-         style="background-image: url(assets/images/gtbasketballstadium.jpg);">
+    <div class="cover-wrapper">
         <div class="cover-container overlay"
-             style="padding-top: 10%; padding-bottom: 10%; background-color: rgba(197,147,83,0.3);">
-            <div class="cover-inner" style="padding: 0px 100px 0px 100px;">
+             style="height: 100vh; background-color: rgba(197,147,83,0.3);">
+            <div class="cover-inner" style="padding: 100px 100px 0px 100px;">
                 <h1 style="color: #ffffff">Basketball Schedule</h1>
 
-                <div style="width: 100%">
+                <div style="width: auto;">
                     <table class="table table-striped table-hover"
                            style="color: black; text-shadow: none">
                         <thead>
@@ -288,7 +289,4 @@
 </section>
 
 </body>
-<footer id="footer">
-    <% include partials/page/footer.ejs %>
-</footer>
 </html>
