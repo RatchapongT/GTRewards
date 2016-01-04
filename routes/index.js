@@ -37,7 +37,7 @@ router.post('/upload-registration', function (req, res, next) {
 
     req.busboy.on('file', function (fieldname, file, filename) {
         var extension = filename.substring(filename.length - 4, filename.length);
-        if (filename != 'register.xlsx') {
+        if (filename != 'masterdata.xlsx') {
             res.json({
                 message: "Invalid format",
                 messageCode: 2
@@ -57,10 +57,11 @@ router.post('/upload-registration', function (req, res, next) {
                         var sheet1 = workbook.getWorksheet(1);
                         sheet1.eachRow({includeEmpty: false}, function (row, rowNumber) {
                             if (rowNumber == 1 &&
-                                row.values[1] != "GTID" &&
-                                row.values[2] != "Name" &&
-                                row.values[3] != "Email" &&
-                                row.values[4] != "Total Sum") {
+                                row.values[1] != "gtID" &&
+                                row.values[2] != "Last Name" &&
+                                row.values[3] != "First Name" &&
+                                row.values[4] != "Email Address" &&
+                                row.values[5] != "Total Sum") {
                                 res.json({
                                     message: "Parsing Error",
                                     messageCode: 3
@@ -69,9 +70,10 @@ router.post('/upload-registration', function (req, res, next) {
                             if (rowNumber > 1) {
                                 var input = {
                                     gtID: row.values[1],
-                                    name: row.values[2],
-                                    email: row.values[3],
-                                    sum: row.values[4]
+                                    lastName: row.values[2],
+                                    firstName: row.values[3],
+                                    email: row.values[4],
+                                    sum: row.values[5]
                                 }
 
                                 if (row.values[1] != undefined) {
@@ -112,7 +114,7 @@ router.post('/upload-points', function (req, res, next) {
         var date = new Date();
         date = (date.getMonth() + 1) + '-' + date.getDate() + '-' + date.getFullYear();
         var extension = filename.substring(filename.length - 4, filename.length);
-        if (filename != 'points.xlsx') {
+        if (filename != 'gamedata.xlsx') {
             res.json({
                 message: "Invalid format",
                 messageCode: 2
@@ -229,15 +231,15 @@ router.get('/game-summary', function (req, res, next) {
     });
 
 });
-router.get('/test-upload', function (req, res, next) {
+router.get('/upload-items', function (req, res, next) {
 
     var vm = {
-        title: 'test'
+        title: 'Upload Items'
     };
-    res.render('test-upload', vm);
+    res.render('upload-items', vm);
 });
 
-router.get('/api/test-upload', function (req, res, next) {
+router.get('/api/upload-items', function (req, res, next) {
 
     databaseFunction.getItem({}, function (err, itemObject) {
         if (err) {
@@ -249,7 +251,7 @@ router.get('/api/test-upload', function (req, res, next) {
 
 });
 
-router.delete('/api/test-upload/:id', function (req, res, next) {
+router.delete('/api/upload-items/:id', function (req, res, next) {
     databaseFunction.deleteItem(req.params.id, function (err, result) {
 
 
@@ -264,7 +266,7 @@ router.delete('/api/test-upload/:id', function (req, res, next) {
         });
     });
 });
-router.post('/test-upload', function (req, res, next) {
+router.post('/upload-items', function (req, res, next) {
 
     var fstream;
     req.pipe(req.busboy);

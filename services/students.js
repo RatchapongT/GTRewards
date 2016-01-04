@@ -6,19 +6,19 @@ var async = require('async');
 var _ = require('underscore');
 
 exports.addStudent = function (input, next) {
-    var option = {
-        gtID: input.gtID,
-        name: input.name,
-        email: input.email,
-        sum: input.sum
-    }
+    //var option = {
+    //    gtID: input.gtID,
+    //    name: input.name,
+    //    email: input.email,
+    //    sum: input.sum
+    //}
     Student.findOne({gtID: input.gtID}, function (err, student) {
         if (err) {
             return next(err);
         }
         if (student == null) {
 
-            var newStudent = new Student(option);
+            var newStudent = new Student(input);
             newStudent.save(function (err) {
                 if (err) {
                     return next(err);
@@ -240,30 +240,35 @@ exports.getLeaderboard = function (input, next) {
             next(err, null)
         } else {
             if (students != null) {
-
                 var array = _.sortBy(students, 'sum')
-                array = array.reverse();
-                var leaderArray = []
-                var pre = array[0].sum;
-                var position = 1;
-                for (var i = 0; i < array.length; i++) {
+                if (array.length > 0) {
+                    array = array.reverse();
+                    var leaderArray = [];
 
-                    if (pre != array[i].sum) {
-                        pre = array[i].sum;
-                        position = i + 1;
-                    }
-                    if (position > input) {
-                        break;
-                    }
-                    leaderArray.push({
-                        position: position,
-                        name: array[i].name,
-                        points: array[i].sum
-                    })
+                    var pre = array[0].sum;
+                    var position = 1;
+                    for (var i = 0; i < array.length; i++) {
 
+                        if (pre != array[i].sum) {
+                            pre = array[i].sum;
+                            position = i + 1;
+                        }
+                        if (position > input) {
+                            break;
+                        }
+                        leaderArray.push({
+                            position: position,
+                            firstName: array[i].firstName,
+                            lastName: array[i].lastName,
+                            points: array[i].sum
+                        })
+
+                    }
+                    next(err, leaderArray);
+                } else {
+                    next(err, []);
                 }
 
-                next(err, leaderArray);
 
             } else {
                 next(err, null);

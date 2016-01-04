@@ -3,7 +3,8 @@ var Schema = mongoose.Schema;
 
 var studentSchema = new Schema({
     gtID: String,
-    name: String,
+    lastName: String,
+    firstName: String,
     email: String,
     sum: Number,
     created: {type: Date, default: Date.now}

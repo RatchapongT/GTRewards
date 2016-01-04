@@ -1,43 +1,20 @@
-var subtotal = document.querySelector('.js-total'),
-    itemList = document.querySelector('.item-list'),
-    priceFields = document.querySelectorAll('.item .js-item-price'),
-//taxes = document.querySelector('.js-taxes'),
-//shipping = document.querySelector('.js-shipping'),
-    total = document.querySelector('.js-total'),
-    checkoutButton = document.querySelector('.js-checkout-button'),
-    modalWrapper = document.querySelector('.js-modal-wrapper'),
-    initialList = itemList.innerHTML;
+var subtotal = document.querySelector('.js-total')
+var itemList = document.querySelector('.item-list')
+var priceFields = document.querySelectorAll('.item .js-item-price')
+var total = document.querySelector('.js-total')
+var checkoutButton = document.querySelector('.js-checkout-button')
+var modalWrapper = document.querySelector('.js-modal-wrapper')
 
-function loop(which, callback) {
-    var len = which.length;
-
-    while (len--) {
-        callback(which[len], len);
-    }
-}
 
 function handleCalculations() {
     var subTotalPrice = 0;
-    //taxesPrice = 0;
+    priceFields = document.querySelectorAll('.item .js-item-price');
 
-    loop(priceFields, function (total) {
-        console.log(priceFields);
-        console.log(total);
-        console.log(total.textContent);
-        subTotalPrice += +price.textContent.substr();
-        console.log(subTotalPrice);
-
-    })
-
+    for (var i = 0; i< priceFields.length; i++) {
+        subTotalPrice += +priceFields[i].textContent;
+    }
     subTotalPrice = subTotalPrice.toFixed();
-
-    //taxesPrice = (subTotalPrice * 0.05).toFixed(2);
-
     subtotal.textContent = subTotalPrice;
-    //taxes.textContent = taxesPrice;
-    //shipping.textContent = subTotalPrice !== '0.00' ? '$5.00' : 'Free';
-
-    //total.textContent = '$' + ((+subTotalPrice) + (+taxesPrice) + (+subTotalPrice > 0 ? 5 : 0)).toFixed(2);
     total.textContent = ' ' + (+subTotalPrice).toFixed();
 
 }
@@ -64,53 +41,10 @@ function changeQuantity(emitter, action) {
     price = emitter.parentElement.parentElement.parentElement.querySelector('.js-item-price');
 
     price.textContent = (quantity * price.getAttribute('data-price'));
-
     total = price.textContent;
-    console.log(total);
+
     handleCalculations()
 }
-
-//function removeItem(emitter) {
-//    var item = emitter.parentElement.parentElement,
-//        len = priceFields.length,
-//        marginBottom = len > 1 ? parseInt(getComputedStyle(item).marginBottom, 10) : 0;
-//
-//    item.classList.add('item--disappearing');
-//    item.style.marginTop = -(item.offsetHeight + marginBottom) + 'px';
-//
-//    setTimeout(function () {
-//        itemList.removeChild(item);
-//
-//        priceFields = document.querySelectorAll('.item .js-item-price');
-//
-//        if (!priceFields.length) {
-//            itemList.innerHTML = '<li class="item empty-hint"><p>Bummer, you removed all items! Wanna <a class="js-restore-list">start over again</a>?</li>';
-//            itemList.firstElementChild.classList.add('is-visible');
-//        }
-//
-//        handleCalculations()
-//    }, 500)
-//}
-
-//function restoreList() {
-//    itemList.firstElementChild.classList.remove('is-visible');
-//
-//    setTimeout(function () {
-//        itemList.style.minHeight = itemList.offsetHeight + 'px';
-//        itemList.classList.add('appearing', 'delayed');
-//        itemList.innerHTML = initialList;
-//        itemList.style.maxHeight = itemList.offsetHeight + 'px';
-//        itemList.classList.remove('appearing');
-//        priceFields = document.querySelectorAll('.item .js-item-price');
-//        handleCalculations()
-//    }, 500);
-//
-//    setTimeout(function () {
-//        itemList.style.minHeight = 0;
-//        itemList.style.maxHeight = 'none';
-//        itemList.classList.remove('delayed')
-//    }, 1500)
-//}
 
 itemList.addEventListener('click', function (e) {
     var target = e.target,
@@ -119,21 +53,9 @@ itemList.addEventListener('click', function (e) {
     if (classList.contains('js-item-increase') || classList.contains('js-item-decrease')) {
         changeQuantity(target)
     }
-    //else if (classList.contains('js-item-remove')) {
-    //    removeItem(target)
-    //} else if (classList.contains('js-restore-list')) {
-    //    restoreList()
-    //}
 });
 
 checkoutButton.addEventListener('click', function () {
     modalWrapper.classList.add('is-visible')
 });
 
-modalWrapper.addEventListener('click', function () {
-    modalWrapper.classList.remove('is-visible')
-});
-
-setTimeout(function () {
-    modalWrapper.style.display = 'block'
-}, 250);
