@@ -261,10 +261,13 @@ router.delete('/api/upload-items/:id', function (req, res, next) {
             }
 
 
-
             res.json(itemObject);
         });
     });
+});
+
+router.post('/api/checkout', function (req, res, next) {
+    console.log(req.body);
 });
 router.post('/upload-items', function (req, res, next) {
 
@@ -371,6 +374,20 @@ router.post('/api/history', function (req, res, next) {
 
                     });
                 }
+            });
+        }
+    });
+});
+
+router.post('/api/get-points', function (req, res, next) {
+    databaseFunction.getStudent(req.body, function (err, student) {
+        if (err) {
+            console.log(err);
+        } else {
+            return res.json({
+                registered: (student != null),
+                points: student ? student.sum : 0
+
             });
         }
     });

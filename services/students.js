@@ -150,6 +150,18 @@ exports.getPointsHistory = function (input, next) {
 
     });
 };
+
+exports.getStudent = function (input, next) {
+    Student.findOne({gtID: input.gtID}, function (err, student) {
+        if (err) {
+            next(err, null)
+        } else {
+            next(err, student, true)
+
+        }
+
+    });
+};
 exports.saveItem = function (input, next) {
     var option = {
         image: input.image,
