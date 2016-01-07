@@ -1,0 +1,151 @@
+<!--/usr/local/bin/node-->
+<!--C:/Program Files/nodejs/node-->
+<!DOCTYPE html>
+<html lang = "en">
+    <% include partials/page/jsdefaults.ejs %>
+
+    <head>
+        <% include partials/page/head.ejs %>
+    </head>
+    <body class = "home" style = "background-image: url(assets/images/buzz.png); background-position: center center;
+             background-repeat: no-repeat; background-attachment: fixed; background-size: cover;">
+        <% include partials/page/navbar.ejs %>
+
+        <div class = "container" style = "padding-top: 200px" ng-app = "approveApp" ng-controller = "approveControllers" ng-cloak>
+            <p class = "text-center" ng-show = "loading">
+                <span class = "fa fa-spinner fa-spin fa-3x"></span>
+            </p>
+
+            <table class = "table"
+                   style = "width: 100%; color:black; background-color: white">
+                <thead>
+                    <tr class = "warning">
+                        <th style = "text-align: center">Request Date</th>
+                        <th style = "text-align: center">Item Name</th>
+                        <th style = "text-align: center">gtID</th>
+                        <th style = "text-align: center">Last Name</th>
+                        <th style = "text-align: center">First Name</th>
+                        <th style = "text-align: center">Quantity</th>
+                        <th style = "text-align: center">Approve</th>
+                        <th style = "text-align: center">Cancel</th>
+                    </tr>
+                </thead>
+                <tbody>
+
+
+                    <tr ng-repeat ="pending in pendingItemObject">
+
+                        <td>{{pending.requestStamp}}</td>
+                        <td>{{pending._itemDetail.name}}</td>
+                        <td>{{pending._studentDetail.gtID}}</td>
+                        <td>{{pending._studentDetail.firstName}}</td>
+                        <td>{{pending._studentDetail.lastName}}</td>
+                        <td>{{pending.quantity}}</td>
+                        <td><a ng-click="toggleApproveModal(pending._id)" style="cursor: pointer">Approve</a></td>
+                        <td><a ng-click="toggleCancelModal(pending._id)" style="cursor: pointer">Cancel</a></td>
+                    </tr>
+
+                </tbody>
+            </table>
+            <modal title = "Approve?" visible = "showApproveModal">
+                <p class = "text-center" ng-show = "approveLoading">
+                    <span class = "fa fa-spinner fa-spin fa-3x"></span>
+                </p>
+                <button ngshow = "!approveLoading" type = "submit" class = "btn btn-default" ng-click = "approveObject(selectedID)">Confirm</button>
+            </modal>
+
+            <modal title = "Cancel?" visible = "showCancelModal">
+                <p class = "text-center" ng-show = "cancelLoading">
+                    <span class = "fa fa-spinner fa-spin fa-3x"></span>
+                </p>
+                <button ngshow = "!cancelLoading" type = "submit" class = "btn btn-default" ng-click = "cancelObject(selectedID)">Confirm</button>
+            </modal>
+
+        </div>
+
+
+
+
+
+    </body>
+    <script>
+        angular.module('approveApp', ['approveControllers']);
+
+        var approveControllers = angular.module('approveControllers', []);
+        approveControllers.controller('approveControllers', ['$scope', '$http', '$window', function ($scope, $http, $window) {
+            $scope.loading = true;
+            $scope.statusCode = 0;
+            $scope.selectedID = null;
+            $http.get('/api/approve-items').success(function (data) {
+                console.log(data);
+                $scope.pendingItemObject = data.pendingItemObject;
+                $scope.loading = false;
+            });
+            $scope.approveObject = function(id) {
+                $scope.approveLoading = true;
+                $http.post('/api/approve-items/', {id: id}).success(function (data) {
+                    $window.location.reload();
+                });
+            }
+            $scope.cancelObject = function(id) {
+                $scope.cancelLoading = true;
+                $http.post('/api/unapprove-items/', {id: id}).success(function (data) {
+                    $window.location.reload();
+                });
+            }
+            $scope.toggleApproveModal = function (id) {
+                $scope.showApproveModal = !$scope.showApproveModal;
+                $scope.selectedID = id;
+            };
+            $scope.toggleCancelModal = function (id) {
+                $scope.showCancelModal = !$scope.showCancelModal;
+                $scope.selectedID = id;
+            };
+
+        }]);
+
+
+        approveControllers.directive('modal', function () {
+            return {
+                template: '<div class="modal fade">' +
+                '<div class="modal-dialog">' +
+                '<div class="modal-content">' +
+                '<div class="modal-header">' +
+                '<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>' +
+                '<h4 class="modal-title">{{ title }}</h4>' +
+                '</div>' +
+                '<div class="modal-body" ng-transclude></div>' +
+                '</div>' +
+                '</div>' +
+                '</div>',
+                restrict: 'E',
+                transclude: true,
+                replace: true,
+                scope: true,
+                link: function postLink(scope, element, attrs) {
+                    scope.title = attrs.title;
+
+                    scope.$watch(attrs.visible, function (value) {
+                        if (value == true)
+                            $(element).modal('show');
+                        else
+                            $(element).modal('hide');
+                    });
+
+                    $(element).on('shown.bs.modal', function () {
+                        scope.$apply(function () {
+                            scope.$parent[attrs.visible] = true;
+                        });
+                    });
+
+                    $(element).on('hidden.bs.modal', function () {
+                        scope.$apply(function () {
+                            scope.$parent[attrs.visible] = false;
+                        });
+                    });
+                }
+            };
+        });
+    </script>
+
+</html>

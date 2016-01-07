@@ -116,6 +116,7 @@
     <script src = "../../file-input/js/fileinput.min.js"></script>
 
     <script>
+
         var myApp = angular.module('uploadModule', []);
         myApp.controller('uploadCtrl', ['$scope', '$http', 'multipartForm', function ($scope, $http, multipartForm) {
             $scope.status = "Upload File";
@@ -137,12 +138,18 @@
             }
             $scope.deleteItem = function (id) {
                 $scope.loading = true;
-                $http.delete('api/upload-items/' + id).success(function (items) {
-
+                if (confirm("Delete?") == true) {
+                    $http.delete('api/upload-items/' + id).success(function (items) {
                     $scope.itemObject = items;
                     $scope.loading = false;
                 });
+                } else {
+                    $scope.loading = false;
+                }
             };
+
+
+
         }]);
 
         myApp.service('multipartForm', ['$http', function ($http) {

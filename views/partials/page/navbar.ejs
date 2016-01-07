@@ -1,32 +1,54 @@
-<div class="navbar-wrapper">
-    <header class="navbar navbar-default navbar-fixed-top" id="MainMenu" style="background-color: #00254C;">
+<div class = "navbar-wrapper">
+    <header class = "navbar navbar-default navbar-fixed-top" id = "MainMenu" style = "background-color: #00254C;">
 
-        <div class="container-fluid collapse-md" id="navbar-main-container">
-            <div class="navbar-header">
-                <a href="/" class="navbar-brand"><img alt="GTRewards"
-                                                      src="assets/images/rrlogo.jpg"><span
-                            class="sr-only">&nbsp; NavLit!</span></a>
-                <button class="navbar-toggle" type="button"
-                        data-toggle="collapse" data-target="#navbar-main">
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
+        <div class = "container-fluid collapse-md" id = "navbar-main-container">
+            <div class = "navbar-header">
+                <a href = "/" class = "navbar-brand"><img alt = "GTRewards"
+                                                          src = "assets/images/rrlogo.jpg"><span
+                            class = "sr-only">&nbsp; NavLit!</span></a>
+                <button class = "navbar-toggle" type = "button"
+                        data-toggle = "collapse" data-target = "#navbar-main">
+                    <span class = "icon-bar"></span>
+                    <span class = "icon-bar"></span>
+                    <span class = "icon-bar"></span>
                 </button>
             </div>
 
-            <nav class="navbar-collapse collapse" id="navbar-main">
-                <ul class="nav navbar-nav navbar-right">
-                    <li class="menu-item"><a href="/leaderboard">LEADERBOARD</a></li>
-                    <li class="menu-item"><a href="/game-summary">GAME</a></li>
-                    <li class="menu-item"><a href="/prize">PRIZE STORE</a>
-                    <li class="menu-item"><a href="/schedule">SCHEDULE</a>
-                    <li class="menu-item"><a href="/rules">RULES & REGULATIONS</a>
-                    <li class="menu-item"><a href="/upload-items">ADD ITEM</a>
-                    <li class="menu-item"><a href="/upload-registration">UPLOAD(R)</a>
-                    <li class="menu-item"><a href="/upload-points">UPLOAD(P)</a>
+            <nav class = "navbar-collapse collapse" id = "navbar-main">
+                <ul class = "nav navbar-nav navbar-right">
+                    <li class = "menu-item"><a href = "/">CHECK POINTS</a></li>
+                    <li class = "menu-item"><a href = "/leaderboard">LEADERBOARD</a></li>
+                    <li class = "menu-item"><a href = "/game-summary">GAME</a></li>
+                    <li class = "menu-item"><a href = "/prize">PRIZE STORE</a></li>
+                    <li class = "menu-item"><a href = "/schedule">SCHEDULE</a></li>
+                    <li class = "menu-item"><a href = "/rules">RULES & REGULATIONS</a></li>
+                    <% if (user) { %>
+                    <li class = "dropdown show-on-hover">
+                        <% if (user.approveCount > 0 ){ %>
+                        <a class = "dropdown-toggle" style = "background-color: black" data-toggle = "dropdown" href = "#">ADMIN <span class="badge" style="background-color: red; color: white"><%= user.approveCount%></span></a>
+                        <% } else { %>
+                        <a class = "dropdown-toggle" style = "background-color: black" data-toggle = "dropdown" href = "#">ADMIN </a>
+                        <% } %>
+
+                        <ul class = "dropdown-menu">
+                            <li class = "menu-item" style = "background-color: black"><a href = "/upload-items">ADD ITEM</a></li>
+                            <li class = "menu-item" style = "background-color: black"><a href = "/upload-registration">UPLOAD(R)</a></li>
+                            <li class = "menu-item" style = "background-color: black"><a href = "/upload-points">UPLOAD(P)</a></li>
+                            <li class = "menu-item" style = "background-color: black"><a href = "/item-logs">ITEM LOG</a></li>
+                            <% if (user.approveCount > 0 ){ %>
+                            <li class = "menu-item" style = "background-color: black"><a href = "/approve-items">APPROVE <span class="badge" style="background-color: red; color: white"><%= user.approveCount%></span></a> </li>
+                            <% } else { %>
+                            <li class = "menu-item" style = "background-color: black"><a href = "/approve-items">APPROVE</a></li>
+                            <% } %>
+
+
+                            <li class = "menu-item" style = "background-color: red"><a href = "/logout"> LOG OUT (<%= user.username %>)</a></li>
+                        </ul>
                     </li>
+                    <% } %>
                 </ul>
             </nav>
+
         </div>
         <!-- /.container-fluid -->
     </header>

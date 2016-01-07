@@ -32,7 +32,7 @@
                                        placeholder = "GTID Number" maxlength = "9" onclick = "clickEntry(this);">
                                 <input style = "margin-top: 10px; width: 100%; margin-bottom: 10px" type = "submit"
                                        class = "button button-primary button-large"
-                                       value = "Check Points" ng-click = "getHistory()">
+                                       value = "Get Points" ng-click = "getHistory()">
                             </form>
 
                             <div ng-if = "statusCode == 2 && invalidLength == true">
@@ -68,7 +68,12 @@
                                         </div>
                                         <div class = 'item__price js-item-price' data-price = '{{item.price}}'>0</div>
                                     </div>
-                                    <div class = 'item__interactions'>
+                                    <div class = 'item__interactions' ng-if = "item.quantity == 0" style="background-color: #e74c3c">
+                                        <p class = 'item__quantity'>
+                                            <span data-quantity = '0'>Out Of Stock</span>
+                                        </p>
+                                    </div>
+                                    <div class = 'item__interactions' ng-if = "item.quantity > 0">
                                         <p class = 'item__quantity'>
                                             <a class = 'js-item-increase' title = 'Add another item' style = "color: #00254c" ng-click = "increaseQuantity(item._id)">+</a>
                                             <a class = 'js-item-decrease decrease--disabled' title = 'Remove an item'
@@ -98,12 +103,26 @@
                                         >{{remainingPoint}}</span>
                                 </li>
                                 <li>
-                                    <button class = 'button js-checkout-button' ng-disabled = "remainingPoint <=0" ng-click = "checkOut()">Checkout</button>
+                                    <button class = 'button js-checkout-button' ng-disabled = "remainingPoint <=0 || checkingOut" ng-click = "checkOut()">Checkout</button>
                                 </li>
                             </ul>
                         </div>
                     </div>
 
+                    <p class = "text-center" ng-show = "checkingOut">
+                        <span class = "fa fa-spinner fa-spin fa-3x"></span>
+                    </p>
+
+                    <div align = "center">
+                        <div class = "alert alert-success" ng-if = "checkOutStatusCode == 1" style = "width: 300px ">
+                            {{messageArray}}
+                        </div>
+                    </div>
+                    <div align = "center">
+                        <div class = "alert alert-danger" ng-if = "checkOutStatusCode == 2" style = "width: 300px ">
+                            {{checkOutMessage}}
+                        </div>
+                    </div>
                 </div>
 
             </div>
@@ -119,29 +138,53 @@
         pointsController.controller('mainController', ['$scope', '$http', 'Points', function ($scope, $http, Points) {
             $scope.showModal = false;
             $scope.formData = {};
-            $scope.quantity = {}
+            $scope.quantity = {};
+            $scope.maxQuantity = {};
+            $scope.checkOutStatusCode = 0;
+            $scope.checkingOut = false;
             $scope.loading = false;
-            $http.get('api/upload-items', {}).success(function (items) {
-                $scope.itemObject = items;
-                for (var i = 0; i < items.length; i++) {
-                    $scope.quantity[items[i]._id] = 0;
-                }
-                $scope.loading = false;
-            });
-            $scope.checkOut = function () {
-                console.log("ASDF")
-                $http.post('/api/checkout', {quantity: $scope.quantity}).success(function (data) {
 
+            $scope.checkOut = function () {
+                $scope.checkingOut = true;
+                $http.post('/api/checkout', {quantity: $scope.quantity, gtID: $scope.formData.gtID}).success(function (data) {
+                    $scope.checkingOut = false;
+                    $scope.checkOutMessage = data.message;
+                    $scope.checkOutStatusCode = data.checkOutStatusCode;
+                    $scope.messageArray = data.messageArray;
+                    $http.get('api/upload-items', {}).success(function (items) {
+                        $scope.itemObject = items;
+                        for (var i = 0; i < items.length; i++) {
+                            $scope.quantity[items[i]._id] = 0;
+                            $scope.maxQuantity[items[i]._id] = items[i].quantity;
+                        }
+                        $scope.loading = false;
+                        var subtotal = document.querySelector('.js-total')
+                        subtotal.textContent = 0;
+
+                    })
                 });
             };
 
             $scope.increaseQuantity = function (id) {
-                $scope.quantity[id]++;
-                console.log($scope.quantity);
+                $scope.full = false;
+                $scope.beforefull = false;
+                if ($scope.quantity[id] == $scope.maxQuantity[id]) {
+                    $scope.quantity[id] = $scope.maxQuantity[id];
+                    $scope.full = true;
+                } else if ($scope.quantity[id] == $scope.maxQuantity[id] - 1) {
+                    $scope.beforefull = true;
+                    $scope.quantity[id]++;
+                } else {
+                    $scope.quantity[id]++;
+                }
+
             };
 
             $scope.decreaseQuantity = function (id) {
                 $scope.quantity[id]--;
+                if ($scope.quantity[id] < 0) {
+                    $scope.quantity[id] = 0;
+                }
             };
             $scope.getHistory = function () {
                 $scope.statusCode = 0;
@@ -150,7 +193,6 @@
                 // if form is empty, nothing will happen
                 if ($scope.formData.gtID != undefined) {
                     $scope.loading = true;
-                    // call the create function from our service (returns a promise object)
                     Points.get($scope.formData).success(function (data) {
                         if ($scope.formData.gtID.length != 9) {
                             $scope.invalidLength = true;
@@ -164,7 +206,6 @@
                         $scope.position = data.position;
                         $scope.registered = data.registered;
                         if (data.registered) {
-                            console.log(data);
                             $scope.currentPoint = data.points;
                             $scope.remainingPoint = data.points;
                         } else {
@@ -172,77 +213,105 @@
                             $scope.statusCode = 2;
                             $scope.remainingPoint = 0;
                         }
-                        if ($scope.registered) {
-
+                        $http.get('api/upload-items', {}).success(function (items) {
+                            $scope.itemObject = items;
+                            for (var i = 0; i < items.length; i++) {
+                                $scope.quantity[items[i]._id] = 0;
+                                $scope.maxQuantity[items[i]._id] = items[i].quantity;
+                            }
+                            $scope.loading = false;
                             var subtotal = document.querySelector('.js-total')
-                            var itemList = document.querySelector('.item-list')
-                            var priceFields = document.querySelectorAll('.item .js-item-price')
-                            var total = document.querySelector('.js-total')
-                            var checkoutButton = document.querySelector('.js-checkout-button')
-                            var modalWrapper = document.querySelector('.js-modal-wrapper')
-
-
-                            function handleCalculations() {
-                                var subTotalPrice = 0;
-                                priceFields = document.querySelectorAll('.item .js-item-price');
-
-                                for (var i = 0; i < priceFields.length; i++) {
-                                    subTotalPrice += +priceFields[i].textContent;
-                                }
-                                subTotalPrice = subTotalPrice.toFixed();
-                                subtotal.textContent = subTotalPrice;
-
-
-                                $scope.remainingPoint = $scope.currentPoint - subtotal.textContent;
-                                $scope.$apply();
-
-                            }
-
-                            function changeQuantity(emitter, action) {
-
-                                var action = emitter.classList.contains('js-item-increase') ? 'increase' : 'decrease',
-                                        quantityField = emitter.parentElement.querySelector('span'),
-                                        quantity = +quantityField.getAttribute('data-quantity'),
-                                        price;
-
-                                if (action === 'increase') {
-                                    emitter.nextElementSibling.classList.remove('decrease--disabled');
-                                } else if (action === 'decrease') {
-                                    if (quantity === 1) {
-                                        emitter.classList.add('decrease--disabled');
-                                    } else if (quantity === 0) {
-                                        return
-                                    }
-                                }
-
-                                quantityField.innerHTML = '<b>' + (action === 'increase' ? ++quantity : --quantity) + '</b> ' + (quantity > 1 ? 'items' : 'item');
-                                quantityField.setAttribute('data-quantity', quantity);
-
-                                price = emitter.parentElement.parentElement.parentElement.querySelector('.js-item-price');
-
-                                price.textContent = (quantity * price.getAttribute('data-price'));
-                                total = price.textContent;
-
-                                handleCalculations()
-                            }
-
-                            itemList.addEventListener('click', function (e) {
-                                var target = e.target,
-                                        classList = target.classList;
-
-                                if (classList.contains('js-item-increase') || classList.contains('js-item-decrease')) {
-                                    changeQuantity(target)
-                                }
-                            });
-
-                        }
+                            subtotal.textContent = 0;
+                        })
                     });
+
                 }
 
             }
 
+            $http.get('api/upload-items', {}).success(function (items) {
+                $scope.itemObject = items;
+                for (var i = 0; i < items.length; i++) {
+                    $scope.quantity[items[i]._id] = 0;
+                    $scope.maxQuantity[items[i]._id] = items[i].quantity;
+                }
+                $scope.loading = false;
+
+                var subtotal = document.querySelector('.js-total')
+                var itemList = document.querySelector('.item-list')
+                var priceFields = document.querySelectorAll('.item .js-item-price')
+                var total = document.querySelector('.js-total')
+                var checkoutButton = document.querySelector('.js-checkout-button')
+                var modalWrapper = document.querySelector('.js-modal-wrapper')
+
+
+                function handleCalculations() {
+                    var subTotalPrice = 0;
+                    priceFields = document.querySelectorAll('.item .js-item-price');
+
+                    for (var i = 0; i < priceFields.length; i++) {
+                        subTotalPrice += +priceFields[i].textContent;
+                    }
+                    subTotalPrice = subTotalPrice.toFixed();
+                    subtotal.textContent = subTotalPrice;
+
+
+                    $scope.remainingPoint = $scope.currentPoint - subtotal.textContent;
+                    $scope.$apply();
+
+                }
+
+                function changeQuantity(emitter, action) {
+
+                    var action = emitter.classList.contains('js-item-increase') ? 'increase' : 'decrease',
+                            quantityField = emitter.parentElement.querySelector('span'),
+                            quantity = +quantityField.getAttribute('data-quantity'),
+                            price;
+
+                    if (action === 'increase') {
+                        emitter.nextElementSibling.classList.remove('decrease--disabled');
+                        if ($scope.beforefull) {
+                            emitter.classList.add('decrease--disabled');
+
+                        } else if ($scope.full) {
+                            return
+                        }
+                    } else if (action === 'decrease') {
+                        emitter.previousElementSibling.classList.remove('decrease--disabled');
+                        if (quantity === 1) {
+                            emitter.classList.add('decrease--disabled');
+                        } else if (quantity === 0) {
+                            return
+                        }
+                    }
+
+                    quantityField.innerHTML = '<b>' + (action === 'increase' ? ++quantity : --quantity) + '</b> ' + (quantity > 1 ? 'items' : 'item');
+                    quantityField.setAttribute('data-quantity', quantity);
+
+                    price = emitter.parentElement.parentElement.parentElement.querySelector('.js-item-price');
+
+                    price.textContent = (quantity * price.getAttribute('data-price'));
+                    total = price.textContent;
+
+                    handleCalculations()
+                }
+
+                itemList.addEventListener('click', function (e) {
+                    var target = e.target,
+                            classList = target.classList;
+
+                    if (classList.contains('js-item-increase') || classList.contains('js-item-decrease')) {
+                        changeQuantity(target)
+                    }
+                });
+
+
+            });
+
 
         }]);
+
+
         angular.module('pointsService', []).factory('Points', ['$http', function ($http) {
             return {
                 get: function (giID) {

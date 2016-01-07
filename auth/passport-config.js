@@ -1,54 +1,34 @@
+var PendingItem = require('../models/databaseModels').PendingItem;
+
 module.exports = function () {
     var passport = require('passport');
     var passportLocal = require('passport-local');
     var databaseFunction = require('../services/users')
-    var bcrypt = require('bcrypt-nodejs');
 
     passport.use(new passportLocal.Strategy({
         usernameField: 'username',
         passwordField: 'password'
     }, function (username, password, next) {
-        databaseFunction.findUser(username, function (err, user) {
 
+        databaseFunction.findUser({username: username, password: password}, function (err, user) {
             if (err) {
                 return next(err);
             }
-            if (!user) {
-                if (username === 'root' && password === 'root') {
-                    databaseFunction.addUser({
-                        username: username,
-                        password: password
-                    }, function (err) {
-                        if (err) {
-                            return next(err);
-                        }
-                    });
-                    return next(null, null);
-                } else {
-                    return next(null, null);
-                }
 
-            }
-
-            bcrypt.compare(password, user.password, function (err, same) {
-                if (err) {
-                    return next(err);
-                }
-                if (!same) {
-                    return next(null, null);
-                }
-
-                databaseFunction.findUserDetailById(user.id, function (err, object) {
-                    var name =user.username.split("@");
+            if (user) {
+                PendingItem.find({approved: false}, function (err, pendingItem) {
                     var serializeObject = {
                         username: user.username,
-                        interest: object.interest,
-                        name: name[0],
-                        accountType: object.accountType
+                        approveCount: pendingItem.length
                     }
                     next(null, serializeObject);
-                });
-            });
+                })
+
+
+            } else {
+                next(null, null);
+            }
+
 
         });
 

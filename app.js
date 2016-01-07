@@ -19,9 +19,9 @@ var config = require('./config');
 var routes = require('./routes/index');
 
 var restrict = require('./auth/restrict');
-var match = require('./routes/match');
-
-
+var refreshAuth = require('./auth/refreshAuth');
+var login = require('./routes/login');
+var admin = require('./routes/admin');
 var MongoStore = connectMongo(expressSession);
 var passportConfig = require('./auth/passport-config');
 passportConfig();
@@ -59,13 +59,15 @@ app.use(expressSession(
 app.use(flash());
 app.use(passport.initialize());
 app.use(passport.session());
-
+app.use(refreshAuth);
 app.use('/', routes);
-app.use('/match', match);
-
-
-
+app.use('/login', login);
 app.use(restrict);
+
+app.use('/', admin);
+
+
+
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
@@ -83,6 +85,7 @@ if (app.get('env') === 'development') {
         res.status(err.status || 500);
         res.render('errorMessage', {
             message: err.message,
+            user: req.user,
             error: err
         });
     });
@@ -94,7 +97,8 @@ app.use(function (err, req, res, next) {
     res.status(err.status || 500);
     res.render('error', {
         message: err.message,
-        error: {}
+        user: req.user,
+        error: err
     });
 });
 
