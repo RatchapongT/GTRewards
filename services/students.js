@@ -181,6 +181,41 @@ exports.saveItem = function (input, next) {
     });
 }
 
+exports.editItem = function (input, next) {
+    var option = {};
+    if (input.image) {
+
+        option = {
+            $set: {
+                image: input.image,
+                id: input.id,
+                name: input.name,
+                description: input.description,
+                price: input.price,
+                quantity: input.quantity
+            }
+        };
+    } else {
+        option = {
+            $set: {
+                id: input.id,
+                name: input.name,
+                description: input.description,
+                price: input.price,
+                quantity: input.quantity
+            }
+        };
+
+    }
+    Item.update({_id: input.id}, option, function (err, item) {
+        if (err) {
+            next(err, null);
+        } else {
+            next(null, item);
+        }
+    });
+}
+
 exports.getItem = function (input, next) {
 
     Item.find({}, function (err, item) {

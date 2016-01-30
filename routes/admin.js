@@ -101,6 +101,125 @@ router.post('/upload-items', function (req, res, next) {
 
 });
 
+
+router.post('/edit-items', function (req, res, next) {
+    if (req.user) {
+
+        if (req.body.file) {
+            var inputImage = {
+                id : req.body.id,
+                name: req.body.name,
+                description: req.body.description,
+                price: req.body.price,
+                quantity: req.body.quantity
+            };
+
+            databaseFunction.editItem(inputImage, function (err, result) {
+                if (err) {
+                    console.log(err);
+                }
+                databaseFunction.getItem({}, function (err, itemObject) {
+                    if (err) {
+                        console.log(err);
+                    }
+                    res.json({
+                        message: "Complete",
+                        messageCode: 1,
+                        itemObject: itemObject
+                    });
+                });
+
+
+            });
+        } else {
+            var fstream;
+            req.pipe(req.busboy);
+            req.busboy.on('error', function (err) {
+                console.log(err);
+            });
+            var name;
+            var description;
+            var price;
+            var quantity;
+            var id;
+            req.busboy.on('field', function (fieldname, val, fieldnameTruncated, valTruncated) {
+                if (fieldname == 'name') {
+                    name = val;
+                }
+                if (fieldname == 'description') {
+                    description = val;
+                }
+                if (fieldname == 'price') {
+                    price = val;
+                }
+                if (fieldname == 'quantity') {
+                    quantity = val;
+                }
+                if (fieldname == 'id') {
+                    id = val;
+                }
+            });
+
+            req.busboy.on('file', function (fieldname, file, filename, encoding, mimetype) {
+                var date = new Date();
+                date = (date.getMonth() + 1) + '-' + date.getDate() + '-' + date.getFullYear();
+                var extension = filename.substring(filename.length - 3, filename.length);
+
+                if (mimetype != 'image/png') {
+                    return res.json({
+                        message: "Invalid format",
+                        messageCode: 2
+                    });
+                } else {
+                    var now = Date.now();
+                    fstream = fs.createWriteStream(__dirname + '/output-items/' + now + '.' + extension);
+                    var imgPath = __dirname + '/output-items/' + now + '.' + extension;
+                    file.pipe(fstream);
+                    fstream.on('close', function () {
+                        console.log("Upload Finished of " + now + '.' + extension);
+                        console.log("Processing File... " + now + '.' + extension);
+                        var image = {};
+                        image.data = "data:image/png;base64," + new Buffer(fs.readFileSync(imgPath)).toString('base64');
+                        image.contentType = mimetype;
+                        var inputImage = {
+                            id: id,
+                            image: image,
+                            name: name,
+                            description: description,
+                            price: price,
+                            quantity: quantity
+                        };
+                        databaseFunction.editItem(inputImage, function (err, result) {
+                            if (err) {
+                                console.log(err);
+                            }
+                            databaseFunction.getItem({}, function (err, itemObject) {
+                                if (err) {
+                                    console.log(err);
+                                }
+                                res.json({
+                                    message: "Complete",
+                                    messageCode: 1,
+                                    itemObject: itemObject
+                                });
+                            });
+
+
+                        });
+
+
+                    });
+                }
+            });
+        }
+
+
+    }
+
+
+});
+
+
 router.get('/upload-items', function (req, res, next) {
     if (req.user) {
         var vm = {

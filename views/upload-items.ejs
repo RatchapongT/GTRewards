@@ -16,6 +16,7 @@
         <!-- Cover element
         ================================================== -->
         <div ng-app = "uploadModule" ng-controller = "uploadCtrl" ng-cloak>
+
             <div class = "cover-wrapper" style = "background-color:#c59353">
                 <div class = "cover-container overlay"
                      style = "padding-top: 20%; padding-bottom: 20%;">
@@ -72,6 +73,9 @@
                                     <th style = "text-align: center">
                                         Delete
                                     </th>
+                                    <th style = "text-align: center">
+                                        Edit
+                                    </th>
                                 </thead>
 
                                 <tr ng-repeat = "item in itemObject">
@@ -91,7 +95,10 @@
                                         {{item.quantity}}
                                     </td>
                                     <td style = "vertical-align: middle">
-                                        <i class = "fa fa-trash" ng-click = "deleteItem(item._id)" style = "font-size: 25px; cursor: pointer;" ></i>
+                                        <i class = "fa fa-trash" ng-click = "deleteItem(item._id)" style = "font-size: 25px; cursor: pointer;"></i>
+                                    </td>
+                                    <td style = "vertical-align: middle">
+                                        <i class = "fa fa-edit" ng-click = "toggleForm(item)" style = "font-size: 25px; cursor: pointer;"></i>
                                     </td>
                                 </tr>
                             </table>
@@ -102,7 +109,40 @@
                 </div>
                 <!-- /.cover-container -->
             </div>
+            <modal title = "Edit Item" visible = "showModal" style = "padding-top: 20%">
+                Display
+                <input type = "file" id = "itemFile" name = "itemFile"
+                       file-model = "editForm.file" style = "margin-bottom: 10px">
+                Name
+                <input ng-model = "editForm.name" id = "name" name = "name" class = "form-control" style = "margin-bottom: 10px"
+                       type = "text"
+                       placeholder = "Prize Name" onclick = "clickEntry(this);">
+                Description
+                <input ng-model = "editForm.description" id = "description" name = "description" class = "form-control" style = "margin-bottom: 10px"
+                       type = "text"
+                       placeholder = "Prize Description" onclick = "clickEntry(this);">
+                Price
+                <input ng-model = "editForm.price" id = "price" name = "price" class = "form-control" style = "margin-bottom: 10px"
+                       onkeypress = "return isNumberKey(event)" type = "text"
+                       placeholder = "Prize Cost" maxlength = "4" onclick = "clickEntry(this);">
+                Quantity
+                <input ng-model = "editForm.quantity" id = "quantity" name = "quantity" class = "form-control" style = "margin-bottom: 10px"
+                       onkeypress = "return isNumberKey(event)" type = "text"
+                       placeholder = "Prize Quantity" maxlength = "4" onclick = "clickEntry(this);">
 
+                <p class = "text-center" ng-show = "editLoading">
+                    <span class = "fa fa-spinner fa-spin fa-3x"></span>
+                </p>
+                <button style = "background-color: #27ae60" type = "submit" class = "btn btn-default" ng-click = "submitEdit()" ng-show="!editLoading && messageCode == 0">Save</button>
+                <div align = "center">
+                    <div class = "alert alert-success" ng-if = "messageCode == 1" style = "width: 300px ">
+                        {{editMessage}}
+                    </div>
+                    <div class = "alert alert-danger" ng-if = "messageCode == 2" style = "width: 300px ">
+                        {{editMessage}}
+                    </div>
+                </div>
+            </modal>
         </div>
         <!-- /.cover-wrapper -->
 
@@ -112,13 +152,19 @@
     <footer id = "footer">
         <% include partials/page/footer.ejs %>
     </footer>
-    <script src = "https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+
     <script src = "../../file-input/js/fileinput.min.js"></script>
 
     <script>
+        //angular.module('uploadModule', ['addCustomerControllers']);
 
-        var myApp = angular.module('uploadModule', []);
-        myApp.controller('uploadCtrl', ['$scope', '$http', 'multipartForm', function ($scope, $http, multipartForm) {
+        angular.module('uploadModule', ['uploadCtrl']);
+
+        var uploadCtrl = angular.module('uploadCtrl', []);
+
+        // var myApp = angular.module('uploadModule', []);
+        uploadCtrl.controller('uploadCtrl', ['$scope', '$http', 'multipartForm', function ($scope, $http, multipartForm) {
+            $scope.showModal = false;
             $scope.status = "Upload File";
             $scope.finished = false;
             $scope.loading = true;
@@ -140,19 +186,64 @@
                 $scope.loading = true;
                 if (confirm("Delete?") == true) {
                     $http.delete('api/upload-items/' + id).success(function (items) {
-                    $scope.itemObject = items;
-                    $scope.loading = false;
-                });
+                        $scope.itemObject = items;
+                        $scope.loading = false;
+                    });
                 } else {
                     $scope.loading = false;
                 }
             };
 
+            $scope.toggleForm = function (item) {
+                console.log(item)
+                $scope.showModal = !$scope.showModal
+                $scope.editForm = {};
+                $scope.editForm.file = 'Default';
+                $scope.messageCode = 0;
+                $scope.editForm.id = item._id;
+                $scope.editForm.name = item.name;
+                $scope.editForm.description = item.description;
+                $scope.editForm.price = item.price;
+                $scope.editForm.quantity = item.quantity;
+            };
+            var foundFile = true;
+            $scope.submitEdit = function () {
+                $scope.editLoading = true;
+                var editUrl = '/edit-items';
+                var fd = new FormData();
+                for (var key in  $scope.editForm) {
+                    if(key == 'file') {
+                        if($scope.editForm[key] == 'Default') {
+                            foundFile = false;
+                        }
+                    }
+                    fd.append(key,  $scope.editForm[key]);
+                }
+
+                if (!foundFile) {
+                    $http.post(editUrl, $scope.editForm).success(function (response) {
+                        $scope.editLoading = false;
+                        $scope.editMessage = response.message;
+                        $scope.messageCode = response.messageCode;
+                        $scope.itemObject = response.itemObject;
+                    });
+                } else {
+                    $http.post(editUrl, fd, {
+                        transformRequest: angular.identity,
+                        headers: {'Content-Type': undefined}
+                    }).success(function (response) {
+                        $scope.editLoading = false;
+                        $scope.editMessage = response.message;
+                        $scope.messageCode = response.messageCode;
+                        $scope.itemObject = response.itemObject;
+                    });
+                }
+            };
 
 
         }]);
 
-        myApp.service('multipartForm', ['$http', function ($http) {
+        uploadCtrl.service('multipartForm', ['$http', function ($http) {
             this.post = function (uploadUrl, data, scope) {
 
                 var fd = new FormData();
@@ -171,7 +262,7 @@
             }
         }]);
 
-        myApp.directive('fileModel', ['$parse', function ($parse) {
+        uploadCtrl.directive('fileModel', ['$parse', function ($parse) {
             return {
                 restrict: 'A',
                 link: function (scope, element, attrs) {
@@ -201,5 +292,51 @@
                 return false;
             return true;
         }
+
+
+        uploadCtrl.directive('modal', function () {
+
+            return {
+                template: '<div class="modal fade">' +
+                '<div class="modal-dialog">' +
+                '<div class="modal-content">' +
+                '<div class="modal-header">' +
+                '<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>' +
+                '<h4 class="modal-title">{{ title }}</h4>' +
+                '</div>' +
+                '<div class="modal-body" ng-transclude></div>' +
+                '</div>' +
+                '</div>' +
+                '</div>',
+                restrict: 'E',
+                transclude: true,
+                replace: true,
+                scope: true,
+                link: function postLink(scope, element, attrs) {
+
+                    scope.title = attrs.title;
+
+                    scope.$watch(attrs.visible, function (value) {
+                        if (value == true) {
+                            $(element).modal('show');
+                        }
+                        else
+                            $(element).modal('hide');
+                    });
+
+                    $(element).on('shown.bs.modal', function () {
+                        scope.$apply(function () {
+                            scope.$parent[attrs.visible] = true;
+                        });
+                    });
+
+                    $(element).on('hidden.bs.modal', function () {
+                        scope.$apply(function () {
+                            scope.$parent[attrs.visible] = false;
+                        });
+                    });
+                }
+            };
+        });
     </script>
 </html>
