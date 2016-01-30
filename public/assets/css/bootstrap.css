@@ -3069,7 +3069,7 @@ select:focus {
 .form-control[readonly],
 fieldset[disabled] .form-control {
     cursor: not-allowed;
-    background-color: #6c6e73;
+    background-color: #c1c5ce;
     opacity: 1;
 }
 

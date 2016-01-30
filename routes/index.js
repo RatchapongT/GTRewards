@@ -12,7 +12,6 @@ router.get('/', function (req, res, next) {
 });
 
 
-
 router.get('/rules', function (req, res, next) {
     var vm = {
         title: 'Rules',
@@ -70,6 +69,19 @@ router.get('/api/upload-items', function (req, res, next) {
 
 });
 
+
+router.get('/api/game-summary', function (req, res, next) {
+    databaseFunction.getGames(10, function (err, game) {
+        if (err) {
+            console.log(err);
+        } else {
+            return res.json({
+                game: game
+            })
+        }
+    });
+
+});
 
 
 router.post('/api/checkout', function (req, res, next) {
@@ -141,8 +153,6 @@ router.get('/prize', function (req, res, next) {
     };
     res.render('prize', vm);
 });
-
-
 
 
 module.exports = router;

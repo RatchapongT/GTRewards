@@ -18,7 +18,36 @@ router.delete('/api/upload-items/:id', function (req, res, next) {
         });
     }
 });
-
+router.delete('/api/game-summary/:id', function (req, res, next) {
+    if (req.user) {
+        databaseFunction.deleteGame(req.params.id, function (err, game) {
+            if (err) {
+                console.log(err);
+            } else {
+                return res.json({
+                    message: "Success",
+                    messageCode: 1,
+                    game: game
+                })
+            }
+        });
+    }
+});
+router.post('/api/game-summary/', function (req, res, next) {
+    if (req.user) {
+        databaseFunction.editGame(req.body, function (err, game) {
+            if (err) {
+                console.log(err);
+            } else {
+                return res.json({
+                    message: "Success",
+                    messageCode: 1,
+                    game: game
+                })
+            }
+        });
+    }
+});
 router.post('/upload-items', function (req, res, next) {
     if (req.user) {
         var fstream;
@@ -107,7 +136,7 @@ router.post('/edit-items', function (req, res, next) {
 
         if (req.body.file) {
             var inputImage = {
-                id : req.body.id,
+                id: req.body.id,
                 name: req.body.name,
                 description: req.body.description,
                 price: req.body.price,
@@ -480,10 +509,18 @@ router.post('/upload-points', function (req, res, next) {
 
                             });
                         });
-                        res.json({
-                            message: "Complete",
-                            messageCode: 1
+                        databaseFunction.getGames(10, function (err, game) {
+                            if (err) {
+                                console.log(err);
+                            } else {
+                                res.json({
+                                    message: "Complete",
+                                    messageCode: 1,
+                                    game: game
+                                });
+                            }
                         });
+
                     });
 
                 });

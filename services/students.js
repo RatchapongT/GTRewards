@@ -239,6 +239,70 @@ exports.deleteItem = function (input, next) {
     });
 }
 
+exports.deleteGame = function (input, next) {
+    Game.findOne({_id: input}, function (err, gameObject) {
+        if (err) {
+            next(err, null);
+        }
+        History.find({description: gameObject.name, points: gameObject.points, date: gameObject.date}, function(err, historyObjects) {
+            async.each(historyObjects, function(history, callback) {
+                Student.update({_id: history._studentDetail}, {$inc: {sum: -1 * history.points}}, function(err) {
+                   if(err) {
+                       callback(err);
+                   }
+                    history.remove(function(err) {
+                        if (err) {
+                            callback(err);
+                        }
+                        callback();
+                    })
+
+                });
+            }, function(err){
+                if( err ) {
+                    console.log('An entry failed to process');
+                } else {
+                    gameObject.remove(function(err) {
+                        if (err) {
+                            console.log('Fail to remove');
+                        }
+                        Game.find({}, function (err, game) {
+                            if (err) {
+                                next(err, null);
+                            } else {
+                                next(err, game);
+                            }
+                        });
+                    })
+
+                }
+            });
+        });
+    });
+
+}
+exports.editGame = function (input, next) {
+    console.log(input)
+    Game.findOneAndUpdate({_id: input.id}, {$set: {name: input.name}}, function (err, gameObject) {
+        if (err) {
+            next(err, null);
+        }
+        console.log(gameObject)
+        History.update({description: gameObject.name, points: gameObject.points, date: gameObject.date},{$set: {description: input.name}}, {multi: true}, function(err) {
+            if(err) {
+                next(err, null);
+            }
+            Game.find({}, function (err, game) {
+                if (err) {
+                    next(err, null);
+                } else {
+                    next(err, game);
+                }
+            });
+        });
+    });
+
+}
 exports.getGames = function (input, next) {
     Game.find({}, function (err, game) {
         if (err) {

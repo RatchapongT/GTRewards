@@ -1,134 +1,323 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang = "en">
 
-<head>
-    <% include partials/page/head.ejs %>
-</head>
-<link href="../../file-input/css/fileinput.min.css" media="all"
-      rel="stylesheet" type="text/css"/>
+    <head>
+        <% include partials/page/head.ejs %>
+    </head>
+    <link href = "../../file-input/css/fileinput.min.css" media = "all"
+          rel = "stylesheet" type = "text/css" />
 
-<% include partials/page/jsdefaults.ejs %>
-<body class="home">
-<!-- Navigation (main menu)
-================================================== -->
-<% include partials/page/navbar.ejs %>
+    <% include partials/page/jsdefaults.ejs %>
+    <body class = "home">
+        <!-- Navigation (main menu)
+        ================================================== -->
+        <% include partials/page/navbar.ejs %>
 
-<!-- Cover element
-================================================== -->
-<div ng-app="uploadModule" ng-controller="uploadCtrl" ng-cloak>
-    <div class="cover-wrapper" style="background-color:#c59353">
-        <div class="cover-container overlay"
-             style="padding-top: 20%; padding-bottom: 20%;">
-            <div class=" cover-inner">
-                <div class="container">
-                    <h2 style="color:#fff;">Upload Game Data</h2>
+        <!-- Cover element
+        ================================================== -->
+        <div ng-app = "uploadModule" ng-controller = "uploadCtrl" ng-cloak>
+            <div class = "cover-wrapper" style = "background-color:#c59353">
+                <div class = "cover-container overlay"
+                     style = "padding-top: 20%; padding-bottom: 20%;">
+                    <div class = " cover-inner">
+                        <div class = "container">
+                            <h2 style = "color:#fff;">Upload Game Data</h2>
 
-                    <form>
-                        <div class="gtid">
-                            <input type="file" id="excelfile" name ="excelfile"
-                                   file-model="excel.file" style="margin-bottom: 10px">
-                            <input ng-model="excel.points" id="points"  name="points" class="form-control" style="margin-bottom: 10px"
-                                   onkeypress="return isNumberKey(event)" type="text"
-                                   placeholder="Game Point Value" maxlength="3" onclick="clickEntry(this);">
-                            <button type="submit" class="btn btn-default btn-lg" ng-click="Submit()"
-                                    style="width: 100%; background-color:#00254c">
-                                <i class="fa fa-cloud-upload"></i>
-                                &nbsp;
+                            <form>
+                                <div class = "gtid">
+                                    <input type = "file" id = "excelfile" name = "excelfile"
+                                           file-model = "excel.file" style = "margin-bottom: 10px">
+                                    <input ng-model = "excel.points" id = "points" name = "points" class = "form-control" style = "margin-bottom: 10px"
+                                           onkeypress = "return isNumberKey(event)" type = "text"
+                                           placeholder = "Game Point Value" maxlength = "3" onclick = "clickEntry(this);">
+                                    <button type = "submit" class = "btn btn-default btn-lg" ng-click = "Submit()"
+                                            style = "width: 100%; background-color:#00254c">
+                                        <i class = "fa fa-cloud-upload"></i>
+                                        &nbsp;
                                 <span>{{status}}
-                                    <div ng-show="loading"><img width="20 px" src="assets/images/loading-animation.gif">
+                                    <div ng-show = "loading"><img width = "20 px" src = "assets/images/loading-animation.gif">
                                     </div>
-                                    <div ng-show="finished"><img width="20 px" src="assets/images/finished.png">
+                                    <div ng-show = "finished"><img width = "20 px" src = "assets/images/finished.png">
                                     </div>
                                 </span>
-                            </button>
+                                    </button>
+                                </div>
+
+
+                            </form>
+                            <div style = "background-color: white">
+                                <table class = "table  table-hover"
+                                       style = "width: 100%; color:black; text-shadow: none; margin-top: 50px">
+                                    <thead>
+                                        <tr class = "warning">
+                                            <th style = "text-align: center">Date</th>
+                                            <th style = "text-align: center">Game</th>
+                                            <th style = "text-align: center">Points</th>
+                                            <th style = "text-align: center">Delete</th>
+                                            <th style = "text-align: center">Edit</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr ng-repeat = "game in games">
+
+                                            <td style = "vertical-align: middle">
+                                                {{game.date}}
+                                            </td>
+                                            <td style = "vertical-align: middle">
+                                                {{game.name}}
+                                            </td>
+                                            <td style = "vertical-align: middle">
+                                                {{game.points}}
+                                            </td>
+                                            <td style = "vertical-align: middle">
+                                                <i class = "fa fa-trash" ng-click = "toggleDelete(game)" style = "font-size: 25px; cursor: pointer;"></i>
+                                            </td>
+                                            <td style = "vertical-align: middle">
+                                                <i class = "fa fa-edit" ng-click = "toggleEdit(game)" style = "font-size: 25px; cursor: pointer;"></i>
+                                            </td>
+                                        </tr>
+
+                                    </tbody>
+                                </table>
+
+                            </div>
+
+
                         </div>
+                        <!-- /.container -->
 
 
-                    </form>
+                    </div>
+                    <!-- /.cover-inner -->
 
                 </div>
-                <!-- /.container -->
+
+                <modal title = "Manage Game" visible = "showModal" style = "text-shadow: none; color: black">
+                    <div ng-show = "toggleD">
+                        <p>
+                            Are you sure you want to delete?
+                        </p>
+
+                        <p>
+                            <strong>Game:</strong> {{editForm.name}}<br>
+                            <strong>Date:</strong> {{editForm.date}}<br>
+                            <strong>Points:</strong> {{editForm.points}}<br>
+                        </p>
+
+                        <p class = "text-center" ng-show = "editLoading">
+                            <span class = "fa fa-spinner fa-spin fa-3x"></span>
+                        </p>
+                        <button style = "background-color: #ff4d4d" type = "submit" class = "btn btn-default" ng-click = "deleteGame(editForm.id)" ng-show = "!editLoading && messageCode == 0">Submit</button>
+                        <div align = "center">
+                            <div class = "alert alert-success" ng-if = "messageCode == 1" style = "width: 300px ">
+                                {{editMessage}}
+                            </div>
+                            <div class = "alert alert-danger" ng-if = "messageCode == 2" style = "width: 300px ">
+                                {{editMessage}}
+                            </div>
+                        </div>
+                    </div>
+                    <div ng-show = "toggleE">
+                        Game
+                        <input ng-model = "editForm.name" id = "name" name = "name" class = "form-control" style = "margin-bottom: 10px"
+                               type = "text"
+                               placeholder = "Game" onclick = "clickEntry(this);">
+                        Date
+                        <input ng-model = "editForm.date" id = "description" name = "description" class = "form-control" style = "margin-bottom: 10px"
+                               type = "text"
+                               placeholder = "Date" onclick = "clickEntry(this);" disabled>
+                        Points
+                        <input ng-model = "editForm.points" id = "price" name = "price" class = "form-control" style = "margin-bottom: 10px"
+                               onkeypress = "return isNumberKey(event)" type = "text"
+                               placeholder = "Points" maxlength = "4" onclick = "clickEntry(this);" disabled>
+
+
+                        <p class = "text-center" ng-show = "editLoading">
+                            <span class = "fa fa-spinner fa-spin fa-3x"></span>
+                        </p>
+                        <button style = "background-color: #27ae60"  type = "submit" class = "btn btn-default" ng-click = "editGame(editForm.id)" ng-show = "!editLoading && messageCode == 0">Save</button>
+                        <div align = "center">
+                            <div class = "alert alert-success" ng-if = "messageCode == 1" style = "width: 300px ">
+                                {{editMessage}}
+                            </div>
+                            <div class = "alert alert-danger" ng-if = "messageCode == 2" style = "width: 300px ">
+                                {{editMessage}}
+                            </div>
+                        </div>
+                    </div>
+                </modal>
+
+                <!-- /.cover-container -->
             </div>
-            <!-- /.cover-inner -->
+
         </div>
-        <!-- /.cover-container -->
-    </div>
-
-</div>
-<!-- /.cover-wrapper -->
+        <!-- /.cover-wrapper -->
 
 
-</body>
+    </body>
 
-<footer id="footer">
-    <% include partials/page/footer.ejs %>
-</footer>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
-<script src="../../file-input/js/fileinput.min.js"></script>
+    <footer id = "footer">
+        <% include partials/page/footer.ejs %>
+    </footer>
 
-<script>
-    var myApp = angular.module('uploadModule', []);
-    myApp.controller('uploadCtrl', ['$scope', 'multipartForm', function ($scope, multipartForm) {
-        $scope.status = "Upload File";
-        $scope.finished = false;
-        $scope.loading = false;
-        $scope.Submit = function () {
+    <script src = "../../file-input/js/fileinput.min.js"></script>
+
+    <script>
+        var myApp = angular.module('uploadModule', []);
+        myApp.controller('uploadCtrl', ['$scope', 'multipartForm', '$http', function ($scope, multipartForm, $http) {
+            $scope.status = "Upload File";
             $scope.finished = false;
-            $scope.loading = true;
-            var uploadUrl = '/upload-points';
-            $scope.status = "Processing";
-            console.log($scope.excel)
-            multipartForm.post(uploadUrl, $scope.excel, $scope);
-        }
-    }]);
-
-    myApp.service('multipartForm', ['$http', function ($http) {
-        this.post = function (uploadUrl, data, scope) {
-
-            var fd = new FormData();
-            for (var key in data) {
-                fd.append(key, data[key]);
-            }
-            $http.post(uploadUrl, fd, {
-                transformRequest: angular.identity,
-                headers: {'Content-Type': undefined}
-            }).success(function (response) {
-
-                scope.status = response.message;
-                scope.loading = false;
-                scope.finished = true;
+            $scope.loading = false;
+            $scope.showModal = false;
+            $http.get('/api/game-summary/').success(function (data) {
+                $scope.games = data.game;
             });
-        }
-    }]);
+            $scope.toggleD = false;
+            $scope.toggleE = false;
+            $scope.toggleDelete = function (game) {
+                $scope.toggleD = true;
+                $scope.toggleE = false;
+                $scope.showModal = !$scope.showModal;
+                $scope.editForm = {};
+                $scope.messageCode = 0;
+                $scope.editForm.id = game._id;
+                $scope.editForm.date = game.date;
+                $scope.editForm.name = game.name;
+                $scope.editForm.points = game.points;
+            };
+            $scope.toggleEdit = function (game) {
+                $scope.toggleD = false;
+                $scope.toggleE = true;
+                $scope.showModal = !$scope.showModal;
+                $scope.editForm = {};
+                $scope.messageCode = 0;
+                $scope.editForm.id = game._id;
+                $scope.editForm.date = game.date;
+                $scope.editForm.name = game.name;
+                $scope.editForm.points = game.points;
+            };
+            $scope.editGame = function (gameid) {
+                $scope.editLoading = true;
+                $http.post('/api/game-summary/', $scope.editForm).success(function (response) {
+                    $scope.editLoading = false;
+                    $scope.editMessage = response.message;
+                    $scope.messageCode = response.messageCode;
+                    $scope.games = response.game;
+                });
+            };
 
-    myApp.directive('fileModel', ['$parse', function ($parse) {
-        return {
-            restrict: 'A',
-            link: function (scope, element, attrs) {
-                var model = $parse(attrs.fileModel);
-                var modelSetter = model.assign;
+            $scope.deleteGame = function (gameid) {
+                $scope.editLoading = true;
+                $http.delete('/api/game-summary/' + gameid).success(function (response) {
+                    $scope.editLoading = false;
+                    $scope.editMessage = response.message;
+                    $scope.messageCode = response.messageCode;
+                    $scope.games = response.game;
+                });
+            };
 
-                element.bind('change', function () {
-                    scope.$apply(function () {
-                        modelSetter(scope, element[0].files[0]);
-                    });
+            $scope.Submit = function () {
+                $scope.finished = false;
+                $scope.loading = true;
+                var uploadUrl = '/upload-points';
+                $scope.status = "Processing";
+                console.log($scope.excel)
+                multipartForm.post(uploadUrl, $scope.excel, $scope);
+            }
+        }]);
+
+        myApp.service('multipartForm', ['$http', function ($http) {
+            this.post = function (uploadUrl, data, scope) {
+
+                var fd = new FormData();
+                for (var key in data) {
+                    fd.append(key, data[key]);
+                }
+                $http.post(uploadUrl, fd, {
+                    transformRequest: angular.identity,
+                    headers: {'Content-Type': undefined}
+                }).success(function (response) {
+                    console.log(response)
+                    scope.status = response.message;
+                    scope.loading = false;
+                    scope.finished = true;
+                    scope.games = response.game;
                 });
             }
-        };
-    }]);
+        }]);
 
-    function clickEntry(input) {
-        var disMouse = document.getElementById(input.id);
-        disMouse.addEventListener("mousewheel", function (evt) {
-            evt.preventDefault();
+        myApp.directive('fileModel', ['$parse', function ($parse) {
+            return {
+                restrict: 'A',
+                link: function (scope, element, attrs) {
+                    var model = $parse(attrs.fileModel);
+                    var modelSetter = model.assign;
+
+                    element.bind('change', function () {
+                        scope.$apply(function () {
+                            modelSetter(scope, element[0].files[0]);
+                        });
+                    });
+                }
+            };
+        }]);
+
+        myApp.directive('modal', function () {
+
+            return {
+                template: '<div class="modal fade">' +
+                '<div class="modal-dialog">' +
+                '<div class="modal-content">' +
+                '<div class="modal-header">' +
+                '<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>' +
+                '<h4 class="modal-title">{{ title }}</h4>' +
+                '</div>' +
+                '<div class="modal-body" ng-transclude></div>' +
+                '</div>' +
+                '</div>' +
+                '</div>',
+                restrict: 'E',
+                transclude: true,
+                replace: true,
+                scope: true,
+                link: function postLink(scope, element, attrs) {
+
+                    scope.title = attrs.title;
+
+                    scope.$watch(attrs.visible, function (value) {
+                        if (value == true) {
+                            $(element).modal('show');
+                        }
+                        else
+                            $(element).modal('hide');
+                    });
+
+                    $(element).on('shown.bs.modal', function () {
+                        scope.$apply(function () {
+                            scope.$parent[attrs.visible] = true;
+                        });
+                    });
+
+                    $(element).on('hidden.bs.modal', function () {
+                        scope.$apply(function () {
+                            scope.$parent[attrs.visible] = false;
+                        });
+                    });
+                }
+            };
         });
-    }
+        function clickEntry(input) {
+            var disMouse = document.getElementById(input.id);
+            disMouse.addEventListener("mousewheel", function (evt) {
+                evt.preventDefault();
+            });
+        }
 
-    function isNumberKey(evt) {
-        var charCode = (evt.which) ? evt.which : event.keyCode
-        if (charCode > 31 && (charCode < 48 || charCode > 57))
-            return false;
-        return true;
-    }
-</script>
+        function isNumberKey(evt) {
+            var charCode = (evt.which) ? evt.which : event.keyCode
+            if (charCode > 31 && (charCode < 48 || charCode > 57))
+                return false;
+            return true;
+        }
+    </script>
 </html>
