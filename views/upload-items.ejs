@@ -56,19 +56,40 @@
                             <table class = "table" border = "1" style = "margin-top: 50px">
                                 <thead>
                                     <th style = "text-align: center">
+
                                         Image
                                     </th>
                                     <th style = "text-align: center">
-                                        Name
+                                        <a ng-click = "sortType = 'name'; sortReverse = !sortReverse" style = "cursor: hand; cursor: pointer">
+                                            Name
+                                            <span ng-show = "sortType == 'name' && !sortReverse" class = "fa fa-caret-down"></span>
+                                            <span ng-show = "sortType == 'name' && sortReverse" class = "fa fa-caret-up"></span>
+                                        </a>
+
                                     </th>
                                     <th style = "text-align: center">
-                                        Description
+                                        <a ng-click = "sortType = 'description'; sortReverse = !sortReverse" style = "cursor: hand; cursor: pointer">
+                                            Description
+                                            <span ng-show = "sortType == 'description' && !sortReverse" class = "fa fa-caret-down"></span>
+                                            <span ng-show = "sortType == 'description' && sortReverse" class = "fa fa-caret-up"></span>
+                                        </a>
+
                                     </th>
                                     <th style = "text-align: center">
-                                        Price
+                                        <a ng-click = "sortType = 'price'; sortReverse = !sortReverse" style = "cursor: hand; cursor: pointer">
+                                            Price
+                                            <span ng-show = "sortType == 'price' && !sortReverse" class = "fa fa-caret-down"></span>
+                                            <span ng-show = "sortType == 'price' && sortReverse" class = "fa fa-caret-up"></span>
+                                        </a>
+
                                     </th>
                                     <th style = "text-align: center">
-                                        Quantity
+                                        <a ng-click = "sortType = 'quantity'; sortReverse = !sortReverse" style = "cursor: hand; cursor: pointer">
+                                            Quantity
+                                            <span ng-show = "sortType == 'quantity' && !sortReverse" class = "fa fa-caret-down"></span>
+                                            <span ng-show = "sortType == 'quantity' && sortReverse" class = "fa fa-caret-up"></span>
+                                        </a>
+
                                     </th>
                                     <th style = "text-align: center">
                                         Delete
@@ -78,7 +99,7 @@
                                     </th>
                                 </thead>
 
-                                <tr ng-repeat = "item in itemObject">
+                                <tr ng-repeat = "item in itemObject | orderBy:sortType:sortReverse">
                                     <td style = "vertical-align: middle">
                                         <img src = "{{item.image.data}}" style = "width: 100px; height: 100px" />
                                     </td>
@@ -164,6 +185,7 @@
 
         // var myApp = angular.module('uploadModule', []);
         uploadCtrl.controller('uploadCtrl', ['$scope', '$http', 'multipartForm', function ($scope, $http, multipartForm) {
+            $scope.sortType = 'price';
             $scope.showModal = false;
             $scope.status = "Upload File";
             $scope.finished = false;
