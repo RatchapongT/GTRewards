@@ -24,11 +24,19 @@ router.delete('/api/game-summary/:id', function (req, res, next) {
             if (err) {
                 console.log(err);
             } else {
-                return res.json({
-                    message: "Success",
-                    messageCode: 1,
-                    game: game
-                })
+                databaseFunction.getHistoryRecent({}, function (err, historyRecent) {
+                    if (err) {
+                        console.log(err);
+                    }
+
+                    return res.json({
+                        message: "Success",
+                        messageCode: 1,
+                        game: game,
+                        historyRecent: historyRecent
+                    });
+                });
+
             }
         });
     }
@@ -420,7 +428,6 @@ router.post('/upload-registration', function (req, res, next) {
                                     if (row.values[1] != undefined) {
                                         databaseFunction.addStudent(input, function (err, object) {
                                             if (err) {
-                                                console.log(input);
                                                 console.log(err);
                                             }
                                         });
@@ -513,11 +520,20 @@ router.post('/upload-points', function (req, res, next) {
                             if (err) {
                                 console.log(err);
                             } else {
-                                res.json({
-                                    message: "Complete",
-                                    messageCode: 1,
-                                    game: game
+                                databaseFunction.getHistoryRecent({}, function (err, historyRecent) {
+                                    if (err) {
+                                        console.log(err);
+                                    }
+
+                                    return
+                                    res.json({
+                                        message: "Complete",
+                                        messageCode: 1,
+                                        game: game,
+                                        historyRecent: historyRecent
+                                    });
                                 });
+
                             }
                         });
 
@@ -576,4 +592,93 @@ router.get('/logout', function (req, res, next) {
     res.redirect('/');
 });
 
+router.get('/api/history-recent', function (req, res, next) {
+    if (req.user) {
+        databaseFunction.getHistoryRecent({}, function (err, historyRecent) {
+            if (err) {
+                console.log(err);
+            }
+
+            return res.json({
+                historyRecent: historyRecent
+            });
+        });
+    } else {
+        return res.render('error', {
+            message: 'No Permission',
+            user: null,
+            error: null
+        });
+    }
+
+
+});
+router.post('/api/manual-points/', function (req, res, next) {
+        if (req.user) {
+            var input = {};
+            if (req.body.type == 'Game') {
+                if (req.body.reason) {
+                    input = {
+                        gtID: req.body.gtid,
+                        points: req.body.reason.points,
+                        description: req.body.reason.name
+                    };
+                } else {
+                    return res.json({
+                        manualMessage: "Invalid Type",
+                        manualMessageCode: 2
+                    });
+                }
+            } else if (req.body.type == 'Others') {
+
+                if (req.body.points && req.body.reason) {
+                    input = {
+                        gtID: req.body.gtid,
+                        points: req.body.points,
+                        description: req.body.reason
+                    };
+                } else {
+                    return res.json({
+                        manualMessage: "Invalid Type",
+                        manualMessageCode: 2
+                    });
+                }
+            } else {
+                return res.json({
+                    manualMessage: "Invalid Type",
+                    manualMessageCode: 2
+                });
+            }
+            databaseFunction.saveManualPoints(input, function (err1) {
+                databaseFunction.getHistoryRecent({}, function (err2, historyRecent) {
+
+                    if (err1) {
+                        return res.json({
+                            messageManual: err1.message,
+                            messageManualCode: 2,
+                            historyRecent: historyRecent
+                        });
+                    }
+                    if (err2) {
+                        console.log(err);
+                    }
+                    return res.json({
+                        messageManual: "Success",
+                        messageManualCode: 1,
+                        historyRecent: historyRecent
+                    });
+                });
+            });
+        } else {
+            return res.render('error', {
+                message: 'No Permission',
+                user: null,
+                error: null
+            });
+        }
+
+
+    }
+)
+;
 module.exports = router;

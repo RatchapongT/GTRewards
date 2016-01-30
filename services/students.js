@@ -244,13 +244,13 @@ exports.deleteGame = function (input, next) {
         if (err) {
             next(err, null);
         }
-        History.find({description: gameObject.name, points: gameObject.points, date: gameObject.date}, function(err, historyObjects) {
-            async.each(historyObjects, function(history, callback) {
-                Student.update({_id: history._studentDetail}, {$inc: {sum: -1 * history.points}}, function(err) {
-                   if(err) {
-                       callback(err);
-                   }
-                    history.remove(function(err) {
+        History.find({description: gameObject.name, points: gameObject.points, date: gameObject.date}, function (err, historyObjects) {
+            async.each(historyObjects, function (history, callback) {
+                Student.update({_id: history._studentDetail}, {$inc: {sum: -1 * history.points}}, function (err) {
+                    if (err) {
+                        callback(err);
+                    }
+                    history.remove(function (err) {
                         if (err) {
                             callback(err);
                         }
@@ -258,11 +258,11 @@ exports.deleteGame = function (input, next) {
                     })
 
                 });
-            }, function(err){
-                if( err ) {
+            }, function (err) {
+                if (err) {
                     console.log('An entry failed to process');
                 } else {
-                    gameObject.remove(function(err) {
+                    gameObject.remove(function (err) {
                         if (err) {
                             console.log('Fail to remove');
                         }
@@ -282,14 +282,12 @@ exports.deleteGame = function (input, next) {
 
 }
 exports.editGame = function (input, next) {
-    console.log(input)
     Game.findOneAndUpdate({_id: input.id}, {$set: {name: input.name}}, function (err, gameObject) {
         if (err) {
             next(err, null);
         }
-        console.log(gameObject)
-        History.update({description: gameObject.name, points: gameObject.points, date: gameObject.date},{$set: {description: input.name}}, {multi: true}, function(err) {
-            if(err) {
+        History.update({description: gameObject.name, points: gameObject.points, date: gameObject.date}, {$set: {description: input.name}}, {multi: true}, function (err) {
+            if (err) {
                 next(err, null);
             }
             Game.find({}, function (err, game) {
@@ -453,7 +451,6 @@ exports.updateItem = function (input, next) {
 
                         async.each(realOrder, function (processOrder, callback) {
                             console.log('Processing Real Order ' + processOrder.itemObject.name);
-                            console.log(processOrder.quantity);
                             Item.update({_id: processOrder.itemObject._id, quantity: {$gte: processOrder.quantity}}, {$inc: {quantity: -processOrder.quantity}}, function (err, result) {
                                 if (result.n == 0) {
                                     messageArray.push('Not enough ' + processOrder.itemObject.name + ' for ' + processOrder.quantity + ' orders');
@@ -622,6 +619,38 @@ exports.getPendingItem = function (input, next) {
         }
         return next(null, pendingObject);
     })
+}
+exports.saveManualPoints = function (input, next) {
+    console.log(input);
+    Student.findOne({gtID: input.gtID}, function (err, studentObject) {
+        if (studentObject) {
+            Student.update({gtID: input.gtID}, {$inc: {sum: input.points}}, function (err) {
+                if (err) {
+                    return next(err);
+                }
+                var newHistory = new History({
+                    _studentDetail: studentObject._id,
+                    description: input.description,
+                    points: input.points,
+                    date: new Date()
+                });
+                newHistory.save(function (err) {
+                    return next(err);
+                })
+            })
+
+        } else {
+            return next({message: "not found"});
+        }
+    });
+}
+exports.getHistoryRecent = function (input, next) {
+    History.find({}).sort({created: -1}).limit(10).deepPopulate(['_studentDetail']).exec(function (err, historyObject) {
+        if (err) {
+            return next(err, null);
+        }
+        return next(null, historyObject);
+    });
 }
 function validVariable(input) {
     return (typeof input !== 'undefined') && input;

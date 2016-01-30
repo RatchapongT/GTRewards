@@ -45,6 +45,10 @@
 
 
                             </form>
+                            <p class = "text-center" ng-show = "loadingGame">
+                                <span class = "fa fa-spinner fa-spin fa-3x"></span>
+                            </p>
+
                             <div style = "background-color: white">
                                 <table class = "table  table-hover"
                                        style = "width: 100%; color:black; text-shadow: none; margin-top: 50px">
@@ -80,9 +84,99 @@
                                     </tbody>
                                 </table>
 
+
                             </div>
 
+                            <form style = "margin-top: 30px">
+                                <h2 style = "color:#fff;">Manual Points Assignment</h2>
 
+                                <div class = "gtid">
+                                    GTID
+                                    <input ng-model = "manual.gtid" id = "gtid" name = "gtid" class = "form-control" style = "margin-bottom: 10px"
+                                           onkeypress = "return isNumberKey(event)" type = "text"
+                                           placeholder = "GT ID" maxlength = "9" onclick = "clickEntry(this);">
+
+                                    Reasons
+                                    <div>
+                                        <label>
+                                            <input type = "radio" ng-model = "manual.type" value = "Game">
+                                            Game
+                                        </label><br />
+                                        <label>
+                                            <input type = "radio" ng-model = "manual.type" value = "Others" ng-click = "manual.reason =''">
+                                            Others
+                                        </label>
+                                    </div>
+                                    <div ng-if = "manual.type == 'Game'">
+                                        <select ng-options = "game as game.name + ' [' + game.points + '] ' for game in games track by game._id" ng-model = "manual.reason"></select>
+                                    </div>
+                                    <div ng-if = "manual.type == 'Others'">
+                                        Points
+                                        <input ng-model = "manual.points" id = "points" name = "points" class = "form-control" style = "margin-bottom: 10px" type = "text"
+                                               placeholder = "Game Point Value" onclick = "clickEntry(this);">
+                                        Reasons
+                                        <input ng-model = "manual.reason" id = "reasons" name = "reasons" class = "form-control" style = "margin-bottom: 10px" type = "text"
+                                               placeholder = "Reasons" onclick = "clickEntry(this);">
+                                    </div>
+
+                                    <p class = "text-center" ng-show = "loadingManual">
+                                        <span class = "fa fa-spinner fa-spin fa-3x"></span>
+                                    </p>
+
+                                    <button type = "submit" class = "btn btn-default btn-lg" ng-click = "SubmitManual()" style = "width: 100%; background-color:#00254c; margin-top: 10px"
+                                            ng-show = "!loadingManual"
+                                            ng-disabled = "disableSubmit()">Submit
+                                    </button>
+
+                                    <div align = "center">
+                                        <div class = "alert alert-success" ng-if = "messageManualCode == 1" style = "width: 300px ">
+                                            {{messageManual}}
+                                        </div>
+                                        <div class = "alert alert-danger" ng-if = "messageManualCode == 2" style = "width: 300px ">
+                                            {{messageManual}}
+                                        </div>
+                                    </div>
+
+
+                                </div>
+                                <p class = "text-center" ng-show = "loadingHist">
+                                    <span class = "fa fa-spinner fa-spin fa-3x"></span>
+                                </p>
+
+                                <div style = "background-color: white">
+                                    <table class = "table  table-hover"
+                                           style = "width: 100%; color:black; text-shadow: none; margin-top: 50px">
+                                        <thead>
+                                            <tr class = "warning">
+                                                <th style = "text-align: center">Assigned Date</th>
+                                                <th style = "text-align: center">gtID</th>
+                                                <th style = "text-align: center">Description</th>
+                                                <th style = "text-align: center">Points</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr ng-repeat = "history in historyRecent">
+
+                                                <td style = "vertical-align: middle">
+                                                    {{history.created}}
+                                                </td>
+                                                <td style = "vertical-align: middle">
+                                                    {{history._studentDetail.gtID}}
+                                                </td>
+                                                <td style = "vertical-align: middle">
+                                                    {{history.description}}
+                                                </td>
+                                                <td style = "vertical-align: middle">
+                                                    {{history.points}}
+                                                </td>
+                                            </tr>
+
+                                        </tbody>
+                                    </table>
+
+
+                                </div>
+                            </form>
                         </div>
                         <!-- /.container -->
 
@@ -135,7 +229,7 @@
                         <p class = "text-center" ng-show = "editLoading">
                             <span class = "fa fa-spinner fa-spin fa-3x"></span>
                         </p>
-                        <button style = "background-color: #27ae60"  type = "submit" class = "btn btn-default" ng-click = "editGame(editForm.id)" ng-show = "!editLoading && messageCode == 0">Save</button>
+                        <button style = "background-color: #27ae60" type = "submit" class = "btn btn-default" ng-click = "editGame(editForm.id)" ng-show = "!editLoading && messageCode == 0">Save</button>
                         <div align = "center">
                             <div class = "alert alert-success" ng-if = "messageCode == 1" style = "width: 300px ">
                                 {{editMessage}}
@@ -166,14 +260,54 @@
         var myApp = angular.module('uploadModule', []);
         myApp.controller('uploadCtrl', ['$scope', 'multipartForm', '$http', function ($scope, multipartForm, $http) {
             $scope.status = "Upload File";
+            $scope.manual = {};
+            $scope.manual.type = 'Game'
             $scope.finished = false;
             $scope.loading = false;
+            $scope.loadingGame = true;
+            $scope.loadingHist = true;
             $scope.showModal = false;
             $http.get('/api/game-summary/').success(function (data) {
+                $scope.loadingGame = false;
                 $scope.games = data.game;
+            });
+            $http.get('/api/history-recent/').success(function (data) {
+                $scope.loadingHist = false;
+                $scope.historyRecent = data.historyRecent;
             });
             $scope.toggleD = false;
             $scope.toggleE = false;
+
+
+            $scope.loadingManual = false;
+            $scope.SubmitManual = function () {
+                $scope.loadingManual = true;
+                $http.post('/api/manual-points/', $scope.manual).success(function (data) {
+                    $scope.loadingManual = false;
+                    $scope.messageManual = data.messageManual;
+                    $scope.messageManualCode = data.messageManualCode;
+                    $scope.historyRecent = data.historyRecent;
+                });
+            }
+            $scope.disableSubmit = function () {
+                if ($scope.manual.gtid == undefined || $scope.manual.gtid == '') {
+                    return true;
+                }
+                if ($scope.manual.type == 'Game') {
+                    if ($scope.manual.reason == undefined || $scope.manual.reason == '') {
+                        return true;
+                    }
+                }
+                if ($scope.manual.type == 'Others') {
+                    if ($scope.manual.reason == undefined || $scope.manual.reason == '') {
+                        return true;
+                    }
+                    if ($scope.manual.points == undefined || $scope.manual.points == '') {
+                        return true;
+                    }
+                }
+                return false;
+            }
             $scope.toggleDelete = function (game) {
                 $scope.toggleD = true;
                 $scope.toggleE = false;
@@ -221,7 +355,6 @@
                 $scope.loading = true;
                 var uploadUrl = '/upload-points';
                 $scope.status = "Processing";
-                console.log($scope.excel)
                 multipartForm.post(uploadUrl, $scope.excel, $scope);
             }
         }]);
@@ -237,7 +370,6 @@
                     transformRequest: angular.identity,
                     headers: {'Content-Type': undefined}
                 }).success(function (response) {
-                    console.log(response)
                     scope.status = response.message;
                     scope.loading = false;
                     scope.finished = true;

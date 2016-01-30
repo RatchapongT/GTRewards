@@ -77,7 +77,6 @@
             $scope.statusCode = 0;
             $scope.selectedID = null;
             $http.get('/api/approve-items').success(function (data) {
-                console.log(data);
                 $scope.pendingItemObject = data.pendingItemObject;
                 $scope.loading = false;
             });

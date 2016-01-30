@@ -78,7 +78,7 @@ var PendingItem = mongoose.model('PendingItem', pendingItemsSchema);
 var ItemLog = mongoose.model('ItemLog', itemLogSchema);
 
 pendingItemsSchema.plugin(deepPopulate, {});
-
+historySchema.plugin(deepPopulate, {});
 module.exports = {
     Student: Student,
     History: History,
