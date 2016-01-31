@@ -25,7 +25,7 @@ router.get('/rules', function (req, res, next) {
 
 router.get('/leaderboard', function (req, res, next) {
 
-    databaseFunction.getLeaderboard(10, function (err, leaderArray) {
+    databaseFunction.getLeaderboard(25, function (err, leaderArray) {
         if (err) {
             console.log(err);
         } else {

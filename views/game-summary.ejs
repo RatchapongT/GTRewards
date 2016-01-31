@@ -1,58 +1,58 @@
 <!--/usr/local/bin/node-->
 <!--C:/Program Files/nodejs/node-->
 <!DOCTYPE html>
-<html lang="en">
-<% include partials/page/jsdefaults.ejs %>
+<html lang = "en">
+    <% include partials/page/jsdefaults.ejs %>
 
-<head>
-    <% include partials/page/head.ejs %>
-</head>
-<body class="home"
-      style="background-image: url(assets/images/buzz.png); background-position: center center;
+    <head>
+        <% include partials/page/head.ejs %>
+    </head>
+    <body class = "home"
+          style = "background-image: url(assets/images/buzz.png); background-position: center center;
              background-repeat: no-repeat; background-attachment: fixed; background-size: cover;">
-<% include partials/page/navbar.ejs %>
+        <% include partials/page/navbar.ejs %>
 
-<section id="bottomHuman" style="margin-bottom:0;">
+        <section id = "bottomHuman" style = "margin-bottom:0;">
 
-    <div class="cover-wrapper">
-        <div class="cover-container overlay"
-             style="height: 100vh; background-color: rgba(197,147,83,0.3);">
-            <div class="cover-inner">
+            <div class = "cover-wrapper">
+                <div class = "cover-container overlay"
+                     style = "height: 100vh; background-color: rgba(197,147,83,0.3);">
+                    <div class = "cover-inner">
 
-                <div style="margin-left: 10%; margin-right: 10%;">
-                    <p style="font-weight: bold; font-size: 24px">Games listed below have been entered in the system.
-                        <br>
-                        All game points will be entered within 72 hours.</p>
+                        <div style = "margin-left: 10%; margin-right: 10%;">
+                            <p style = "font-weight: bold; font-size: 24px">Games listed below have been entered in the system.
+                                <br>
+                                All game points will be entered within 72 hours.</p>
+                        </div>
+                        <div class = "gtid" style = "padding-top: 10px">
+
+                            <table class = "table table-striped table-hover"
+                                   style = "width: 100%; color:black; text-shadow: none">
+                                <thead>
+                                    <tr class = "warning">
+                                        <th style = "text-align: center">Upload Date</th>
+                                        <th style = "text-align: center">Game</th>
+                                        <th style = "text-align: center">Points</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+
+                                    <% for (var i = 0 ; i < game.length; i++) { %>
+                                    <tr class = "success">
+                                        <td><%= moment(new Date(game[i].date)).format(shortDateFormat) %></td>
+                                        <td><%= game[i].name %></td>
+                                        <td><%= game[i].points %></td>
+                                    </tr>
+                                    <% } %>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
                 </div>
-                <div class="gtid" style="padding-top: 10px">
 
-                    <table class="table table-striped table-hover"
-                           style="width: 100%; color:black; text-shadow: none">
-                        <thead>
-                        <tr class="warning">
-                            <th style="text-align: center">Date</th>
-                            <th style="text-align: center">Game</th>
-                            <th style="text-align: center">Points</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-
-                        <% for (var i = 0 ; i < game.length; i++) { %>
-                        <tr class="success">
-                            <td><%= game[i].date %></td>
-                            <td><%= game[i].name %></td>
-                            <td><%= game[i].points %></td>
-                        </tr>
-                        <% } %>
-                        </tbody>
-                    </table>
-                </div>
             </div>
-        </div>
+        </section>
 
-    </div>
-</section>
-
-</body>
+    </body>
 
 </html>

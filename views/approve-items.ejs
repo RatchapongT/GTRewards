@@ -35,7 +35,7 @@
 
                     <tr ng-repeat ="pending in pendingItemObject">
 
-                        <td>{{pending.requestStamp}}</td>
+                        <td>{{localDate(pending.requestStamp)}}</td>
                         <td>{{pending._itemDetail.name}}</td>
                         <td>{{pending._studentDetail.gtID}}</td>
                         <td>{{pending._studentDetail.firstName}}</td>
@@ -73,6 +73,10 @@
 
         var approveControllers = angular.module('approveControllers', []);
         approveControllers.controller('approveControllers', ['$scope', '$http', '$window', function ($scope, $http, $window) {
+            $scope.localDate = function (date) {
+                var m = moment(date);
+                return m.format('MMMM Do YYYY, h:mm:ss a');
+            }
             $scope.loading = true;
             $scope.statusCode = 0;
             $scope.selectedID = null;

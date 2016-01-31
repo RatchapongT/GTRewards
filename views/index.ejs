@@ -64,7 +64,7 @@
                             </tr>
                             <tr class="success" ng-repeat="point in points"
                                 ng-class="{success: (point.points > 0), danger: (point.points < 0)}">
-                                <td>{{ point.date }}</td>
+                                <td>{{localDate(point.date)}}</td>
                                 <td>{{ point.points }}</td>
                                 <td>{{ point.description }}</td>
                                 <td>{{getRunningTotal($index + 1)}}</td>
@@ -110,7 +110,10 @@
             });
             return runningTotal;
         };
-
+        $scope.localDate = function (date) {
+            var m = moment(date);
+            return m.format('MMMM Do YYYY, h:mm:ss a');
+        }
         $scope.getHistory = function () {
 
             // validate the formData to make sure that something is there

@@ -31,7 +31,7 @@
 
                     <% for (var i = 0 ; i < itemLogObject.length; i++) { %>
                     <tr class="success">
-                        <td><%= itemLogObject[i].created %></td>
+                        <td><%= moment(new Date(itemLogObject[i].created)).format(shortDateFormat) %></td>
                         <td><%= itemLogObject[i].gtID %></td>
                         <td><%= itemLogObject[i].lastName %></td>
                         <td><%= itemLogObject[i].firstName %></td>

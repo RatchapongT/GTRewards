@@ -49,9 +49,11 @@
                                 <span class = "fa fa-spinner fa-spin fa-3x"></span>
                             </p>
 
+                            <h3 style = "color: white" align = "left">Game Summary Data</h3>
+
                             <div style = "background-color: white">
                                 <table class = "table  table-hover"
-                                       style = "width: 100%; color:black; text-shadow: none; margin-top: 50px">
+                                       style = "width: 100%; color:black; text-shadow: none;">
                                     <thead>
                                         <tr class = "warning">
                                             <th style = "text-align: center">Date</th>
@@ -65,7 +67,7 @@
                                         <tr ng-repeat = "game in games">
 
                                             <td style = "vertical-align: middle">
-                                                {{game.date}}
+                                                {{localDate(game.date)}}
                                             </td>
                                             <td style = "vertical-align: middle">
                                                 {{game.name}}
@@ -139,44 +141,47 @@
 
 
                                 </div>
-                                <p class = "text-center" ng-show = "loadingHist">
-                                    <span class = "fa fa-spinner fa-spin fa-3x"></span>
-                                </p>
-
-                                <div style = "background-color: white">
-                                    <table class = "table  table-hover"
-                                           style = "width: 100%; color:black; text-shadow: none; margin-top: 50px">
-                                        <thead>
-                                            <tr class = "warning">
-                                                <th style = "text-align: center">Assigned Date</th>
-                                                <th style = "text-align: center">gtID</th>
-                                                <th style = "text-align: center">Description</th>
-                                                <th style = "text-align: center">Points</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <tr ng-repeat = "history in historyRecent">
-
-                                                <td style = "vertical-align: middle">
-                                                    {{history.created}}
-                                                </td>
-                                                <td style = "vertical-align: middle">
-                                                    {{history._studentDetail.gtID}}
-                                                </td>
-                                                <td style = "vertical-align: middle">
-                                                    {{history.description}}
-                                                </td>
-                                                <td style = "vertical-align: middle">
-                                                    {{history.points}}
-                                                </td>
-                                            </tr>
-
-                                        </tbody>
-                                    </table>
-
-
-                                </div>
                             </form>
+                            <p class = "text-center" ng-show = "loadingHist">
+                                <span class = "fa fa-spinner fa-spin fa-3x"></span>
+                            </p>
+
+                            <h3 style = "color: white" align = "left">10 Most Recent Points Assignment</h3>
+
+                            <div style = "background-color: white">
+                                <table class = "table  table-hover"
+                                       style = "width: 100%; color:black; text-shadow: none;">
+                                    <thead>
+                                        <tr class = "warning">
+                                            <th style = "text-align: center">Assigned Date</th>
+                                            <th style = "text-align: center">gtID</th>
+                                            <th style = "text-align: center">Description</th>
+                                            <th style = "text-align: center">Points</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr ng-repeat = "history in historyRecent">
+
+                                            <td style = "vertical-align: middle">
+                                                {{localDate(history.created)}}
+                                            </td>
+                                            <td style = "vertical-align: middle">
+                                                {{history._studentDetail.gtID}}
+                                            </td>
+                                            <td style = "vertical-align: middle">
+                                                {{history.description}}
+                                            </td>
+                                            <td style = "vertical-align: middle">
+                                                {{history.points}}
+                                            </td>
+                                        </tr>
+
+                                    </tbody>
+                                </table>
+
+
+                            </div>
+
                         </div>
                         <!-- /.container -->
 
@@ -194,7 +199,7 @@
 
                         <p>
                             <strong>Game:</strong> {{editForm.name}}<br>
-                            <strong>Date:</strong> {{editForm.date}}<br>
+                            <strong>Date:</strong> {{localDate(editForm.date)}}<br>
                             <strong>Points:</strong> {{editForm.points}}<br>
                         </p>
 
@@ -280,6 +285,10 @@
 
 
             $scope.loadingManual = false;
+            $scope.localDate = function (date) {
+                var m = moment(date);
+                return m.format('MMMM Do YYYY, h:mm:ss a');
+            }
             $scope.SubmitManual = function () {
                 $scope.loadingManual = true;
                 $http.post('/api/manual-points/', $scope.manual).success(function (data) {

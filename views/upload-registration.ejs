@@ -1,114 +1,252 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang = "en">
 
-<head>
-    <% include partials/page/head.ejs %>
-</head>
-<link href="../../file-input/css/fileinput.min.css" media="all"
-      rel="stylesheet" type="text/css"/>
+    <head>
+        <% include partials/page/head.ejs %>
+    </head>
+    <link href = "../../file-input/css/fileinput.min.css" media = "all"
+          rel = "stylesheet" type = "text/css" />
 
-<% include partials/page/jsdefaults.ejs %>
-<body class="home">
-<!-- Navigation (main menu)
-================================================== -->
-<% include partials/page/navbar.ejs %>
+    <% include partials/page/jsdefaults.ejs %>
+    <body class = "home">
+        <!-- Navigation (main menu)
+        ================================================== -->
+        <% include partials/page/navbar.ejs %>
 
-<!-- Cover element
-================================================== -->
-<div ng-app="uploadModule" ng-controller="uploadCtrl" ng-cloak>
-    <div class="cover-wrapper" style="background-color:#c59353">
-        <div class="cover-container overlay"
-             style="padding-top: 20%; padding-bottom: 20%;">
-            <div class=" cover-inner">
-                <div class="container">
-                    <h2 style="color:#fff;">Upload Master User Data</h2>
+        <!-- Cover element
+        ================================================== -->
+        <div ng-app = "uploadModule" ng-controller = "uploadCtrl" ng-cloak>
+            <div class = "cover-wrapper" style = "background-color:#c59353">
+                <div class = "cover-container overlay"
+                     style = "padding-top: 20%; padding-bottom: 20%;">
+                    <div class = " cover-inner">
+                        <div class = "container">
+                            <h2 style = "color:#fff;">Upload Master User Data</h2>
 
-                    <form>
-                        <div class="gtid">
-                            <input type="file" id="excelFile"
-                                   file-model="excel.file" style="margin-bottom: 10px">
-                            <button type="submit" class="btn btn-default btn-lg" ng-click="Submit()"
-                                    style="width: 100%; background-color:#00254c">
-                                <i class="fa fa-cloud-upload"></i>
-                                &nbsp;
+                            <form>
+                                <div class = "gtid">
+                                    <input type = "file" id = "excelFile"
+                                           file-model = "excel.file" style = "margin-bottom: 10px">
+                                    <button type = "submit" class = "btn btn-default btn-lg" ng-click = "Submit()"
+                                            style = "width: 100%; background-color:#00254c">
+                                        <i class = "fa fa-cloud-upload"></i>
+                                        &nbsp;
                                 <span>{{status}}
-                                    <div ng-show="loading"><img width="20 px" src="assets/images/loading-animation.gif">
+                                    <div ng-show = "loading"><img width = "20 px" src = "assets/images/loading-animation.gif">
                                     </div>
-                                    <div ng-show="finished"><img width="20 px" src="assets/images/finished.png">
+                                    <div ng-show = "finished"><img width = "20 px" src = "assets/images/finished.png">
                                     </div>
                                 </span>
-                            </button>
+                                    </button>
+                                </div>
+
+                            </form>
+
+
+                            <form style = "margin-top: 100px">
+                                <h2 style = "color:#fff;">Manual Points Assignment</h2>
+
+                                <div class = "gtid" align = "left">
+                                    GTID
+                                    <input ng-model = "reg.gtid" id = "gtid" name = "gtid" class = "form-control" style = "margin-bottom: 10px"
+                                           onkeypress = "return isNumberKey(event)" type = "text"
+                                           placeholder = "GT ID" maxlength = "9" onclick = "clickEntry(this);">
+
+                                    First Name
+                                    <input ng-model = "reg.firstName" class = "form-control" style = "margin-bottom: 10px"
+                                           type = "text"
+                                           placeholder = "First Name">
+                                    Last Name
+                                    <input ng-model = "reg.lastName" class = "form-control" style = "margin-bottom: 10px"
+                                           type = "text"
+                                           placeholder = " Last Name">
+                                    Email
+                                    <input ng-model = "reg.email" class = "form-control" style = "margin-bottom: 10px"
+                                           type = "text"
+                                           placeholder = "Email">
+
+                                    <p class = "text-center" ng-show = "loadingSub">
+                                        <span class = "fa fa-spinner fa-spin fa-3x"></span>
+                                    </p>
+
+                                    <button type = "submit" class = "btn btn-default btn-lg" ng-click = "SubmitReg()" style = "width: 100%; background-color:#00254c; margin-top: 10px"
+                                            ng-show = "!loadingSub"
+                                            ng-disabled = "disableReg()">Submit
+                                    </button>
+
+                                    <div align = "center">
+                                        <div class = "alert alert-success" ng-if = "messageCode == 1" style = "width: 300px ">
+                                            {{message}}
+                                        </div>
+                                        <div class = "alert alert-danger" ng-if = "messageCode == 2" style = "width: 300px ">
+                                            {{message}}
+                                        </div>
+                                    </div>
+
+
+                                </div>
+                            </form>
+
+                            <h3 style = "color: white" align = "left">10 Most Recently Registered</h3>
+
+                            <p class = "text-center" ng-show = "loadingReg">
+                                <span class = "fa fa-spinner fa-spin fa-3x"></span>
+                            </p>
+                            <tbody>
+                                <div style = "background-color: white">
+                                    <table class = "table  table-hover" style = "width: 100%; color:black; text-shadow: none;">
+                                        <thead>
+                                            <tr class = "warning">
+                                                <th style = "text-align: center">Registered Time</th>
+                                                <th style = "text-align: center">gtID</th>
+                                                <th style = "text-align: center">Last Name</th>
+                                                <th style = "text-align: center">First Name</th>
+                                                <th style = "text-align: center">Email</th>
+                                                <th style = "text-align: center">Sum</th>
+                                            </tr>
+                                        </thead>
+
+                                        <tr ng-repeat = "reg in regRecent">
+
+                                            <td style = "vertical-align: middle">
+                                                {{localDate(reg.created)}}
+                                            </td>
+                                            <td style = "vertical-align: middle">
+                                                {{reg.gtID}}
+                                            </td>
+                                            <td style = "vertical-align: middle">
+                                                {{reg.lastName}}
+                                            </td>
+                                            <td style = "vertical-align: middle">
+                                                {{reg.firstName}}
+                                            </td>
+                                            <td style = "vertical-align: middle">
+                                                {{reg.email}}
+                                            </td>
+                                            <td style = "vertical-align: middle">
+                                                {{reg.sum}}
+                                            </td>
+                                        </tr>
+
+                            </tbody>
+                            </table>
+
+
                         </div>
-
-                    </form>
-
+                    </div>
+                    <!-- /.container -->
                 </div>
-                <!-- /.container -->
+                <!-- /.cover-inner -->
             </div>
-            <!-- /.cover-inner -->
+            <!-- /.cover-container -->
         </div>
-        <!-- /.cover-container -->
-    </div>
 
-</div>
-<!-- /.cover-wrapper -->
+        </div>
+        <!-- /.cover-wrapper -->
 
 
-</body>
+    </body>
 
-<footer id="footer">
-    <% include partials/page/footer.ejs %>
-</footer>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
-<script src="../../file-input/js/fileinput.min.js"></script>
+    <footer id = "footer">
+        <% include partials/page/footer.ejs %>
+    </footer>
+    <script src = "https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+    <script src = "../../file-input/js/fileinput.min.js"></script>
 
-<script>
-    var myApp = angular.module('uploadModule', []);
-    myApp.controller('uploadCtrl', ['$scope', 'multipartForm', function ($scope, multipartForm) {
-        $scope.status = "Upload File";
-        $scope.finished = false;
-        $scope.loading = false;
-        $scope.Submit = function () {
+    <script>
+        var myApp = angular.module('uploadModule', []);
+        myApp.controller('uploadCtrl', ['$scope', 'multipartForm', '$http', function ($scope, multipartForm, $http) {
+            $scope.status = "Upload File";
             $scope.finished = false;
-            $scope.loading = true;
-            var uploadUrl = '/upload-registration';
-            $scope.status = "Processing";
-            multipartForm.post(uploadUrl, $scope.excel, $scope);
-        }
-    }]);
-
-    myApp.service('multipartForm', ['$http', function ($http) {
-        this.post = function (uploadUrl, data, scope) {
-            var fd = new FormData();
-            for (var key in data) {
-                fd.append(key, data[key]);
+            $scope.loading = false;
+            $scope.loadingReg = true;
+            $scope.loadingSub = false;
+            $scope.reg = {};
+            $scope.localDate = function (date) {
+                var m = moment(date);
+                return m.format('MMMM Do YYYY, h:mm:ss a');
             }
-            $http.post(uploadUrl, fd, {
-                transformRequest: angular.identity,
-                headers: {'Content-Type': undefined}
-            }).success(function (response) {
-                scope.status = response.message;
-                scope.loading = false;
-                scope.finished = true;
-            });
-        }
-    }]);
-
-    myApp.directive('fileModel', ['$parse', function ($parse) {
-        return {
-            restrict: 'A',
-            link: function (scope, element, attrs) {
-                var model = $parse(attrs.fileModel);
-                var modelSetter = model.assign;
-
-                element.bind('change', function () {
-                    scope.$apply(function () {
-                        modelSetter(scope, element[0].files[0]);
-                    });
+            $scope.SubmitReg = function () {
+                $scope.loadingSub = true;
+                $http.post('/api/register-new', $scope.reg).success(function (data) {
+                    $scope.loadingSub = false;
+                    $scope.regRecent = data.regRecent;
+                    $scope.messageCode = data.messageCode;
+                    $scope.message = data.message;
                 });
             }
-        };
-    }]);
+            $scope.disableReg = function () {
+                if (!$scope.reg.gtid) {
+                    return true
+                }
+                if (!$scope.reg.firstName) {
+                    return true
+                }
+                if (!$scope.reg.lastName) {
+                    return true
+                }
+                if (!$scope.reg.email) {
+                    return true
+                }
+                return false
+            }
+            $http.get('/api/registrations-recent/').success(function (data) {
+                $scope.loadingReg = false;
+                $scope.regRecent = data.regRecent;
+            });
+            $scope.Submit = function () {
+                $scope.finished = false;
+                $scope.loading = true;
+                var uploadUrl = '/upload-registration';
+                $scope.status = "Processing";
+                multipartForm.post(uploadUrl, $scope.excel, $scope);
+            }
+        }]);
 
-</script>
+        myApp.service('multipartForm', ['$http', function ($http) {
+            this.post = function (uploadUrl, data, scope) {
+                var fd = new FormData();
+                for (var key in data) {
+                    fd.append(key, data[key]);
+                }
+                $http.post(uploadUrl, fd, {
+                    transformRequest: angular.identity,
+                    headers: {'Content-Type': undefined}
+                }).success(function (response) {
+                    scope.status = response.message;
+                    scope.loading = false;
+                    scope.finished = true;
+                });
+            }
+        }]);
+
+        myApp.directive('fileModel', ['$parse', function ($parse) {
+            return {
+                restrict: 'A',
+                link: function (scope, element, attrs) {
+                    var model = $parse(attrs.fileModel);
+                    var modelSetter = model.assign;
+
+                    element.bind('change', function () {
+                        scope.$apply(function () {
+                            modelSetter(scope, element[0].files[0]);
+                        });
+                    });
+                }
+            };
+        }]);
+        function clickEntry(input) {
+            var disMouse = document.getElementById(input.id);
+            disMouse.addEventListener("mousewheel", function (evt) {
+                evt.preventDefault();
+            });
+        }
+
+        function isNumberKey(evt) {
+            var charCode = (evt.which) ? evt.which : event.keyCode
+            if (charCode > 31 && (charCode < 48 || charCode > 57))
+                return false;
+            return true;
+        }
+    </script>
 </html>

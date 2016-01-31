@@ -312,24 +312,23 @@ exports.getGames = function (input, next) {
 };
 
 exports.getPosition = function (input, next) {
-    Student.find({}, function (err, students) {
+
+
+    Student.find({}).sort({sum: -1}).exec(function (err, students) {
         if (err) {
             next(err, null)
         } else {
-            if (students != null) {
+            if (students) {
 
-                var array = _.sortBy(students, 'sum')
-                array = array.reverse();
-
-                var pre = array[0].sum;
+                var pre = students[0].sum;
                 var position = 1;
-                for (var i = 0; i < array.length; i++) {
+                for (var i = 0; i < students.length; i++) {
 
-                    if (pre != array[i].sum) {
-                        pre = array[i].sum;
+                    if (pre != students[i].sum) {
+                        pre = students[i].sum;
                         position = i + 1;
                     }
-                    if (array[i].gtID == input.gtID) {
+                    if (students[i].gtID == input.gtID) {
                         break;
                     }
                 }
@@ -346,43 +345,39 @@ exports.getPosition = function (input, next) {
 };
 
 exports.getLeaderboard = function (input, next) {
-    Student.find({}, function (err, students) {
+
+
+    Student.find({}).sort({sum: -1}).exec(function (err, students) {
         if (err) {
             next(err, null)
         } else {
-            if (students != null) {
-                var array = _.sortBy(students, 'sum')
-                if (array.length > 0) {
-                    array = array.reverse();
-                    var leaderArray = [];
+            if (students) {
 
-                    var pre = array[0].sum;
-                    var position = 1;
-                    for (var i = 0; i < array.length; i++) {
+                var leaderArray = [];
+                var pre = students[0].sum;
+                var position = 1;
+                for (var i = 0; i < students.length; i++) {
 
-                        if (pre != array[i].sum) {
-                            pre = array[i].sum;
-                            position = i + 1;
-                        }
-                        if (position > input) {
+                    if (pre != students[i].sum) {
+                        if (i > input) {
                             break;
                         }
-                        leaderArray.push({
-                            position: position,
-                            firstName: array[i].firstName,
-                            lastName: array[i].lastName,
-                            points: array[i].sum
-                        })
-
+                        pre = students[i].sum;
+                        position = i + 1;
                     }
-                    next(err, leaderArray);
-                } else {
-                    next(err, []);
+                    leaderArray.push({
+                        position: position,
+                        firstName: students[i].firstName,
+                        lastName: students[i].lastName,
+                        points: students[i].sum
+                    })
+
                 }
+                next(err, leaderArray);
 
 
             } else {
-                next(err, null);
+                next(err, []);
             }
 
         }
@@ -652,6 +647,35 @@ exports.getHistoryRecent = function (input, next) {
         return next(null, historyObject);
     });
 }
+exports.getRegistrationRecent = function (input, next) {
+    Student.find({}).sort({created: -1}).limit(10).exec(function (err, studentObjects) {
+        if (err) {
+            return next(err, null);
+        }
+        return next(null, studentObjects);
+    });
+}
+exports.registerUser = function (input, next) {
+
+    Student.findOne({gtID: input.gtid}, function (err, student) {
+        if (student) {
+            return next({message: "gtID Already Exist"});
+        } else {
+            var newUser = new Student({
+                gtID: input.gtid,
+                lastName: input.lastName,
+                firstName: input.firstName,
+                email: input.email,
+                sum: 0,
+                requestedCheckout: new Date()
+            })
+            newUser.save(function (err) {
+                return next(err);
+            })
+        }
+    })
+}
+
 function validVariable(input) {
     return (typeof input !== 'undefined') && input;
 }

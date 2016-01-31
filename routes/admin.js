@@ -613,6 +613,80 @@ router.get('/api/history-recent', function (req, res, next) {
 
 
 });
+router.post('/api/register-new', function (req, res, next) {
+    if (req.user) {
+        databaseFunction.getRegistrationRecent({}, function (err, regRecent) {
+            if (err) {
+                console.log(err);
+            }
+
+            if (!req.body.gtid || !req.body.firstName || !req.body.lastName || !req.body.email) {
+                return res.json({
+                    message: 'Invalid Field',
+                    messageCode: 2,
+                    regRecent: regRecent
+                })
+            }
+            if(req.body.gtid.length != 9) {
+                return res.json({
+                    message: 'gtID must be 9 digits',
+                    messageCode: 2,
+                    regRecent: regRecent
+                })
+            }
+            databaseFunction.registerUser(req.body, function (err) {
+                if (err) {
+                    return res.json({
+                        message: err.message,
+                        messageCode: 2,
+                        regRecent: regRecent
+                    })
+
+                }
+
+
+                return res.json({
+                    regRecent: regRecent,
+                    message: 'Success',
+                    messageCode: 1
+                });
+            });
+
+        })
+
+    } else {
+        return res.render('error', {
+            message: 'No Permission',
+            user: null,
+            error: null
+        });
+    }
+
+
+});
+
+router.get('/api/registrations-recent', function (req, res, next) {
+    if (req.user) {
+        databaseFunction.getRegistrationRecent({}, function (err, regRecent) {
+            if (err) {
+                console.log(err);
+            }
+
+            return res.json({
+                regRecent: regRecent
+            });
+        });
+    } else {
+        return res.render('error', {
+            message: 'No Permission',
+            user: null,
+            error: null
+        });
+    }
+
+
+});
+
 router.post('/api/manual-points/', function (req, res, next) {
         if (req.user) {
             var input = {};

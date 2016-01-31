@@ -30,6 +30,11 @@ mongoose.connect(config.mongoUri);
 
 var app = express();
 
+var moment = require('moment');
+var shortDateFormat = "MMMM Do YYYY, h:mm:ss a"; // this is just an example of storing a date format once so you can change it in one place and have it propagate
+app.locals.moment = moment; // this makes moment available as a variable in every EJS page
+app.locals.shortDateFormat = shortDateFormat;
+
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
