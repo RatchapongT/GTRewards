@@ -1,156 +1,362 @@
 <!DOCTYPE html>
 <html lang = "en">
-    <% include partials/page/jsdefaults.ejs %>
+<% include partials/page/jsdefaults.ejs %>
 
-    <head>
-        <link rel = "stylesheet" href = "assets/css/checkout.css" rel = "stylesheet">
-        <% include partials/page/head.ejs %>
+<head>
+    <link rel = "stylesheet" href = "assets/css/checkout.css"
+          rel = "stylesheet">
+    <% include partials/page/head.ejs %>
 
-    </head>
-    <body>
-        <% include partials/page/navbar.ejs %>
+</head>
+<body>
+<% include partials/page/navbar.ejs %>
 
-        <section class = "hero small-hero" style = "background-image:url(assets/images/cheerleader.png);">
-            <div class = "bg-overlay">
-                <div class = "container" style = "">
-                    <div class = "intro-wrap">
-                        <h1 class = "intro-title">Prize Store</h1>
-                    </div>
-                </div>
+<section class = "hero small-hero"
+         style = "background-image:url(assets/images/cheerleader.png);">
+    <div class = "bg-overlay">
+        <div class = "container" style = "">
+            <div class = "intro-wrap">
+                <h1 class = "intro-title">Prize Store</h1>
             </div>
-        </section>
+        </div>
+    </div>
+</section>
 
 
-        <section class = "main container">
-            <div class = "container">
-                <div ng-app = "getPointsModule" ng-controller = "mainController" ng-cloak>
-                    <div align = "center">
-                        <div style = "width: 50%">
-                            <form>
-                                <input class = "form-control" ng-model = "formData.gtID" id = "focusedInput"
-                                       onkeypress = "return isNumberKey(event)" type = "text"
-                                       placeholder = "GTID Number" maxlength = "9" onclick = "clickEntry(this);">
-                                <input style = "margin-top: 10px; width: 100%; margin-bottom: 10px" type = "submit"
-                                       class = "button button-primary button-large"
-                                       value = "Get Points" ng-click = "getHistory()">
-                            </form>
+<section class = "main container">
+    <div class = "container">
 
-                            <div ng-if = "statusCode == 2 && invalidLength == true">
-                                <div class = "alert alert-danger">
-                                    Invalid Length
-                                </div>
-                            </div>
-                            <div ng-if = "statusCode == 2 && invalidLength == false && registered == false">
-                                <div class = "alert alert-danger">
-                                    GTID Number Not Registered
-                                </div>
-                            </div>
+        <!--<table>-->
+        <!--<tr ng-repeat = "item in itemObject | orderBy:sortType:sortReverse">-->
+        <!--<td style = "vertical-align: middle">-->
+        <!--<img src = "{{item.image.data}}"-->
+        <!--style = "width: 100px; height: 100px"/>-->
+        <!--</td>-->
+        <!--<td style = "vertical-align: middle">-->
+        <!--{{item.name}}-->
+        <!--</td>-->
+        <!--<td style = "vertical-align: middle">-->
+        <!--{{item.description}}-->
+        <!--</td>-->
+        <!--</tr>-->
+        <!--</table>-->
 
-                            <p class = "text-center" ng-show = "loading">
-                                <span class = "fa fa-spinner fa-spin fa-3x"></span>
-                            </p>
+        <div ng-app = "getPointsModule" ng-controller = "mainController"
+             ng-cloak>
+            <div align = "center">
+                <div style = "width: 60%">
+                    <form>
+                        <input class = "form-control" ng-model = "formData.gtID"
+                               id = "focusedInput"
+                               onkeypress = "return isNumberKey(event)"
+                               type = "text" placeholder = "GTID Number"
+                               maxlength = "9" onclick = "clickEntry(this);">
+                        <input style = "margin-top: 10px; width: 100%; margin-bottom: 10px"
+                               type = "submit"
+                               class = "button button-primary button-large"
+                               value = "Get Points" ng-click = "getHistory()">
+                    </form>
+
+                    <div ng-if = "statusCode == 2 && invalidLength == true">
+                        <div class = "alert alert-danger">
+                            Invalid Length
                         </div>
                     </div>
-                    <div ng-show = "registered == true">
-                        <ul class = 'item-list'>
-                            <div ng-repeat = "item in itemObject" style = "margin-top: 50px">
-                                <li class = 'item'>
-                                    <div class = 'item__information'>
-                                        <div class = 'item__image'>
-                                            <img src = "{{item.image.data}}" style = "width: 100px; height: 100px" />
-                                        </div>
-                                        <div class = 'item__body'>
-                                            <h2 class = 'item__title'>{{item.name}}</h2>
-
-                                            <p class = 'item__description'>{{item.description}}</p>
-
-                                            <p>Available Quantity: {{item.quantity}}</p>
-                                        </div>
-                                        <div class = 'item__price js-item-price' data-price = '{{item.price}}'>0</div>
-                                    </div>
-                                    <div class = 'item__interactions' ng-if = "item.quantity == 0" style="background-color: #e74c3c">
-                                        <p class = 'item__quantity'>
-                                            <span data-quantity = '0'>Out Of Stock</span>
-                                        </p>
-                                    </div>
-                                    <div class = 'item__interactions' ng-if = "item.quantity > 0">
-                                        <p class = 'item__quantity'>
-                                            <a class = 'js-item-increase' title = 'Add another item' style = "color: #00254c" ng-click = "increaseQuantity(item._id)">+</a>
-                                            <a class = 'js-item-decrease decrease--disabled' title = 'Remove an item'
-                                               style = "color: #00254c" ng-click = "decreaseQuantity(item._id)">-</a>
-                                            <span data-quantity = '0'><b>0</b> item</span> at {{item.price}} points
-                                        </p>
-                                    </div>
-                                </li>
-                            </div>
-                        </ul>
-
-                        <div class = 'summary js-summary'>
-                            <ul class = 'checkout' style = "float: right">
-                                <li>
-                                    <b>Available Points:</b>
-                                    <span style = "float: right;">{{currentPoint}}</span>
-                                </li>
-                                <li>
-                                    <b>Total:</b>
-                                    <span class = 'sum js-total'>0</span>
-
-                                </li>
-                                <li>
-                                    <b>Remaining Points:</b>
-                                <span style = "float: right;"
-                                      ng-style = "{ 'color': remainingPoint >= 0? '#16a085' : '#e74c3c'}"
-                                        >{{remainingPoint}}</span>
-                                </li>
-                                <li>
-                                    <button class = 'button js-checkout-button' ng-disabled = "remainingPoint <=0 || checkingOut" ng-click = "checkOut()">Checkout</button>
-                                </li>
-                            </ul>
+                    <div ng-if = "statusCode == 2 && invalidLength == false && registered == false">
+                        <div class = "alert alert-danger">
+                            GTID Number Not Registered
                         </div>
                     </div>
 
-                    <p class = "text-center" ng-show = "checkingOut">
+                    <p class = "text-center" ng-show = "loading">
                         <span class = "fa fa-spinner fa-spin fa-3x"></span>
                     </p>
-
-                    <div align = "center">
-                        <div class = "alert alert-success" ng-if = "checkOutStatusCode == 1" style = "width: 300px ">
-                            {{messageArray}}
-                        </div>
-                    </div>
-                    <div align = "center">
-                        <div class = "alert alert-danger" ng-if = "checkOutStatusCode == 2" style = "width: 300px ">
-                            {{checkOutMessage}}
-                        </div>
-                    </div>
                 </div>
 
+
+            </div>
+            <div ng-show = "registered == true">
+                <ul class = 'item-list'>
+                    <div ng-repeat = "item in itemObject"
+                         style = "margin-top: 50px">
+                        <li class = 'item'>
+                            <div class = 'item__information'>
+                                <div class = 'item__image'>
+                                    <img src = "{{item.image.data}}"
+                                         style = "width: 100px; height: 100px"/>
+                                </div>
+                                <div class = 'item__body'>
+                                    <h2 class = 'item__title'>{{item.name}}</h2>
+
+                                    <p class = 'item__description'>
+                                        {{item.description}}</p>
+
+                                    <p>Available Quantity: {{item.quantity}}</p>
+                                </div>
+                                <div class = 'item__price js-item-price'
+                                     data-price = '{{item.price}}'>0
+                                </div>
+                            </div>
+                            <div class = 'item__interactions'
+                                 ng-if = "item.quantity == 0"
+                                 style = "background-color: #e74c3c">
+                                <p class = 'item__quantity'>
+                                    <span data-quantity = '0'>Out Of Stock</span>
+                                </p>
+                            </div>
+                            <div class = 'item__interactions'
+                                 ng-if = "item.quantity > 0">
+                                <p class = 'item__quantity'>
+                                    <a class = 'js-item-increase'
+                                       title = 'Add another item'
+                                       style = "color: #00254c"
+                                       ng-click = "increaseQuantity(item._id)">+</a>
+                                    <a class = 'js-item-decrease decrease--disabled'
+                                       title = 'Remove an item'
+                                       style = "color: #00254c"
+                                       ng-click = "decreaseQuantity(item._id)">-</a>
+                                    <span data-quantity = '0'><b>0</b> item</span>
+                                    at {{item.price}} points </p>
+                            </div>
+                        </li>
+                    </div>
+                </ul>
+
+                <div class = 'summary js-summary'>
+                    <ul class = 'checkout' style = "float: right">
+                        <li>
+                            <b>Available Points:</b>
+                            <span style = "float: right;">{{currentPoint}}</span>
+                        </li>
+                        <li>
+                            <b>Total:</b>
+                            <span class = 'sum js-total'>0</span>
+
+                        </li>
+                        <li>
+                            <b>Remaining Points:</b>
+                                <span style = "float: right;"
+                                      ng-style = "{ 'color': remainingPoint >= 0? '#16a085' : '#e74c3c'}">{{remainingPoint}}</span>
+                        </li>
+                        <li>
+                            <button class = 'button js-checkout-button'
+                                    ng-disabled = "remainingPoint <=0 || checkingOut"
+                                    ng-click = "checkOut()">Checkout
+                            </button>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <p class = "text-center" ng-show = "checkingOut">
+                <span class = "fa fa-spinner fa-spin fa-3x"></span>
+            </p>
+
+            <div align = "center">
+                <div class = "alert alert-success"
+                     ng-if = "checkOutStatusCode == 1" style = "width: 300px ">
+                    {{messageArray}}
+                </div>
+            </div>
+            <div align = "center">
+                <div class = "alert alert-danger"
+                     ng-if = "checkOutStatusCode == 2" style = "width: 300px ">
+                    {{checkOutMessage}}
+                </div>
             </div>
 
 
-        </section>
+            <div style = "width: 100%; margin-top: 50px">
 
-    </body>
+<div align="center"> <img width = "250 px" src = "assets/images/ramblin.png"></div>
+                <ul class = "timeline">
 
-    <script>
+                    <li>
+                        <div class = "timeline-badge warning">
+                            <strong>100</strong></div>
+                        <div class = "timeline-panel">
+                            <div class = "timeline-heading">
+                                <h4 class = "timeline-title">Behind the
+                                    Scenes VIP Tour of McCamish Pavilion and
+                                    Zelnak Center</h4>
 
-        var pointsController = angular.module('pointsController', []);
-        pointsController.controller('mainController', ['$scope', '$http', 'Points', function ($scope, $http, Points) {
-            $scope.showModal = false;
-            $scope.formData = {};
-            $scope.quantity = {};
-            $scope.maxQuantity = {};
-            $scope.checkOutStatusCode = 0;
-            $scope.checkingOut = false;
-            $scope.loading = false;
+                            </div>
+                            <div class = "timeline-body">
+                                <p>When a student reaches 100 points, he/she
+                                    will receive an email to sign up for the
+                                    VIP Tour. Points will not be deducted
+                                    upon participation in experience!</p>
+                            </div>
+                        </div>
+                    </li>
+                    <li class = "timeline-inverted">
+                        <div class = "timeline-badge warning">
+                            <strong>200</strong></div>
+                        <div class = "timeline-panel">
+                            <div class = "timeline-heading">
+                                <h4 class = "timeline-title">Post Game Shoot
+                                    around in Zelnak</h4>
 
-            $scope.checkOut = function () {
-                $scope.checkingOut = true;
-                $http.post('/api/checkout', {quantity: $scope.quantity, gtID: $scope.formData.gtID}).success(function (data) {
-                    $scope.checkingOut = false;
-                    $scope.checkOutMessage = data.message;
-                    $scope.checkOutStatusCode = data.checkOutStatusCode;
-                    $scope.messageArray = data.messageArray;
+                            </div>
+                            <div class = "timeline-body">
+                                <p>When a student reaches 200 points, he/she
+                                    will receive an email to sign up for the
+                                    Shootaround. Points will not be deducted
+                                    upon participation in experience!</p>
+                            </div>
+                        </div>
+                    </li>
+                    <li>
+                        <div class = "timeline-badge warning">
+                            <strong>250</strong></div>
+                        <div class = "timeline-panel">
+                            <div class = "timeline-heading">
+                                <h4 class = "timeline-title">Reserved
+                                    Baseline seats for you +1 at MBB vs Duke
+                                    or MBB vs ND or WBB vs ND & Concessions
+                                    Voucher</h4>
+
+                            </div>
+                            <div class = "timeline-body">
+                                <p>When a student reaches 250 points, he/she
+                                    will receive an email to sign up for the
+                                    Reserved Baseline seats. Points will not
+                                    be deducted upon participation in
+                                    experience!</p>
+                            </div>
+                        </div>
+                    </li>
+                    <li class = "timeline-inverted">
+                        <div class = "timeline-badge warning">
+                            <strong>300</strong></div>
+                        <div class = "timeline-panel">
+                            <div class = "timeline-heading">
+                                <h4 class = "timeline-title">Raffle
+                                    Eligibility</h4>
+
+                            </div>
+                            <div class = "timeline-body">
+                                <p>If a total of 3 students do not reach the
+                                    Grand Prize eligibility, they will be
+                                    raffled off to students to reach the 300
+                                    point threshold.</p>
+                            </div>
+                        </div>
+                    </li>
+                    <li>
+                        <div class = "timeline-badge warning">
+                            <strong>350</strong></div>
+                        <div class = "timeline-panel">
+                            <div class = "timeline-heading">
+                                <h4 class = "timeline-title">Attend
+                                    Basketball Practice</h4>
+
+                            </div>
+                            <div class = "timeline-body">
+                                <p>When a student reaches 350 points, he/she
+                                    will receive an email to sign up for the
+                                    chance to attend a Men's basketball
+                                    practice. Points will not be deducted
+                                    upon participation in experience!</p>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+
+            </div>
+        </div>
+
+    </div>
+
+
+</section>
+
+</body>
+
+<script>
+
+    var pointsController = angular.module('pointsController', []);
+    pointsController.controller('mainController', ['$scope', '$http', 'Points', function ($scope, $http, Points) {
+        $scope.showModal = false;
+        $scope.formData = {};
+        $scope.quantity = {};
+        $scope.maxQuantity = {};
+        $scope.checkOutStatusCode = 0;
+        $scope.checkingOut = false;
+        $scope.loading = false;
+
+        $scope.checkOut = function () {
+            $scope.checkingOut = true;
+            $http.post('/api/checkout', {
+                quantity: $scope.quantity,
+                gtID: $scope.formData.gtID
+            }).success(function (data) {
+                $scope.checkingOut = false;
+                $scope.checkOutMessage = data.message;
+                $scope.checkOutStatusCode = data.checkOutStatusCode;
+                $scope.messageArray = data.messageArray;
+                $http.get('api/upload-items', {}).success(function (items) {
+                    $scope.itemObject = items;
+                    for (var i = 0; i < items.length; i++) {
+                        $scope.quantity[items[i]._id] = 0;
+                        $scope.maxQuantity[items[i]._id] = items[i].quantity;
+                    }
+                    $scope.loading = false;
+                    var subtotal = document.querySelector('.js-total')
+                    subtotal.textContent = 0;
+
+                })
+            });
+        };
+
+        $scope.increaseQuantity = function (id) {
+            $scope.full = false;
+            $scope.beforefull = false;
+            if ($scope.quantity[id] == $scope.maxQuantity[id]) {
+                $scope.quantity[id] = $scope.maxQuantity[id];
+                $scope.full = true;
+            } else if ($scope.quantity[id] == $scope.maxQuantity[id] - 1) {
+                $scope.beforefull = true;
+                $scope.quantity[id]++;
+            } else {
+                $scope.quantity[id]++;
+            }
+
+        };
+
+        $scope.decreaseQuantity = function (id) {
+            $scope.quantity[id]--;
+            if ($scope.quantity[id] < 0) {
+                $scope.quantity[id] = 0;
+            }
+        };
+        $scope.getHistory = function () {
+            $scope.statusCode = 0;
+            $scope.registered = false;
+            // validate the formData to make sure that something is there
+            // if form is empty, nothing will happen
+            if ($scope.formData.gtID != undefined) {
+                $scope.loading = true;
+                Points.get($scope.formData).success(function (data) {
+                    if ($scope.formData.gtID.length != 9) {
+                        $scope.invalidLength = true;
+                        $scope.statusCode = 2;
+                    } else {
+                        $scope.invalidLength = false;
+                    }
+                    $scope.loading = false;
+
+                    $scope.points = data.history; // assign our new list of todos
+                    $scope.position = data.position;
+                    $scope.registered = data.registered;
+                    if (data.registered) {
+                        $scope.currentPoint = data.points;
+                        $scope.remainingPoint = data.points;
+                    } else {
+                        $scope.currentPoint = 0;
+                        $scope.statusCode = 2;
+                        $scope.remainingPoint = 0;
+                    }
                     $http.get('api/upload-items', {}).success(function (items) {
                         $scope.itemObject = items;
                         for (var i = 0; i < items.length; i++) {
@@ -160,228 +366,166 @@
                         $scope.loading = false;
                         var subtotal = document.querySelector('.js-total')
                         subtotal.textContent = 0;
-
                     })
                 });
-            };
-
-            $scope.increaseQuantity = function (id) {
-                $scope.full = false;
-                $scope.beforefull = false;
-                if ($scope.quantity[id] == $scope.maxQuantity[id]) {
-                    $scope.quantity[id] = $scope.maxQuantity[id];
-                    $scope.full = true;
-                } else if ($scope.quantity[id] == $scope.maxQuantity[id] - 1) {
-                    $scope.beforefull = true;
-                    $scope.quantity[id]++;
-                } else {
-                    $scope.quantity[id]++;
-                }
-
-            };
-
-            $scope.decreaseQuantity = function (id) {
-                $scope.quantity[id]--;
-                if ($scope.quantity[id] < 0) {
-                    $scope.quantity[id] = 0;
-                }
-            };
-            $scope.getHistory = function () {
-                $scope.statusCode = 0;
-                $scope.registered = false;
-                // validate the formData to make sure that something is there
-                // if form is empty, nothing will happen
-                if ($scope.formData.gtID != undefined) {
-                    $scope.loading = true;
-                    Points.get($scope.formData).success(function (data) {
-                        if ($scope.formData.gtID.length != 9) {
-                            $scope.invalidLength = true;
-                            $scope.statusCode = 2;
-                        } else {
-                            $scope.invalidLength = false;
-                        }
-                        $scope.loading = false;
-
-                        $scope.points = data.history; // assign our new list of todos
-                        $scope.position = data.position;
-                        $scope.registered = data.registered;
-                        if (data.registered) {
-                            $scope.currentPoint = data.points;
-                            $scope.remainingPoint = data.points;
-                        } else {
-                            $scope.currentPoint = 0;
-                            $scope.statusCode = 2;
-                            $scope.remainingPoint = 0;
-                        }
-                        $http.get('api/upload-items', {}).success(function (items) {
-                            $scope.itemObject = items;
-                            for (var i = 0; i < items.length; i++) {
-                                $scope.quantity[items[i]._id] = 0;
-                                $scope.maxQuantity[items[i]._id] = items[i].quantity;
-                            }
-                            $scope.loading = false;
-                            var subtotal = document.querySelector('.js-total')
-                            subtotal.textContent = 0;
-                        })
-                    });
-
-                }
 
             }
 
-            $http.get('api/upload-items', {}).success(function (items) {
-                $scope.itemObject = items;
-                for (var i = 0; i < items.length; i++) {
-                    $scope.quantity[items[i]._id] = 0;
-                    $scope.maxQuantity[items[i]._id] = items[i].quantity;
+        }
+
+        $http.get('api/upload-items', {}).success(function (items) {
+            $scope.itemObject = items;
+            for (var i = 0; i < items.length; i++) {
+                $scope.quantity[items[i]._id] = 0;
+                $scope.maxQuantity[items[i]._id] = items[i].quantity;
+            }
+            $scope.loading = false;
+
+            var subtotal = document.querySelector('.js-total')
+            var itemList = document.querySelector('.item-list')
+            var priceFields = document.querySelectorAll('.item .js-item-price')
+            var total = document.querySelector('.js-total')
+            var checkoutButton = document.querySelector('.js-checkout-button')
+            var modalWrapper = document.querySelector('.js-modal-wrapper')
+
+
+            function handleCalculations() {
+                var subTotalPrice = 0;
+                priceFields = document.querySelectorAll('.item .js-item-price');
+
+                for (var i = 0; i < priceFields.length; i++) {
+                    subTotalPrice += +priceFields[i].textContent;
                 }
-                $scope.loading = false;
-
-                var subtotal = document.querySelector('.js-total')
-                var itemList = document.querySelector('.item-list')
-                var priceFields = document.querySelectorAll('.item .js-item-price')
-                var total = document.querySelector('.js-total')
-                var checkoutButton = document.querySelector('.js-checkout-button')
-                var modalWrapper = document.querySelector('.js-modal-wrapper')
+                subTotalPrice = subTotalPrice.toFixed();
+                subtotal.textContent = subTotalPrice;
 
 
-                function handleCalculations() {
-                    var subTotalPrice = 0;
-                    priceFields = document.querySelectorAll('.item .js-item-price');
+                $scope.remainingPoint = $scope.currentPoint - subtotal.textContent;
+                $scope.$apply();
 
-                    for (var i = 0; i < priceFields.length; i++) {
-                        subTotalPrice += +priceFields[i].textContent;
+            }
+
+            function changeQuantity(emitter, action) {
+
+                var action = emitter.classList.contains('js-item-increase') ? 'increase' : 'decrease',
+                        quantityField = emitter.parentElement.querySelector('span'),
+                        quantity = +quantityField.getAttribute('data-quantity'),
+                        price;
+
+                if (action === 'increase') {
+                    emitter.nextElementSibling.classList.remove('decrease--disabled');
+                    if ($scope.beforefull) {
+                        emitter.classList.add('decrease--disabled');
+
+                    } else if ($scope.full) {
+                        return
                     }
-                    subTotalPrice = subTotalPrice.toFixed();
-                    subtotal.textContent = subTotalPrice;
-
-
-                    $scope.remainingPoint = $scope.currentPoint - subtotal.textContent;
-                    $scope.$apply();
-
-                }
-
-                function changeQuantity(emitter, action) {
-
-                    var action = emitter.classList.contains('js-item-increase') ? 'increase' : 'decrease',
-                            quantityField = emitter.parentElement.querySelector('span'),
-                            quantity = +quantityField.getAttribute('data-quantity'),
-                            price;
-
-                    if (action === 'increase') {
-                        emitter.nextElementSibling.classList.remove('decrease--disabled');
-                        if ($scope.beforefull) {
-                            emitter.classList.add('decrease--disabled');
-
-                        } else if ($scope.full) {
-                            return
-                        }
-                    } else if (action === 'decrease') {
-                        emitter.previousElementSibling.classList.remove('decrease--disabled');
-                        if (quantity === 1) {
-                            emitter.classList.add('decrease--disabled');
-                        } else if (quantity === 0) {
-                            return
-                        }
+                } else if (action === 'decrease') {
+                    emitter.previousElementSibling.classList.remove('decrease--disabled');
+                    if (quantity === 1) {
+                        emitter.classList.add('decrease--disabled');
+                    } else if (quantity === 0) {
+                        return
                     }
-
-                    quantityField.innerHTML = '<b>' + (action === 'increase' ? ++quantity : --quantity) + '</b> ' + (quantity > 1 ? 'items' : 'item');
-                    quantityField.setAttribute('data-quantity', quantity);
-
-                    price = emitter.parentElement.parentElement.parentElement.querySelector('.js-item-price');
-
-                    price.textContent = (quantity * price.getAttribute('data-price'));
-                    total = price.textContent;
-
-                    handleCalculations()
                 }
 
-                itemList.addEventListener('click', function (e) {
-                    var target = e.target,
-                            classList = target.classList;
+                quantityField.innerHTML = '<b>' + (action === 'increase' ? ++quantity : --quantity) + '</b> ' + (quantity > 1 ? 'items' : 'item');
+                quantityField.setAttribute('data-quantity', quantity);
 
-                    if (classList.contains('js-item-increase') || classList.contains('js-item-decrease')) {
-                        changeQuantity(target)
-                    }
-                });
+                price = emitter.parentElement.parentElement.parentElement.querySelector('.js-item-price');
 
+                price.textContent = (quantity * price.getAttribute('data-price'));
+                total = price.textContent;
 
+                handleCalculations()
+            }
+
+            itemList.addEventListener('click', function (e) {
+                var target = e.target,
+                        classList = target.classList;
+
+                if (classList.contains('js-item-increase') || classList.contains('js-item-decrease')) {
+                    changeQuantity(target)
+                }
             });
 
 
-        }]);
-
-
-        angular.module('pointsService', []).factory('Points', ['$http', function ($http) {
-            return {
-                get: function (giID) {
-                    return $http.post('/api/get-points', giID);
-                },
-
-            }
-        }]);
-
-
-        pointsController.directive('modal', function () {
-
-            return {
-                template: '<div class="modal fade">' +
-                '<div class="modal-dialog">' +
-                '<div class="modal-content">' +
-                '<div class="modal-header">' +
-                '<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>' +
-                '<h4 class="modal-title">{{ title }}</h4>' +
-                '</div>' +
-                '<div class="modal-body" ng-transclude></div>' +
-                '</div>' +
-                '</div>' +
-                '</div>',
-                restrict: 'E',
-                transclude: true,
-                replace: true,
-                scope: true,
-                link: function postLink(scope, element, attrs) {
-
-                    scope.title = attrs.title;
-
-                    scope.$watch(attrs.visible, function (value) {
-                        if (value == true) {
-                            $(element).modal('show');
-                        }
-                        else
-                            $(element).modal('hide');
-                    });
-
-                    $(element).on('shown.bs.modal', function () {
-                        scope.$apply(function () {
-                            scope.$parent[attrs.visible] = true;
-                        });
-                    });
-
-                    $(element).on('hidden.bs.modal', function () {
-                        scope.$apply(function () {
-                            scope.$parent[attrs.visible] = false;
-                        });
-                    });
-                }
-            };
         });
 
-        angular.module('getPointsModule', ['pointsController', 'pointsService']);
+
+    }]);
 
 
-        function clickEntry(input) {
-            var disMouse = document.getElementById(input.id);
-            disMouse.addEventListener("mousewheel", function (evt) {
-                evt.preventDefault();
-            });
+    angular.module('pointsService', []).factory('Points', ['$http', function ($http) {
+        return {
+            get: function (giID) {
+                return $http.post('/api/get-points', giID);
+            },
+
         }
+    }]);
 
-        function isNumberKey(evt) {
-            var charCode = (evt.which) ? evt.which : event.keyCode
-            if (charCode > 31 && (charCode < 48 || charCode > 57))
-                return false;
-            return true;
-        }
-    </script>
+
+    pointsController.directive('modal', function () {
+
+        return {
+            template: '<div class="modal fade">' +
+            '<div class="modal-dialog">' +
+            '<div class="modal-content">' +
+            '<div class="modal-header">' +
+            '<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>' +
+            '<h4 class="modal-title">{{ title }}</h4>' +
+            '</div>' +
+            '<div class="modal-body" ng-transclude></div>' +
+            '</div>' +
+            '</div>' +
+            '</div>',
+            restrict: 'E',
+            transclude: true,
+            replace: true,
+            scope: true,
+            link: function postLink(scope, element, attrs) {
+
+                scope.title = attrs.title;
+
+                scope.$watch(attrs.visible, function (value) {
+                    if (value == true) {
+                        $(element).modal('show');
+                    }
+                    else
+                        $(element).modal('hide');
+                });
+
+                $(element).on('shown.bs.modal', function () {
+                    scope.$apply(function () {
+                        scope.$parent[attrs.visible] = true;
+                    });
+                });
+
+                $(element).on('hidden.bs.modal', function () {
+                    scope.$apply(function () {
+                        scope.$parent[attrs.visible] = false;
+                    });
+                });
+            }
+        };
+    });
+
+    angular.module('getPointsModule', ['pointsController', 'pointsService']);
+
+
+    function clickEntry(input) {
+        var disMouse = document.getElementById(input.id);
+        disMouse.addEventListener("mousewheel", function (evt) {
+            evt.preventDefault();
+        });
+    }
+
+    function isNumberKey(evt) {
+        var charCode = (evt.which) ? evt.which : event.keyCode
+        if (charCode > 31 && (charCode < 48 || charCode > 57))
+            return false;
+        return true;
+    }
+</script>
 </html>
