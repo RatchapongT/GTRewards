@@ -53,14 +53,14 @@
                             <p class = "text-center" ng-show = "loading">
                                 <span class = "fa fa-spinner fa-spin fa-3x"></span>
                             </p>
-                            <div style="background-color: white; color: black; text-shadow: 0px 0px #FF0000;">
+                            <div style="background-color: white; color: black; text-shadow: none;">
                             <table class = "table" border = "1" style = "margin-top: 50px">
                                 <thead>
-                                    <th style = "text-align: center">
+                                    <th style = "text-align: center; width: 150px; height: 50px">
 
                                         Image
                                     </th>
-                                    <th style = "text-align: center; width: 100px">
+                                    <th style = "text-align: center; width: 150px">
                                         <a ng-click = "sortType = 'name'; sortReverse = !sortReverse" style = "cursor: hand; cursor: pointer">
                                             Name
                                             <span ng-show = "sortType == 'name' && !sortReverse" class = "fa fa-caret-down"></span>
@@ -68,7 +68,7 @@
                                         </a>
 
                                     </th>
-                                    <th style = "text-align: center">
+                                    <th style = "text-align: center; width: 450px">
                                         <a ng-click = "sortType = 'description'; sortReverse = !sortReverse" style = "cursor: hand; cursor: pointer">
                                             Description
                                             <span ng-show = "sortType == 'description' && !sortReverse" class = "fa fa-caret-down"></span>
