@@ -627,7 +627,7 @@ router.post('/api/register-new', function (req, res, next) {
                     regRecent: regRecent
                 })
             }
-            if(req.body.gtid.length != 9) {
+            if (req.body.gtid.length != 9) {
                 return res.json({
                     message: 'gtID must be 9 digits',
                     messageCode: 2,
@@ -753,6 +753,31 @@ router.post('/api/manual-points/', function (req, res, next) {
 
 
     }
-)
-;
+);
+
+router.get('/query-data', function (req, res, next) {
+    var vm = {
+        title: 'Query Data',
+        user: req.user
+
+    };
+
+    return res.render('query-data', vm);
+});
+router.post('/api/query-data', function (req, res, next) {
+    databaseFunction.queryData(req.body, function (err, queryData) {
+        if (err) {
+            console.log(err);
+        }
+        console.log(queryData)
+        return res.json({
+                queryData: queryData
+            }
+        )
+    });
+
+
+});
+//
+
 module.exports = router;

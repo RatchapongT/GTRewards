@@ -244,7 +244,11 @@ exports.deleteGame = function (input, next) {
         if (err) {
             next(err, null);
         }
-        History.find({description: gameObject.name, points: gameObject.points, date: gameObject.date}, function (err, historyObjects) {
+        History.find({
+            description: gameObject.name,
+            points: gameObject.points,
+            date: gameObject.date
+        }, function (err, historyObjects) {
             async.each(historyObjects, function (history, callback) {
                 Student.update({_id: history._studentDetail}, {$inc: {sum: -1 * history.points}}, function (err) {
                     if (err) {
@@ -286,7 +290,11 @@ exports.editGame = function (input, next) {
         if (err) {
             next(err, null);
         }
-        History.update({description: gameObject.name, points: gameObject.points, date: gameObject.date}, {$set: {description: input.name}}, {multi: true}, function (err) {
+        History.update({
+            description: gameObject.name,
+            points: gameObject.points,
+            date: gameObject.date
+        }, {$set: {description: input.name}}, {multi: true}, function (err) {
             if (err) {
                 next(err, null);
             }
@@ -415,7 +423,10 @@ exports.updateItem = function (input, next) {
                         if (err) {
                             return callback(err);
                         } else {
-                            realOrder.push({itemObject: itemObject, quantity: file.quantity});
+                            realOrder.push({
+                                itemObject: itemObject,
+                                quantity: file.quantity
+                            });
                             callback();
                         }
                     });
@@ -446,7 +457,10 @@ exports.updateItem = function (input, next) {
 
                         async.each(realOrder, function (processOrder, callback) {
                             console.log('Processing Real Order ' + processOrder.itemObject.name);
-                            Item.update({_id: processOrder.itemObject._id, quantity: {$gte: processOrder.quantity}}, {$inc: {quantity: -processOrder.quantity}}, function (err, result) {
+                            Item.update({
+                                _id: processOrder.itemObject._id,
+                                quantity: {$gte: processOrder.quantity}
+                            }, {$inc: {quantity: -processOrder.quantity}}, function (err, result) {
                                 if (result.n == 0) {
                                     messageArray.push('Not enough ' + processOrder.itemObject.name + ' for ' + processOrder.quantity + ' orders');
                                 } else {
@@ -526,7 +540,12 @@ exports.updateItem = function (input, next) {
 
 exports.unApproveItems = function (input, next) {
     var approvedTimeStamp = new Date();
-    PendingItem.findOneAndUpdate({_id: input.id}, {$set: {approved: true, approvedStamp: approvedTimeStamp}}, function (err, pendingObject) {
+    PendingItem.findOneAndUpdate({_id: input.id}, {
+        $set: {
+            approved: true,
+            approvedStamp: approvedTimeStamp
+        }
+    }, function (err, pendingObject) {
         Item.findOne({_id: pendingObject._itemDetail}, function (err, itemObject) {
             var string = '[Cancelled] ' + itemObject.name + '[' + pendingObject.quantity + '] at ' + pendingObject.price + ' points each.'
             History.update({_id: pendingObject._historyDetail}, {$set: {description: string}}, function (err) {
@@ -570,7 +589,12 @@ exports.unApproveItems = function (input, next) {
 
 exports.approveItems = function (input, next) {
     var approvedTimeStamp = new Date();
-    PendingItem.findOneAndUpdate({_id: input.id}, {$set: {approved: true, approvedStamp: approvedTimeStamp}}, function (err, pendingObject) {
+    PendingItem.findOneAndUpdate({_id: input.id}, {
+        $set: {
+            approved: true,
+            approvedStamp: approvedTimeStamp
+        }
+    }, function (err, pendingObject) {
         Item.findOne({_id: pendingObject._itemDetail}, function (err, itemObject) {
             var string = '[Approved] Redeemed ' + itemObject.name + '[' + pendingObject.quantity + '] at ' + pendingObject.price + ' points each.'
             History.update({_id: pendingObject._historyDetail}, {$set: {description: string}}, function (err) {
@@ -674,6 +698,36 @@ exports.registerUser = function (input, next) {
             })
         }
     })
+}
+
+exports.queryData = function (input, next) {
+    if(!input.min) {
+        input.min = -9999;
+    }
+    if(!input.max) {
+        input.max = 9999;
+    }
+    //Student.find(, function (err, student) {
+    //    //console.log(student)
+    //    if (err) {
+    //        return next(err, null);
+    //    } else {
+    //
+    //       return next(null, student);
+    //    }
+    //})
+
+    Student.find({
+        sum: {
+            $gte: input.min,
+            $lte: input.max
+        }
+    }).sort({sum: -1}).exec(function (err, studentObjects) {
+        if (err) {
+            return next(err, null);
+        }
+        return next(null, studentObjects);
+    });
 }
 
 function validVariable(input) {
