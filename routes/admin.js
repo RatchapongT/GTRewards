@@ -769,7 +769,6 @@ router.post('/api/query-data', function (req, res, next) {
         if (err) {
             console.log(err);
         }
-        console.log(queryData)
         return res.json({
                 queryData: queryData
             }

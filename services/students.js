@@ -640,7 +640,6 @@ exports.getPendingItem = function (input, next) {
     })
 }
 exports.saveManualPoints = function (input, next) {
-    console.log(input);
     Student.findOne({gtID: input.gtID}, function (err, studentObject) {
         if (studentObject) {
             Student.update({gtID: input.gtID}, {$inc: {sum: input.points}}, function (err) {
