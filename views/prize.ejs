@@ -140,7 +140,7 @@
                         </li>
                         <li>
                             <button class = 'button js-checkout-button'
-                                    ng-disabled = "remainingPoint <=0 || checkingOut"
+                                    ng-disabled="remainingPoint < 0 || checkingOut"
                                     ng-click = "checkOut()">Checkout
                             </button>
                         </li>
