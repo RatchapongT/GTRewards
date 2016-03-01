@@ -156,6 +156,7 @@
                 <div class = "alert alert-success"
                      ng-if = "checkOutStatusCode == 1" style = "width: 300px ">
                     {{messageArray}}
+                    {{feedbackMessage}}
                 </div>
             </div>
             <div align = "center">
@@ -293,6 +294,7 @@
             }).success(function (data) {
                 $scope.checkingOut = false;
                 $scope.checkOutMessage = data.message;
+                $scope.feedbackMessage = '\nYou will receive an email within 24-72 hours pending the approval of your transaction';
                 $scope.checkOutStatusCode = data.checkOutStatusCode;
                 $scope.messageArray = data.messageArray;
                 $http.get('api/upload-items', {}).success(function (items) {
